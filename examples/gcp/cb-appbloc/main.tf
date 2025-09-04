@@ -4,7 +4,7 @@ locals {
 }
 
 module "appbloc" {
-  source         = "../blocs/appbloc"
+  source         = "../../../blocs/appbloc"
   namespace      = var.app_namespace
   edge_ip_name   = var.edge_ip_name
   app_name       = "cloudbloc-webapp-${var.environment}"

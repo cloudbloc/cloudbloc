@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cloudbloc — SaaS-as-Code</title>
+    <meta name="description" content="Cloudbloc replaces expensive SaaS with cloud-native building blocks you own. Deploy observability, security, search, payments and more as Terraform + Kubernetes modules." />
+    <meta property="og:title" content="Cloudbloc — SaaS-as-Code" />
+    <meta property="og:description" content="Own your stack. Replace SaaS with open, cloud-native modules. Terraform + Kubernetes." />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#5b2aa8" />
+
+    <style>
+      :root{
+        --purple:#5b2aa8;      /* primary brand */
+        --purple-700:#4b2290;
+        --purple-900:#311864;
+        --ink:#0b1020;         /* dark ink */
+        --fg:#0f1222;
+        --muted:#6b6f80;
+        --card:#ffffff;
+        --bg:#f7f7fb;
+        --ring:rgba(91,42,168,.35);
+        --radius:16px;
+        --shadow:0 10px 25px rgba(10,14,40,0.12);
+      }
+      *{box-sizing:border-box}
+      html,body{margin:0;padding:0}
+      body{
+        font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
+        color:var(--fg); background:var(--bg); line-height:1.6;
+      }
+      a{color:inherit; text-decoration:none}
+      img{max-width:100%; display:block}
+
+      /* Layout */
+      .container{width:min(1120px, 92vw); margin:0 auto}
+      header{background:var(--purple); color:#fff; position:relative; overflow:hidden}
+      nav{
+        display:flex; align-items:center; justify-content:space-between;
+        padding:20px 0;
+      }
+      .brand{display:flex; align-items:center; gap:12px}
+      .brand img{width:40px; height:40px}
+      .brand .name{font-weight:800; letter-spacing:.2px}
+
+      .nav-links{display:flex; gap:24px; font-weight:600; opacity:.95}
+      .nav-cta{display:flex; gap:12px; align-items:center}
+
+      .button{
+        display:inline-block; padding:12px 18px; border-radius:10px;
+        font-weight:700; border:1px solid transparent; transition:.18s ease;
+      }
+      .button.primary{background:#fff; color:var(--purple)}
+      .button.primary:hover{transform:translateY(-1px); box-shadow:0 8px 18px rgba(255,255,255,.15)}
+      .button.ghost{border-color:rgba(255,255,255,.5); color:#fff}
+      .button.ghost:hover{background:rgba(255,255,255,.08)}
+
+      .hero{
+        display:grid; grid-template-columns:1.1fr .9fr; gap:48px; align-items:center;
+        padding:54px 0 88px;
+      }
+      .kicker{
+        display:inline-flex; align-items:center; gap:10px; font-weight:700;
+        padding:6px 12px; border-radius:999px; background:rgba(255,255,255,.12);
+      }
+      .hero h1{font-size:clamp(2.2rem, 4vw, 3.2rem); line-height:1.15; margin:16px 0 10px}
+      .hero p{font-size:1.12rem; opacity:.95}
+      .hero .cta{margin-top:22px; display:flex; gap:12px; flex-wrap:wrap}
+      .hero-card{
+        background:linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.06));
+        border:1px solid rgba(255,255,255,.25);
+        border-radius:var(--radius); padding:22px; color:#fff;
+      }
+      .hero-grid{display:grid; grid-template-columns:1fr; gap:14px}
+
+      /* Section base */
+      section{padding:80px 0}
+      .section-title{font-size:1.9rem; margin:0 0 10px}
+      .section-sub{color:var(--muted); margin:0 0 28px}
+
+      /* Cards & grid */
+      .grid{display:grid; gap:22px}
+      .grid.cols-3{grid-template-columns:repeat(3, 1fr)}
+      .card{
+        background:var(--card); border-radius:var(--radius); padding:22px;
+        box-shadow:var(--shadow); border:1px solid rgba(15,18,34,.06);
+      }
+      .card h3{margin:0 0 8px}
+      .muted{color:var(--muted)}
+
+      /* Code block */
+      pre{
+        background:#0f1126; color:#e9e9ff; padding:18px; border-radius:12px; overflow:auto;
+        border:1px solid #2b2e57; box-shadow:0 8px 20px rgba(15,17,38,.35);
+      }
+
+      /* Alt section */
+      .alt{background:#fff}
+
+      /* Footer */
+      footer{padding:40px 0 60px; color:var(--muted)}
+      .footer-box{
+        background:var(--purple-900); color:#fff; border-radius:var(--radius);
+        padding:26px; display:flex; justify-content:space-between; align-items:center;
+        flex-wrap:wrap; gap:12px; box-shadow:var(--shadow);
+      }
+      .footer-links{display:flex; gap:16px}
+
+      /* Responsive */
+      @media (max-width: 980px){
+        .hero{grid-template-columns:1fr; padding-bottom:64px}
+        .grid.cols-3{grid-template-columns:1fr 1fr}
+      }
+      @media (max-width: 640px){
+        .nav-links{display:none}
+        .grid.cols-3{grid-template-columns:1fr}
+      }
+
+      /* Focus ring */
+      .button:focus-visible, a:focus-visible, button:focus-visible{outline:3px solid var(--ring); outline-offset:2px; border-radius:10px}
+    </style>
+  </head>
+
+  <body>
+    <!-- Header / Nav -->
+    <header>
+      <div class="container">
+        <nav aria-label="Primary">
+          <div class="brand">
+            <img src="logo.png" alt="Cloudbloc cube logo" />
+            <div class="name">Cloudbloc</div>
+          </div>
+          <div class="nav-links" role="navigation">
+            <a href="#why">Why</a>
+            <a href="#blocs">Blocs</a>
+            <a href="#vision">Vision</a>
+            <a href="https://github.com/cloudbloc-io" rel="noopener">GitHub</a>
+          </div>
+          <div class="nav-cta">
+            <a class="button ghost" href="https://github.com/cloudbloc-io" rel="noopener">Star on GitHub</a>
+            <a class="button primary" href="#get-started">Get started</a>
+          </div>
+        </nav>
+
+        <!-- Hero -->
+        <div class="hero">
+          <div>
+            <span class="kicker">SaaS-as-Code</span>
+            <h1>Own your stack. Replace SaaS with cloud-native building blocks.</h1>
+            <p>
+              Cloudbloc gives you <strong>Terraform + Kubernetes modules</strong> for the
+              foundations every company needs—observability, secrets, search, auth, payments, and more—
+              so you can run them <strong>inside your cloud</strong>, not someone else’s.
+            </p>
+            <div class="cta">
+              <a class="button primary" href="#get-started">Deploy in minutes</a>
+              <a class="button ghost" href="https://github.com/cloudbloc-io" rel="noopener">Browse modules</a>
+            </div>
+          </div>
+
+          <!-- Hero right: quick stats / proof -->
+          <div class="hero-grid">
+            <div class="hero-card">
+              <strong>10–20× cost reduction</strong><br />
+              Stop renting commodity SaaS. Run the same capabilities for a fraction of the price.
+            </div>
+            <div class="hero-card">
+              <strong>Full control & compliance</strong><br />
+              Keep data, logs, and secrets inside your accounts. Deterministic rollbacks with GitOps.
+            </div>
+            <div class="hero-card">
+              <strong>Production-ready by design</strong><br />
+              Opinionated defaults, observability built-in, and clear SLOs for each bloc.
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Why Cloudbloc -->
+    <section id="why">
+      <div class="container">
+        <h2 class="section-title">Why Cloudbloc</h2>
+        <p class="section-sub">Modern companies shouldn’t pay SaaS tax for primitives. Ship faster with modules you can audit, version, and scale on your terms.</p>
+
+        <div class="grid cols-3">
+          <div class="card">
+            <h3>Own the economics</h3>
+            <p class="muted">Move recurring SaaS spend into durable platform investment. Scale usage without price shocks.</p>
+          </div>
+          <div class="card">
+            <h3>GitOps-first workflow</h3>
+            <p class="muted">Everything is code. Plan, review, and roll back using your existing CI/CD and ArgoCD/Flux pipelines.</p>
+          </div>
+          <div class="card">
+            <h3>Cloud-native & portable</h3>
+            <p class="muted">Works on GKE/EKS/AKS with minimal changes. Clear boundaries, clean interfaces, and sane defaults.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Blocs / Modules -->
+    <section id="blocs" class="alt">
+      <div class="container">
+        <h2 class="section-title">Building blocks (“blocs”)</h2>
+        <p class="section-sub">Composable modules you can adopt independently or as a full platform.</p>
+
+        <div class="grid cols-3">
+          <div class="card">
+            <h3>AppBloc</h3>
+            <p class="muted">
+                The simplest way to deploy apps to Kubernetes — opinionated namespaces,
+                deployments, services, ingress, and managed TLS. Scales from hello-world
+                to production with GitOps-friendly defaults.
+            </p>
+          </div>
+          <div class="card">
+            <h3>ObsBloc</h3>
+            <p class="muted">Prometheus + Grafana + Loki/Tempo with dashboards, alerts, and cost-aware retention.</p>
+          </div>
+          <div class="card">
+            <h3>SearchBloc</h3>
+            <p class="muted">Open-source search at scale with sensible sharding, snapshots, and SLO-backed tuning.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Get Started -->
+    <section id="get-started">
+      <div class="container">
+        <h2 class="section-title">Deploy in minutes</h2>
+        <p class="section-sub">Use Terraform to install a bloc into an existing cluster. Everything ships with examples and dashboards.</p>
+
+        <div class="grid">
+          <pre><code># Example: install ObsBloc
+module "obsbloc" {
+  source  = "github.com/cloudbloc-io/obsbloc//terraform"
+  project = "acme-prod"
+  cluster = "gke-us-central1"
+  region  = "us-central1"
+  # opinionated defaults; override as needed
+}</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Vision -->
+    <section id="vision" class="alt">
+      <div class="container">
+        <h2 class="section-title">Our vision</h2>
+        <p class="section-sub">
+          Cloudbloc is a long-horizon bet: shift billions from bloated SaaS contracts back into
+          in-house capability. Companies regain control of data, cost, and velocity—while keeping
+          enterprise-grade reliability and security.
+        </p>
+
+        <div class="grid cols-3">
+          <div class="card">
+            <h3>Cost clarity</h3>
+            <p class="muted">Run transparent infra you can forecast. Pay for compute and storage, not markups.</p>
+          </div>
+          <div class="card">
+            <h3>Operational excellence</h3>
+            <p class="muted">Production-ready defaults, SLOs, golden dashboards, and incident playbooks out of the box.</p>
+          </div>
+          <div class="card">
+            <h3>Open & extensible</h3>
+            <p class="muted">Open-source cores, clean APIs, and a thriving community of modules & integrations.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="footer-box">
+          <div>
+            <strong>Ready to own your stack?</strong><br />
+            Start with one bloc, expand at your pace.
+          </div>
+          <div class="footer-links">
+            <a class="button primary" href="https://github.com/cloudbloc-io" rel="noopener">Explore on GitHub</a>
+            <a class="button ghost" href="mailto:hello@cloudbloc.io">Contact</a>
+          </div>
+        </div>
+
+        <div style="margin-top:22px; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap">
+          <div>© <span id="y"></span> Cloudbloc. All rights reserved.</div>
+          <div class="muted">Built with Terraform + Kubernetes. SaaS-as-Code.</div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById('y').textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>
