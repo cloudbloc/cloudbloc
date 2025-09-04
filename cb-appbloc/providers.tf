@@ -24,4 +24,3 @@ provider "helm" {
     token                  = data.google_client_config.default.access_token
   }
 }
-
