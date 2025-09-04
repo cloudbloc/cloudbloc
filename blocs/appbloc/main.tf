@@ -53,8 +53,8 @@ resource "kubernetes_deployment" "app" {
           # tiny requests to keep Autopilot costs low
           resources {
             requests = {
-              cpu    = "500m",
-              memory = "256Mi"
+              cpu    = "100m",
+              memory = "128Mi"
             }
             limits = {
               cpu    = "500m",
