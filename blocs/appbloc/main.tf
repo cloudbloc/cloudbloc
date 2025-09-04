@@ -9,14 +9,9 @@ resource "kubernetes_config_map" "web_html" {
     name      = "web-html"
     namespace = kubernetes_namespace.namespace.metadata[0].name
   }
+
   data = {
-    "index.html" = <<-HTML
-      <!doctype html>
-      <html><head><title>Cloudbloc</title></head>
-      <body style="font-family:sans-serif">
-        <h1>Cloudbloc — it works 🎉</h1>
-      </body></html>
-    HTML
+    "index.html" = file(var.html_path)
   }
 }
 

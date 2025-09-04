@@ -1,5 +1,6 @@
 locals {
-  env = var.environment
+  env           = var.environment
+  html_abs_path = "${path.root}/static/${var.html_path}"
 }
 
 module "appbloc" {
@@ -11,6 +12,7 @@ module "appbloc" {
   container_port = var.app_port
   replicas       = var.app_replicas
   service_type   = var.service_type
-  labels         = { env = local.env }
   domains        = var.domains
+  html_path      = local.html_abs_path
+  labels         = { env = local.env }
 }

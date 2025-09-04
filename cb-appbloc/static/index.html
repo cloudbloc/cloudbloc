@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cloudbloc — SaaS-as-Code</title>
+    <meta name="description" content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." />
+    <meta property="og:title" content="Cloudbloc — SaaS-as-Code" />
+    <meta property="og:description" content="Lorem ipsum dolor sit amet, consectetur adipiscing elit." />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#5b2aa8" />
+
+    <style>
+      /* same styles as before */
+      :root{
+        --purple:#5b2aa8;
+        --purple-700:#4b2290;
+        --purple-900:#311864;
+        --ink:#0b1020;
+        --fg:#0f1222;
+        --muted:#6b6f80;
+        --card:#ffffff;
+        --bg:#f7f7fb;
+        --ring:rgba(91,42,168,.35);
+        --radius:16px;
+        --shadow:0 10px 25px rgba(10,14,40,0.12);
+      }
+      *{box-sizing:border-box}
+      html,body{margin:0;padding:0}
+      body{
+        font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
+        color:var(--fg); background:var(--bg); line-height:1.6;
+      }
+      a{color:inherit; text-decoration:none}
+      img{max-width:100%; display:block}
+      .container{width:min(1120px, 92vw); margin:0 auto}
+      header{background:var(--purple); color:#fff}
+      nav{display:flex; align-items:center; justify-content:space-between; padding:20px 0;}
+      .brand{display:flex; align-items:center; gap:12px}
+      .brand img{width:40px; height:40px}
+      .brand .name{font-weight:800}
+      .nav-links{display:flex; gap:24px; font-weight:600; opacity:.95}
+      .nav-cta{display:flex; gap:12px; align-items:center}
+      .button{display:inline-block; padding:12px 18px; border-radius:10px; font-weight:700; border:1px solid transparent; transition:.18s ease;}
+      .button.primary{background:#fff; color:var(--purple)}
+      .button.ghost{border-color:rgba(255,255,255,.5); color:#fff}
+      .hero{display:grid; grid-template-columns:1.1fr .9fr; gap:48px; align-items:center; padding:54px 0 88px;}
+      .kicker{display:inline-flex; align-items:center; gap:10px; font-weight:700; padding:6px 12px; border-radius:999px; background:rgba(255,255,255,.12);}
+      .hero h1{font-size:clamp(2.2rem, 4vw, 3.2rem);}
+      .hero-card{background:rgba(255,255,255,.12); border-radius:var(--radius); padding:22px;}
+      section{padding:80px 0}
+      .section-title{font-size:1.9rem; margin:0 0 10px}
+      .section-sub{color:var(--muted); margin:0 0 28px}
+      .grid{display:grid; gap:22px}
+      .grid.cols-3{grid-template-columns:repeat(3, 1fr)}
+      .card{background:var(--card); border-radius:var(--radius); padding:22px; box-shadow:var(--shadow);}
+      pre{background:#0f1126; color:#e9e9ff; padding:18px; border-radius:12px; overflow:auto;}
+      .alt{background:#fff}
+      footer{padding:40px 0 60px; color:var(--muted)}
+      .footer-box{background:var(--purple-900); color:#fff; border-radius:var(--radius); padding:26px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;}
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <div class="container">
+        <nav>
+          <div class="brand">
+            <img src="logo.png" alt="Cloudbloc cube logo" />
+            <div class="name">Cloudbloc</div>
+          </div>
+          <div class="nav-links">
+            <a href="#why">Why</a>
+            <a href="#blocs">Blocs</a>
+            <a href="#vision">Vision</a>
+            <a href="https://github.com/cloudbloc-io">GitHub</a>
+          </div>
+          <div class="nav-cta">
+            <a class="button ghost" href="https://github.com/cloudbloc-io">Star</a>
+            <a class="button primary" href="#get-started">Get started</a>
+          </div>
+        </nav>
+
+        <div class="hero">
+          <div>
+            <span class="kicker">Lorem Ipsum</span>
+            <h1>Lorem ipsum dolor sit amet.</h1>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero.
+              Sed cursus ante dapibus diam.
+            </p>
+          </div>
+          <div class="hero-grid">
+            <div class="hero-card"><strong>Lorem ipsum</strong><br/>Dolor sit amet, consectetur.</div>
+            <div class="hero-card"><strong>Sed ut perspiciatis</strong><br/>Unde omnis iste natus error.</div>
+            <div class="hero-card"><strong>Nemo enim ipsam</strong><br/>Quia voluptas sit aspernatur aut odit aut fugit.</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section id="why">
+      <div class="container">
+        <h2 class="section-title">Why Lorem</h2>
+        <p class="section-sub">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        <div class="grid cols-3">
+          <div class="card"><h3>Lorem</h3><p class="muted">Lorem ipsum dolor sit amet.</p></div>
+          <div class="card"><h3>Ipsum</h3><p class="muted">Consectetur adipiscing elit sed do.</p></div>
+          <div class="card"><h3>Dolor</h3><p class="muted">Eiusmod tempor incididunt ut labore.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="blocs" class="alt">
+      <div class="container">
+        <h2 class="section-title">Blocs</h2>
+        <p class="section-sub">Lorem ipsum dolor sit amet.</p>
+        <div class="grid cols-3">
+          <div class="card"><h3>AppBloc</h3><p class="muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p></div>
+          <div class="card"><h3>ObsBloc</h3><p class="muted">Sed do eiusmod tempor incididunt ut labore.</p></div>
+          <div class="card"><h3>SearchBloc</h3><p class="muted">Ut enim ad minim veniam quis nostrud exercitation.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="get-started">
+      <div class="container">
+        <h2 class="section-title">Get Started</h2>
+        <p class="section-sub">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        <pre><code># Example
+module "example" {
+  source  = "github.com/example/module"
+}</code></pre>
+      </div>
+    </section>
+
+    <section id="vision" class="alt">
+      <div class="container">
+        <h2 class="section-title">Our Vision</h2>
+        <p class="section-sub">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        <div class="grid cols-3">
+          <div class="card"><h3>Lorem</h3><p class="muted">Lorem ipsum dolor sit amet.</p></div>
+          <div class="card"><h3>Ipsum</h3><p class="muted">Sed ut perspiciatis unde omnis.</p></div>
+          <div class="card"><h3>Dolor</h3><p class="muted">At vero eos et accusamus et iusto.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="container">
+        <div class="footer-box">
+          <div><strong>Lorem ipsum?</strong><br/>Start today.</div>
+          <div class="footer-links">
+            <a class="button primary" href="#">GitHub</a>
+            <a class="button ghost" href="#">Contact</a>
+          </div>
+        </div>
+        <div style="margin-top:22px; display:flex; justify-content:space-between; flex-wrap:wrap">
+          <div>© <span id="y"></span> Cloudbloc</div>
+          <div class="muted">Lorem ipsum dolor sit amet.</div>
+        </div>
+      </div>
+    </footer>
+    <script>document.getElementById('y').textContent=new Date().getFullYear();</script>
+  </body>
+</html>
