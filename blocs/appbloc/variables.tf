@@ -44,3 +44,14 @@ variable "labels" {
 variable "domains" {
   type = list(string)
 }
+
+variable "html_path" {
+  description = "Path to the HTML file to serve (relative to the Terraform root)."
+  type        = string
+  default     = "index.html"
+
+  validation {
+    condition     = length(var.html_path) > 0
+    error_message = "html_path must be a non-empty string."
+  }
+}

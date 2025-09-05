@@ -67,3 +67,9 @@ variable "domains" {
   type    = list(string)
   default = ["cloudbloc.io", "www.cloudbloc.io"]
 }
+
+variable "html_path" {
+  description = "Path to the HTML file to serve (relative to the Terraform root)."
+  type        = string
+  default     = "index.html"
+}
