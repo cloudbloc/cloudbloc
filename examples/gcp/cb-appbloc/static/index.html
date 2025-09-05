@@ -11,7 +11,6 @@
     <meta name="theme-color" content="#5b2aa8" />
 
     <style>
-      /* same styles as before */
       :root{
         --purple:#5b2aa8;
         --purple-700:#4b2290;
@@ -30,56 +29,120 @@
       body{
         font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
         color:var(--fg); background:var(--bg); line-height:1.6;
+        -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
       }
       a{color:inherit; text-decoration:none}
-      img{max-width:100%; display:block}
+      img{max-width:100%; display:block; height:auto}
       .container{width:min(1120px, 92vw); margin:0 auto}
+
+      /* Header & Nav */
       header{background:var(--purple); color:#fff}
-      nav{display:flex; align-items:center; justify-content:space-between; padding:20px 0;}
+      nav{display:flex; align-items:center; justify-content:space-between; padding:16px 0; gap:12px}
       .brand{display:flex; align-items:center; gap:12px}
       .brand img{width:40px; height:40px}
       .brand .name{font-weight:800}
+
       .nav-links{display:flex; gap:24px; font-weight:600; opacity:.95}
       .nav-cta{display:flex; gap:12px; align-items:center}
-      .button{display:inline-block; padding:12px 18px; border-radius:10px; font-weight:700; border:1px solid transparent; transition:.18s ease;}
+      .button{display:inline-flex; align-items:center; justify-content:center; padding:12px 18px; border-radius:10px; font-weight:700; border:1px solid transparent; transition:.18s ease; min-height:44px}
       .button.primary{background:#fff; color:var(--purple)}
       .button.ghost{border-color:rgba(255,255,255,.5); color:#fff}
-      .hero{display:grid; grid-template-columns:1.1fr .9fr; gap:48px; align-items:center; padding:54px 0 88px;}
+
+      /* Mobile menu */
+      .menu-toggle{display:none; appearance:none; background:transparent; border:0; color:#fff; padding:10px; border-radius:10px}
+      .menu-toggle:focus-visible{outline:2px solid #fff; outline-offset:2px}
+      .mobile-panel{display:none; background:var(--purple-700); border-radius:12px; margin-top:10px; padding:12px}
+      .mobile-panel a{display:block; padding:12px; border-radius:8px}
+      .mobile-panel .split{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:8px}
+
+      /* Hero */
+      .hero{display:grid; grid-template-columns:1.1fr .9fr; gap:48px; align-items:center; padding:40px 0 72px}
       .kicker{display:inline-flex; align-items:center; gap:10px; font-weight:700; padding:6px 12px; border-radius:999px; background:rgba(255,255,255,.12);}
-      .hero h1{font-size:clamp(2.2rem, 4vw, 3.2rem);}
-      .hero-card{background:rgba(255,255,255,.12); border-radius:var(--radius); padding:22px;}
-      section{padding:80px 0}
-      .section-title{font-size:1.9rem; margin:0 0 10px}
+      .hero h1{font-size:clamp(1.9rem, 5vw, 3.2rem); margin:12px 0}
+      .hero p{font-size:clamp(1rem, 2.4vw, 1.125rem)}
+      .hero-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+      .hero-card{background:rgba(255,255,255,.12); border-radius:var(--radius); padding:18px}
+
+      section{padding:72px 0}
+      .section-title{font-size:clamp(1.6rem, 2.8vw, 1.9rem); margin:0 0 10px}
       .section-sub{color:var(--muted); margin:0 0 28px}
+
       .grid{display:grid; gap:22px}
       .grid.cols-3{grid-template-columns:repeat(3, 1fr)}
       .card{background:var(--card); border-radius:var(--radius); padding:22px; box-shadow:var(--shadow);}
-      pre{background:#0f1126; color:#e9e9ff; padding:18px; border-radius:12px; overflow:auto;}
+
+      pre{background:#0f1126; color:#e9e9ff; padding:18px; border-radius:12px; overflow:auto; font-size:0.9rem}
       .alt{background:#fff}
+
       footer{padding:40px 0 60px; color:var(--muted)}
-      .footer-box{background:var(--purple-900); color:#fff; border-radius:var(--radius); padding:26px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;}
+      .footer-box{background:var(--purple-900); color:#fff; border-radius:var(--radius); padding:22px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px}
+      .footer-links{display:flex; gap:12px}
+
+      /* MEDIA QUERIES */
+      @media (max-width: 980px){
+        .hero{grid-template-columns:1fr; gap:24px; padding:28px 0 56px}
+        .hero-grid{grid-template-columns:1fr;}
+      }
+      @media (max-width: 860px){
+        .nav-links,.nav-cta{display:none}
+        .menu-toggle{display:inline-flex}
+        .mobile-panel.open{display:block}
+      }
+      @media (max-width: 760px){
+        section{padding:56px 0}
+        .grid.cols-3{grid-template-columns:repeat(2, 1fr)}
+      }
+      @media (max-width: 520px){
+        .grid.cols-3{grid-template-columns:1fr}
+        .button{width:100%}
+        .mobile-panel .split{grid-template-columns:1fr}
+      }
+
+      @media (prefers-reduced-motion: reduce){
+        *{scroll-behavior:auto}
+        .button{transition:none}
+      }
     </style>
   </head>
 
   <body>
     <header>
       <div class="container">
-        <nav>
+        <nav aria-label="Main">
           <div class="brand">
             <img src="logo.png" alt="Cloudbloc cube logo" />
-            <div class="name">Cloudbloc</div>
+            <div class="name" aria-label="Cloudbloc">Cloudbloc</div>
           </div>
-          <div class="nav-links">
+
+          <div class="nav-links" role="navigation" aria-label="Primary">
             <a href="#why">Why</a>
             <a href="#blocs">Blocs</a>
             <a href="#vision">Vision</a>
-            <a href="https://github.com/cloudbloc-io">GitHub</a>
+            <a href="https://github.com/cloudbloc-io" target="_blank" rel="noopener">GitHub</a>
           </div>
           <div class="nav-cta">
-            <a class="button ghost" href="https://github.com/cloudbloc-io">Star</a>
+            <a class="button ghost" href="https://github.com/cloudbloc-io" target="_blank" rel="noopener" aria-label="Star on GitHub">Star</a>
             <a class="button primary" href="#get-started">Get started</a>
           </div>
+
+          <button class="menu-toggle" id="menuToggle" aria-controls="mobilePanel" aria-expanded="false" aria-label="Open menu">
+            <svg width="26" height="22" viewBox="0 0 24 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="0" y="0" width="24" height="2" rx="1" fill="currentColor"/>
+              <rect x="0" y="8" width="24" height="2" rx="1" fill="currentColor"/>
+              <rect x="0" y="16" width="24" height="2" rx="1" fill="currentColor"/>
+            </svg>
+          </button>
         </nav>
+
+        <div id="mobilePanel" class="mobile-panel" aria-label="Mobile menu">
+          <a href="#why">Why</a>
+          <a href="#blocs">Blocs</a>
+          <a href="#vision">Vision</a>
+          <div class="split">
+            <a class="button ghost" href="https://github.com/cloudbloc-io" target="_blank" rel="noopener">Star</a>
+            <a class="button primary" href="#get-started">Get started</a>
+          </div>
+        </div>
 
         <div class="hero">
           <div>
@@ -90,10 +153,11 @@
               Sed cursus ante dapibus diam.
             </p>
           </div>
-          <div class="hero-grid">
+          <div class="hero-grid" aria-label="Highlights">
             <div class="hero-card"><strong>Lorem ipsum</strong><br/>Dolor sit amet, consectetur.</div>
             <div class="hero-card"><strong>Sed ut perspiciatis</strong><br/>Unde omnis iste natus error.</div>
             <div class="hero-card"><strong>Nemo enim ipsam</strong><br/>Quia voluptas sit aspernatur aut odit aut fugit.</div>
+            <div class="hero-card"><strong>At vero eos</strong><br/>Et accusamus et iusto odio dignissimos.</div>
           </div>
         </div>
       </div>
@@ -130,7 +194,8 @@
         <pre><code># Example
 module "example" {
   source  = "github.com/example/module"
-}</code></pre>
+}
+</code></pre>
       </div>
     </section>
 
@@ -155,12 +220,29 @@ module "example" {
             <a class="button ghost" href="#">Contact</a>
           </div>
         </div>
-        <div style="margin-top:22px; display:flex; justify-content:space-between; flex-wrap:wrap">
+        <div style="margin-top:22px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px">
           <div>© <span id="y"></span> Cloudbloc</div>
           <div class="muted">Lorem ipsum dolor sit amet.</div>
         </div>
       </div>
     </footer>
-    <script>document.getElementById('y').textContent=new Date().getFullYear();</script>
+
+    <script>
+      document.getElementById('y').textContent=new Date().getFullYear();
+
+      const btn = document.getElementById('menuToggle');
+      const panel = document.getElementById('mobilePanel');
+      btn.addEventListener('click', () => {
+        const open = panel.classList.toggle('open');
+        btn.setAttribute('aria-expanded', String(open));
+        btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      });
+
+      panel.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+        panel.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+        btn.setAttribute('aria-label', 'Open menu');
+      }));
+    </script>
   </body>
 </html>
