@@ -6,5 +6,12 @@ module "obsbloc" {
   domains      = var.domains
 
   # Existing Cloud DNS managed zone NAME (e.g., google_dns_managed_zone.cloudbloc.name)
-  zone_name = var.zone_name
+  zone_name         = var.zone_name
+  cloudarmor_policy = module.obsbloc_armor.policy_name
+}
+
+module "obsbloc_armor" {
+  source      = "../../../modules/cloudarmor"
+  name        = "${var.app_name}-armor"
+  description = "Cloud Armor for ObsBloc Grafana"
 }
