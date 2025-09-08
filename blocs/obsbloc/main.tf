@@ -222,6 +222,17 @@ resource "kubernetes_deployment" "grafana" {
       }
     }
   }
+
+  lifecycle {
+    ignore_changes = [
+      metadata[0].annotations["autopilot.gke.io/resource-adjustment"],
+      metadata[0].annotations["autopilot.gke.io/warden-version"],
+      spec[0].template[0].spec[0].container[0].resources,
+      spec[0].template[0].spec[0].security_context,
+      spec[0].template[0].spec[0].container[0].security_context,
+      spec[0].template[0].spec[0].toleration,
+    ]
+  }
 }
 
 resource "kubernetes_service" "grafana" {
@@ -243,6 +254,12 @@ resource "kubernetes_service" "grafana" {
       target_port = 3000
       protocol    = "TCP"
     }
+  }
+
+  lifecycle {
+    ignore_changes = [
+      metadata[0].annotations["cloud.google.com/neg-status"],
+    ]
   }
 }
 
@@ -381,6 +398,16 @@ resource "kubernetes_deployment" "prometheus" {
         }
       }
     }
+  }
+  lifecycle {
+    ignore_changes = [
+      metadata[0].annotations["autopilot.gke.io/resource-adjustment"],
+      metadata[0].annotations["autopilot.gke.io/warden-version"],
+      spec[0].template[0].spec[0].container[0].resources,
+      spec[0].template[0].spec[0].security_context,
+      spec[0].template[0].spec[0].container[0].security_context,
+      spec[0].template[0].spec[0].toleration,
+    ]
   }
 }
 

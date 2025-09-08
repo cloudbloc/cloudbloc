@@ -53,3 +53,17 @@ variable "zone_name" {
     error_message = "zone_name must be a non-empty managed zone NAME."
   }
 }
+
+# Optional: name of an existing Cloud Armor policy to attach
+variable "cloudarmor_policy" {
+  description = "Cloud Armor security policy name to attach to the GCE Ingress"
+  type        = string
+  default     = null
+}
+
+# Optional: let callers add any extra annotations
+variable "extra_ingress_annotations" {
+  description = "Additional annotations to merge into the Ingress"
+  type        = map(string)
+  default     = {}
+}

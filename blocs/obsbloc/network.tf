@@ -1,5 +1,19 @@
 # Global static IP + ManagedCertificate + Ingress
 
+locals {
+  base_annotations = {
+    "kubernetes.io/ingress.class"                 = "gce"
+    "kubernetes.io/ingress.allow-http"            = "true" # allow listener so it can redirect
+    "kubernetes.io/ingress.global-static-ip-name" = var.edge_ip_name
+    "networking.gke.io/managed-certificates"      = kubernetes_manifest.managed_cert.manifest.metadata.name
+    "networking.gke.io/v1beta1.FrontendConfig"    = kubernetes_manifest.obsbloc_frontendconfig.manifest.metadata.name
+  }
+
+  armor_annotation = var.cloudarmor_policy == null ? {} : {
+    "gcp.cloud.google.com/security-policy" = var.cloudarmor_policy
+  }
+}
+
 # Reserve a global static IP for the Ingress
 resource "google_compute_global_address" "edge_ip" {
   name = var.edge_ip_name
@@ -28,13 +42,11 @@ resource "kubernetes_ingress_v1" "grafana" {
   metadata {
     name      = "${var.app_name}-ingress"
     namespace = kubernetes_namespace.namespace.metadata[0].name
-    annotations = {
-      "kubernetes.io/ingress.class"                 = "gce"
-      "kubernetes.io/ingress.allow-http"            = "true" # allow listener so it can redirect
-      "kubernetes.io/ingress.global-static-ip-name" = var.edge_ip_name
-      "networking.gke.io/managed-certificates"      = kubernetes_manifest.managed_cert.manifest.metadata.name
-      "networking.gke.io/v1beta1.FrontendConfig"    = kubernetes_manifest.obsbloc_frontendconfig.manifest.metadata.name
-    }
+    annotations = merge(
+      local.base_annotations,
+      local.armor_annotation,
+      var.extra_ingress_annotations
+    )
   }
 
   spec {

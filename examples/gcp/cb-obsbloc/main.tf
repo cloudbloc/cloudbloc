@@ -6,5 +6,6 @@ module "obsbloc" {
   domains      = var.domains
 
   # Existing Cloud DNS managed zone NAME (e.g., google_dns_managed_zone.cloudbloc.name)
-  zone_name = var.zone_name
+  zone_name         = var.zone_name
+  cloudarmor_policy = var.security_policy_name
 }
