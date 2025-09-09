@@ -50,6 +50,16 @@ variable "domains" {
   default = ["obsbloc.cloudbloc.io", "www.obsbloc.cloudbloc.io"]
 }
 
+variable "enable_searchbloc" {
+  type    = bool
+  default = false
+}
+
+variable "searchbloc_domains" {
+  type    = list(string)
+  default = ["searchbloc.cloudbloc.io", "www.searchbloc.cloudbloc.io"]
+}
+
 variable "replicas" {
   description = "Grafana replicas"
   type        = number
@@ -65,5 +75,5 @@ variable "zone_name" {
 variable "security_policy_name" {
   type        = string
   description = "Cloud Armor security policy name to attach to the Ingress"
-  default = "edge-armor-shared"
+  default     = "edge-armor-shared"
 }
