@@ -1,3 +1,47 @@
+locals {
+  dashboards_checksum = sha256(jsonencode(local.effective_dashboards_json))
+  effective_dashboards_json = length(var.dashboards_json) > 0 ? var.dashboards_json : {
+    "k8s-overview.json" = <<-EOT
+    {
+      "id": null,
+      "uid": "k8s-overview-auto",
+      "title": "Kubernetes / Prometheus Overview",
+      "timezone": "browser",
+      "schemaVersion": 38,
+      "version": 1,
+      "refresh": "30s",
+      "panels": [
+        {
+          "type": "stat",
+          "title": "Targets Up",
+          "gridPos": { "h": 6, "w": 6, "x": 0, "y": 0 },
+          "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
+          "targets": [{ "expr": "count(up)", "legendFormat": "up" }]
+        },
+        {
+          "type": "timeseries",
+          "title": "Up by Job",
+          "gridPos": { "h": 10, "w": 12, "x": 6, "y": 0 },
+          "targets": [{ "expr": "sum by(job) (up)", "legendFormat": "{{job}}" }]
+        },
+        {
+          "type": "table",
+          "title": "Scrape Durations (p95)",
+          "gridPos": { "h": 8, "w": 18, "x": 0, "y": 10 },
+          "options": { "showHeader": true },
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.95, sum by(job, le) (rate(scrape_duration_seconds_bucket[5m])))",
+              "legendFormat": "{{job}}"
+            }
+          ]
+        }
+      ]
+    }
+    EOT
+  }
+}
+
 resource "kubernetes_namespace" "namespace" {
   metadata { name = var.namespace }
 }
@@ -44,67 +88,29 @@ resource "kubernetes_config_map" "grafana_dashboard_provider" {
   }
   data = {
     "provider.yaml" = <<-EOT
-      apiVersion: 1
-      providers:
-        - name: 'default'
-          orgId: 1
-          folder: ''
-          type: file
-          disableDeletion: true
-          editable: false
-          updateIntervalSeconds: 30
-          options:
-            path: /etc/grafana/provisioning/dashboards
+    apiVersion: 1
+    providers:
+      - name: 'default'
+        orgId: 1
+        folder: ''
+        type: file
+        allowUiUpdates: false
+        updateIntervalSeconds: 30
+        options:
+          path: /var/lib/grafana/dashboards
+          foldersFromFilesStructure: false
     EOT
   }
 }
 
 # A tiny default dashboard so first load isn't empty
-resource "kubernetes_config_map" "grafana_dashboard" {
+resource "kubernetes_config_map" "grafana_dashboards" {
   metadata {
-    name      = "grafana-dashboard"
+    name      = "grafana-dashboards"
     namespace = kubernetes_namespace.namespace.metadata[0].name
   }
-  data = {
-    "k8s-overview.json" = <<-EOT
-      {
-        "id": null,
-        "uid": "k8s-overview-auto",
-        "title": "Kubernetes / Prometheus Overview",
-        "timezone": "browser",
-        "schemaVersion": 38,
-        "version": 1,
-        "refresh": "30s",
-        "panels": [
-          {
-            "type": "stat",
-            "title": "Targets Up",
-            "gridPos": { "h": 6, "w": 6, "x": 0, "y": 0 },
-            "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
-            "targets": [{ "expr": "count(up)", "legendFormat": "up" }]
-          },
-          {
-            "type": "timeseries",
-            "title": "Up by Job",
-            "gridPos": { "h": 10, "w": 12, "x": 6, "y": 0 },
-            "targets": [{ "expr": "sum by(job) (up)", "legendFormat": "{{job}}" }]
-          },
-          {
-            "type": "table",
-            "title": "Scrape Durations (p95)",
-            "gridPos": { "h": 8, "w": 18, "x": 0, "y": 10 },
-            "options": { "showHeader": true },
-            "targets": [
-              {
-                "expr": "histogram_quantile(0.95, sum by(job, le) (rate(scrape_duration_seconds_bucket[5m])))",
-                "legendFormat": "{{job}}"
-              }
-            ]
-          }
-        ]
-      }
-    EOT
-  }
+
+  data = local.effective_dashboards_json
 }
 
 resource "kubernetes_deployment" "grafana" {
@@ -120,7 +126,12 @@ resource "kubernetes_deployment" "grafana" {
     selector { match_labels = { app = var.app_name } }
 
     template {
-      metadata { labels = merge({ app = var.app_name }, var.labels) }
+      metadata {
+        labels = merge({ app = var.app_name }, var.labels)
+        annotations = {
+          "cloudbloc.io/dashboards-checksum" = local.dashboards_checksum
+        }
+      }
 
       spec {
         container {
@@ -193,9 +204,8 @@ resource "kubernetes_deployment" "grafana" {
 
           # Default dashboard JSON
           volume_mount {
-            name       = "grafana-dashboard"
-            mount_path = "/etc/grafana/provisioning/dashboards/k8s-overview.json"
-            sub_path   = "k8s-overview.json"
+            name       = "grafana-dashboards"
+            mount_path = "/var/lib/grafana/dashboards"
             read_only  = true
           }
         }
@@ -216,8 +226,8 @@ resource "kubernetes_deployment" "grafana" {
         }
 
         volume {
-          name = "grafana-dashboard"
-          config_map { name = kubernetes_config_map.grafana_dashboard.metadata[0].name }
+          name = "grafana-dashboards"
+          config_map { name = kubernetes_config_map.grafana_dashboards.metadata[0].name }
         }
       }
     }

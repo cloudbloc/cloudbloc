@@ -1,0 +1,109 @@
+{
+    "id": null,
+    "uid": "prom-internals-auto",
+    "title": "Prometheus · Internals & SLOs",
+    "timezone": "browser",
+    "schemaVersion": 39,
+    "version": 1,
+    "refresh": "30s",
+    "time": { "from": "now-24h", "to": "now" },
+    "panels": [
+      {
+        "type": "timeseries",
+        "title": "Samples Ingested (rate)",
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 1 },
+        "targets": [
+          { "expr": "sum(rate(scrape_samples_scraped[5m]))", "legendFormat": "samples/s" }
+        ]
+      },
+      {
+        "type": "timeseries",
+        "title": "Failed Scrapes",
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 1 },
+        "targets": [
+          {
+            "expr": "sum(rate(scrape_samples_post_metric_relabeling[5m])) - sum(rate(scrape_samples_scraped[5m]))",
+            "legendFormat": "dropped"
+          }
+        ]
+      },
+      {
+        "type": "timeseries",
+        "title": "Query Duration (p90)",
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 10 },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.90, sum by (le) (rate(prometheus_engine_query_duration_seconds_bucket[5m])))",
+            "legendFormat": "p90"
+          }
+        ]
+      },
+      {
+        "type": "timeseries",
+        "title": "Query Failures (rate)",
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 10 },
+        "targets": [
+          {
+            "expr": "sum(rate(prometheus_engine_query_duration_seconds_count{status=\"error\"}[5m]))",
+            "legendFormat": "errors/s"
+          }
+        ]
+      },
+      {
+        "type": "timeseries",
+        "title": "Head Series & Chunks",
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 19 },
+        "targets": [
+          { "expr": "prometheus_tsdb_head_series", "legendFormat": "series" },
+          { "expr": "prometheus_tsdb_head_chunks", "legendFormat": "chunks" }
+        ]
+      },
+      {
+        "type": "timeseries",
+        "title": "Compaction Duration (p95)",
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 19 },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, sum by (le) (rate(prometheus_tsdb_compaction_duration_seconds_bucket[15m])))",
+            "legendFormat": "p95"
+          }
+        ]
+      },
+      {
+        "type": "timeseries",
+        "title": "Targets by Job",
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 28 },
+        "targets": [{ "expr": "sum by(job) (up)", "legendFormat": "{{job}}" }]
+      },
+      {
+        "type": "timeseries",
+        "title": "Time Series Churn (approx.)",
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 28 },
+        "targets": [
+          {
+            "expr": "sum(increase(prometheus_tsdb_head_series_created_total[15m])) - sum(increase(prometheus_tsdb_head_series_removed_total[15m]))",
+            "legendFormat": "net created (15m)"
+          }
+        ]
+      },
+      {
+        "type": "timeseries",
+        "title": "Rule Eval Duration by Group",
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 37 },
+        "targets": [
+          { "expr": "max by(rule_group) (prometheus_rule_group_last_duration_seconds)", "legendFormat": "{{rule_group}}" }
+        ]
+      },
+      {
+        "type": "timeseries",
+        "title": "Time Since Last Eval",
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 37 },
+        "targets": [
+          {
+            "expr": "max by(rule_group) (time() - prometheus_rule_group_last_evaluation_timestamp_seconds)",
+            "legendFormat": "{{rule_group}}"
+          }
+        ]
+      }
+    ]
+  }

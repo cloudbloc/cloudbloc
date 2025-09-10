@@ -1,0 +1,138 @@
+{
+    "id": null,
+    "uid": "k8s-overview-auto",
+    "title": "Kubernetes · Prometheus Overview",
+    "timezone": "browser",
+    "schemaVersion": 39,
+    "version": 1,
+    "refresh": "30s",
+    "time": { "from": "now-6h", "to": "now" },
+    "panels": [
+      {
+        "type": "row",
+        "title": "Availability",
+        "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 }
+      },
+      {
+        "type": "stat",
+        "title": "Targets Up",
+        "gridPos": { "h": 6, "w": 6, "x": 0, "y": 1 },
+        "options": {
+          "reduceOptions": { "calcs": ["lastNotNull"] },
+          "colorMode": "value"
+        },
+        "targets": [{ "expr": "count(up == 1)", "legendFormat": "up" }]
+      },
+      {
+        "type": "stat",
+        "title": "Targets Down",
+        "gridPos": { "h": 6, "w": 6, "x": 6, "y": 1 },
+        "options": {
+          "reduceOptions": { "calcs": ["lastNotNull"] },
+          "colorMode": "value"
+        },
+        "targets": [{ "expr": "count(up == 0)", "legendFormat": "down" }]
+      },
+      {
+        "type": "timeseries",
+        "title": "Up by Job",
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 1 },
+        "targets": [{ "expr": "sum by(job) (up)", "legendFormat": "{{job}}" }]
+      },
+      {
+        "type": "table",
+        "title": "Down Targets (live)",
+        "gridPos": { "h": 7, "w": 24, "x": 0, "y": 7 },
+        "targets": [{ "expr": "up == 0", "legendFormat": "{{job}} {{instance}}" }]
+      },
+      {
+        "type": "timeseries",
+        "title": "Scrape Duration p95 by Job",
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 15 },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, sum by (job, le) (rate(scrape_duration_seconds_bucket[5m])))",
+            "legendFormat": "{{job}}"
+          }
+        ]
+      },
+      {
+        "type": "timeseries",
+        "title": "Sample Ingestion Rate (samples/s)",
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 15 },
+        "targets": [
+          {
+            "expr": "sum(rate(scrape_samples_scraped[5m]))",
+            "legendFormat": "total"
+          }
+        ]
+      },
+      {
+        "type": "timeseries",
+        "title": "Scrape Intervals (p50/p95)",
+        "gridPos": { "h": 7, "w": 24, "x": 0, "y": 23 },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.50, sum by (le) (rate(prometheus_target_interval_length_seconds_bucket[5m])))",
+            "legendFormat": "p50"
+          },
+          {
+            "expr": "histogram_quantile(0.95, sum by (le) (rate(prometheus_target_interval_length_seconds_bucket[5m])))",
+            "legendFormat": "p95"
+          }
+        ]
+      },
+      {
+        "type": "timeseries",
+        "title": "Query Duration (p50/p95/p99)",
+        "gridPos": { "h": 8, "w": 16, "x": 0, "y": 31 },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.50, sum by (le) (rate(prometheus_engine_query_duration_seconds_bucket[5m])))",
+            "legendFormat": "p50"
+          },
+          {
+            "expr": "histogram_quantile(0.95, sum by (le) (rate(prometheus_engine_query_duration_seconds_bucket[5m])))",
+            "legendFormat": "p95"
+          },
+          {
+            "expr": "histogram_quantile(0.99, sum by (le) (rate(prometheus_engine_query_duration_seconds_bucket[5m])))",
+            "legendFormat": "p99"
+          }
+        ]
+      },
+      {
+        "type": "stat",
+        "title": "Active Queries (approx)",
+        "gridPos": { "h": 8, "w": 8, "x": 16, "y": 31 },
+        "targets": [
+          { "expr": "sum(rate(prometheus_engine_queries[5m]))", "legendFormat": "qps" }
+        ]
+      },
+      {
+        "type": "timeseries",
+        "title": "Head Series",
+        "gridPos": { "h": 8, "w": 8, "x": 0, "y": 40 },
+        "targets": [{ "expr": "prometheus_tsdb_head_series", "legendFormat": "series" }]
+      },
+      {
+        "type": "timeseries",
+        "title": "WAL Fsync Dur (p95)",
+        "gridPos": { "h": 8, "w": 8, "x": 8, "y": 40 },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, sum by (le) (rate(prometheus_tsdb_wal_fsync_duration_seconds_bucket[5m])))",
+            "legendFormat": "p95"
+          }
+        ]
+      },
+      {
+        "type": "stat",
+        "title": "Compactions (5m)",
+        "gridPos": { "h": 8, "w": 8, "x": 16, "y": 40 },
+        "targets": [
+          { "expr": "sum(increase(prometheus_tsdb_compactions_total[5m]))", "legendFormat": "compactions" }
+        ]
+      }
+    ]
+  }

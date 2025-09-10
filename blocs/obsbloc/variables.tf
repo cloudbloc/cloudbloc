@@ -34,7 +34,7 @@ variable "domains" {
 variable "grafana_image" {
   description = "Grafana container image"
   type        = string
-  default     = "grafana/grafana:latest"
+  default     = "grafana/grafana:10.4.5"
 }
 
 variable "prometheus_image" {
@@ -86,4 +86,10 @@ variable "searchbloc_service" {
 variable "searchbloc_port" {
   type    = number
   default = 80 # fronted port
+}
+
+variable "dashboards_json" {
+  description = "Map of filename -> dashboard JSON. If empty, a tiny default is created."
+  type        = map(string)
+  default     = {}
 }
