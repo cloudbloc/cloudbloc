@@ -77,3 +77,9 @@ variable "security_policy_name" {
   description = "Cloud Armor security policy name to attach to the Ingress"
   default     = "edge-armor-shared"
 }
+
+variable "dashboards_json" {
+  description = "Map of filename -> dashboard JSON. If empty, a tiny default is created."
+  type        = map(string)
+  default     = {}
+}
