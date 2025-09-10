@@ -356,7 +356,6 @@ resource "kubernetes_deployment" "meili" {
     ignore_changes = [
       metadata[0].annotations["autopilot.gke.io/resource-adjustment"],
       metadata[0].annotations["autopilot.gke.io/warden-version"],
-      spec[0].template[0].metadata[0].annotations,
 
       # pod-level
       spec[0].template[0].spec[0].toleration,
