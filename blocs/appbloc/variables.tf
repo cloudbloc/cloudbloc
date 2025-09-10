@@ -55,3 +55,17 @@ variable "html_path" {
     error_message = "html_path must be a non-empty string."
   }
 }
+
+# Optional: name of an existing Cloud Armor policy to attach
+variable "cloudarmor_policy" {
+  description = "Cloud Armor security policy name to attach to the GCE Ingress"
+  type        = string
+  default     = null
+}
+
+# Optional: let callers add any extra annotations
+variable "extra_ingress_annotations" {
+  description = "Additional annotations to merge into the Ingress"
+  type        = map(string)
+  default     = {}
+}

@@ -352,6 +352,27 @@ resource "kubernetes_deployment" "meili" {
     }
   }
 
+  lifecycle {
+    ignore_changes = [
+      metadata[0].annotations["autopilot.gke.io/resource-adjustment"],
+      metadata[0].annotations["autopilot.gke.io/warden-version"],
+      spec[0].template[0].metadata[0].annotations,
+
+      # pod-level
+      spec[0].template[0].spec[0].toleration,
+      spec[0].template[0].spec[0].security_context[0].seccomp_profile,
+
+      # containers
+      spec[0].template[0].spec[0].container[0].resources,
+      spec[0].template[0].spec[0].container[0].security_context, # meilisearch
+      spec[0].template[0].spec[0].container[1].security_context, # ui
+
+      # init containers
+      spec[0].template[0].spec[0].init_container[0].security_context, # prepare-data
+      spec[0].template[0].spec[0].init_container[1].security_context, # render-ui
+    ]
+  }
+
   # ensure PVC exists before scheduling pods
   depends_on = [
     kubernetes_persistent_volume_claim.data
@@ -381,5 +402,10 @@ resource "kubernetes_service" "meili" {
     }
 
     type = "ClusterIP"
+  }
+  lifecycle {
+    ignore_changes = [
+      metadata[0].annotations["cloud.google.com/neg-status"],
+    ]
   }
 }
