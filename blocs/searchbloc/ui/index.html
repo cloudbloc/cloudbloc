@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>SearchBloc · Cloudbloc</title>
+  <meta name="color-scheme" content="dark light">
+  <style>
+    :root{
+      --purple:#6C3AF5;           /* Cloudbloc primary */
+      --purple-2:#8E67FF;         /* accent */
+      --bg:#0f0f15;
+      --card:#151524cc;           /* glass */
+      --text:#e9e9f2;
+      --muted:#a7a7bc;
+      --border:#2a2a3b;
+      --ok:#1dd1a1;
+      --err:#ff6b6b;
+      --radius:16px;
+      --shadow:0 20px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 900px at 10% -10%, #2b1a87 0%, transparent 60%),
+        radial-gradient(900px 900px at 120% -20%, #3910af 0%, transparent 55%),
+        linear-gradient(180deg,#0b0b12 0%, #0f0f15 100%);
+      min-height:100%;
+    }
+
+    .wrap{max-width:1100px;margin:0 auto;padding:32px 20px 64px}
+
+    /* Header */
+    .nav{
+      display:flex;align-items:center;justify-content:space-between;margin-bottom:28px
+    }
+    .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text)}
+    .logo{
+      width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--purple),var(--purple-2));
+      display:grid;place-items:center;box-shadow:0 6px 18px rgba(108,58,245,.45);
+    }
+    .logo svg{width:22px;height:22px;fill:white}
+    .brand b{font-size:18px;letter-spacing:.2px}
+    .chip{
+      font-size:12px;color:#fff;background:#00000033;border:1px solid #ffffff22;padding:6px 10px;border-radius:999px
+    }
+
+    /* Hero */
+    .hero{
+      display:grid;gap:10px;margin:12px 0 22px;
+    }
+    .title{font-size:36px;line-height:1.15;font-weight:800;letter-spacing:.2px}
+    .subtitle{color:var(--muted);max-width:760px}
+
+    /* Card */
+    .card{
+      background:var(--card);backdrop-filter: blur(8px);
+      border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow);
+      padding:18px;
+    }
+
+    /* Search bar */
+    .searchbar{
+      display:grid;grid-template-columns: 1fr 2.2fr auto;gap:10px
+    }
+    .input, .select{
+      background:#0d0d14;border:1px solid var(--border);color:var(--text);
+      padding:12px 14px;border-radius:12px;outline:none;
+    }
+    .input::placeholder{color:#8585a5}
+    .btn{
+      padding:12px 18px;border-radius:12px;border:0;cursor:pointer;
+      background:linear-gradient(135deg,var(--purple),var(--purple-2));
+      color:#fff;font-weight:700;letter-spacing:.2px;box-shadow:0 10px 20px rgba(108,58,245,.45);
+      transition:transform .06s ease;
+    }
+    .btn:active{transform:translateY(1px)}
+
+    /* Toolbar */
+    .toolbar{
+      display:flex;align-items:center;justify-content:space-between;margin-top:12px;gap:10px;flex-wrap:wrap
+    }
+    .meta{font-size:13px;color:var(--muted)}
+    .key{
+      font-size:12px;color:#ffffffcc;background:#ffffff14;border:1px dashed #ffffff30;padding:6px 10px;border-radius:10px
+    }
+
+    /* Results */
+    .results{margin-top:16px;display:grid;gap:10px}
+    .item{
+      background:#0c0c13;border:1px solid var(--border);border-radius:14px;padding:14px;
+      transition:border-color .2s ease, background .2s ease;
+    }
+    .item:hover{border-color:#403a8a;background:#0d0d18}
+    .hit-title{font-weight:800;margin:0 0 4px;font-size:18px}
+    .hit-title em{background:linear-gradient(90deg,#6c3af520,#8e67ff26);padding:0 3px;border-radius:6px;font-style:normal}
+    .snippet{color:#cfd0e6;margin:0}
+    .snippet em{background:#8e67ff2b;border-radius:6px;padding:0 3px;font-style:normal}
+    .attrs{margin-top:8px;display:flex;gap:8px;flex-wrap:wrap}
+    .badge{font-size:11px;color:#d7cffb;background:#2a215b;border:1px solid #3b2b8a;padding:4px 8px;border-radius:999px}
+
+    /* Empty / error / loader */
+    .empty,.error,.loader{margin:18px 0;color:var(--muted)}
+    .error{color:var(--err);white-space:pre-wrap}
+    .loader{display:flex;align-items:center;gap:10px}
+    .dot{width:8px;height:8px;border-radius:50%;background:var(--purple);
+         animation: pulse .9s infinite alternate}
+    .dot:nth-child(2){animation-delay:.12s}.dot:nth-child(3){animation-delay:.24s}
+    @keyframes pulse{to{opacity:.35;transform:scale(.7)}}
+
+    /* Footer */
+    .foot{margin-top:28px;color:var(--muted);font-size:12px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    a{color:#c9b7ff;text-decoration:none} a:hover{text-decoration:underline}
+
+    @media (max-width:860px){
+      .searchbar{grid-template-columns: 1fr; }
+      .title{font-size:28px}
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/meilisearch@0.41.0/dist/bundles/meilisearch.umd.min.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <header class="nav">
+      <a class="brand" href="#">
+        <span class="logo" aria-hidden="true">
+          <!-- cube mark -->
+          <svg viewBox="0 0 24 24"><path d="M12 2 3 6.5v11L12 22l9-4.5v-11L12 2Zm0 2.2 6.8 3.4L12 11 5.2 7.6 12 4.2ZM5 9.3l6 3v7.2l-6-3V9.3Zm14 0v7.2l-6 3V12.3l6-3Z"/></svg>
+        </span>
+        <b>Cloudbloc</b>
+      </a>
+      <span class="chip">SearchBloc Demo</span>
+    </header>
+
+    <section class="hero">
+      <div class="title">Lightning-fast search, <span style="background:linear-gradient(90deg,var(--purple),var(--purple-2));-webkit-background-clip:text;background-clip:text;color:transparent">Cloudbloc style</span>.</div>
+      <p class="subtitle">A sleek, production-ready front end for Meilisearch running behind <code>/api</code>. Paste an index, type your query, and feel the snap.</p>
+    </section>
+
+    <section class="card" role="search" aria-label="SearchBloc">
+      <div class="searchbar">
+        <input id="index" class="input" placeholder="Index name (e.g. logs)" autocomplete="off"/>
+        <input id="q" class="input" placeholder="Type to search…" autocomplete="off"/>
+        <button id="go" class="btn" aria-label="Run search">Search</button>
+      </div>
+
+      <div class="toolbar">
+        <div class="meta" id="meta">Ready.</div>
+        <div class="key">PUBLIC_SEARCH_KEY: <code id="keyIndicator">(empty)</code></div>
+      </div>
+
+      <div class="results" id="results"></div>
+      <div class="empty" id="empty" style="display:none">No results yet. Try a different query.</div>
+      <div class="error" id="err" role="alert" style="display:none"></div>
+      <div class="loader" id="loader" style="display:none"><span class="dot"></span><span class="dot"></span><span class="dot"></span> Searching…</div>
+
+      <div class="toolbar" id="pager" style="display:none">
+        <button class="btn" id="prev">← Prev</button>
+        <div class="meta" id="pageinfo"></div>
+        <button class="btn" id="next">Next →</button>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <span>Powered by Meilisearch · proxied at <code>/api</code></span>
+      <span>Tip: Use a <b>public search key</b>, never your master key.</span>
+    </footer>
+  </div>
+
+  <script>
+    // ---------- Config ----------
+    const API_BASE = "/api";
+    // Replaced externally (sed/env) in your init:
+    const PUBLIC_SEARCH_KEY = "__PUBLIC_SEARCH_KEY__";
+
+    // ---------- Client ----------
+    const client = new MeiliSearch({
+      host: window.location.origin + API_BASE,
+      apiKey: PUBLIC_SEARCH_KEY || undefined
+    });
+
+    // ---------- Elements ----------
+    const $ = (id) => document.getElementById(id);
+    const elIndex = $('index'), elQ = $('q'), elGo = $('go');
+    const elRes = $('results'), elErr = $('err'), elEmpty = $('empty');
+    const elMeta = $('meta'), elKey = $('keyIndicator');
+    const elLoader = $('loader');
+    const elPager = $('pager'), elPrev = $('prev'), elNext = $('next'), elPageInfo = $('pageinfo');
+
+    elKey.textContent = PUBLIC_SEARCH_KEY ? '(set)' : '(empty)';
+
+    // Persist last index/query
+    elIndex.value = localStorage.getItem('sb.index') || '';
+    elQ.value = localStorage.getItem('sb.q') || '';
+
+    let state = { page: 1, perPage: 20, lastQuery: '', lastIndex: '' };
+
+    function setLoading(v){
+      elLoader.style.display = v ? 'flex' : 'none';
+      elGo.disabled = !!v;
+    }
+    function setError(msg){
+      elErr.textContent = msg || '';
+      elErr.style.display = msg ? 'block' : 'none';
+    }
+    function setEmpty(v){ elEmpty.style.display = v ? 'block' : 'none'; }
+    function setPager(total, page, per) {
+      const pages = Math.max(1, Math.ceil(total / per));
+      elPager.style.display = total > per ? 'flex' : 'none';
+      elPrev.disabled = page <= 1;
+      elNext.disabled = page >= pages;
+      elPageInfo.textContent = `Page ${page} of ${pages} · ${total.toLocaleString()} results`;
+    }
+
+    function renderHits(hits) {
+      elRes.innerHTML = hits.map(h => {
+        const f = h._formatted || {};
+        const t = (f.title || f.name || h.title || h.name || 'Untitled');
+        // pick a snippet-ish field:
+        const snippet = f.overview || f.description || f.summary || f.content || '';
+        const attrs = [];
+        if (h.score != null) attrs.push(`<span class="badge">score: ${h.score}</span>`);
+        if (h.release_date) attrs.push(`<span class="badge">${h.release_date}</span>`);
+        if (h.category) attrs.push(`<span class="badge">${h.category}</span>`);
+        return `
+          <article class="item">
+            <h3 class="hit-title">${t}</h3>
+            ${snippet ? `<p class="snippet">${snippet}</p>` : ''}
+            ${attrs.length ? `<div class="attrs">${attrs.join('')}</div>` : ''}
+          </article>
+        `;
+      }).join('');
+    }
+
+    async function runSearch(page=1){
+      setError(''); setEmpty(false); setLoading(true); elRes.innerHTML = '';
+      const idx = elIndex.value.trim();
+      const q = elQ.value || '';
+      if (!idx){ setLoading(false); setError('Enter an index name.'); return; }
+
+      localStorage.setItem('sb.index', idx);
+      localStorage.setItem('sb.q', q);
+
+      const offset = (page-1)*state.perPage;
+      try {
+        const index = client.index(idx);
+        const res = await index.search(q, {
+          limit: state.perPage,
+          offset,
+          attributesToHighlight: ['*'],
+          highlightPreTag: '<em>',
+          highlightPostTag: '</em>',
+        });
+
+        elMeta.textContent = `Fetched in ${res.processingTimeMs} ms`;
+        state.page = page; state.lastQuery = q; state.lastIndex = idx;
+
+        if (!res.hits?.length){
+          setEmpty(true);
+          setPager(0, 1, state.perPage);
+        } else {
+          renderHits(res.hits);
+          setPager(res.estimatedTotalHits ?? res.totalHits ?? res.hits.length, page, state.perPage);
+        }
+      } catch (e){
+        console.error(e);
+        setError(e?.message || String(e));
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    // Events
+    elGo.addEventListener('click', () => runSearch(1));
+    elQ.addEventListener('keydown', (e) => { if (e.key === 'Enter') runSearch(1); });
+    elPrev.addEventListener('click', () => runSearch(state.page - 1));
+    elNext.addEventListener('click', () => runSearch(state.page + 1));
+
+    // Optional: auto-run if we have saved values
+    if (elIndex.value && elQ.value) runSearch(1);
+  </script>
+</body>
+</html>

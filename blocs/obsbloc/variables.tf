@@ -67,3 +67,23 @@ variable "extra_ingress_annotations" {
   type        = map(string)
   default     = {}
 }
+
+variable "enable_searchbloc" {
+  type    = bool
+  default = false
+}
+
+variable "searchbloc_domains" {
+  type    = list(string)
+  default = [] # e.g. ["searchbloc.cloudbloc.io","www.searchbloc.cloudbloc.io"]
+}
+
+variable "searchbloc_service" {
+  type    = string
+  default = "searchbloc"
+}
+
+variable "searchbloc_port" {
+  type    = number
+  default = 80 # fronted port
+}
