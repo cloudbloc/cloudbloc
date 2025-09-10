@@ -92,6 +92,16 @@ resource "kubernetes_deployment" "app" {
       }
     }
   }
+  lifecycle {
+    ignore_changes = [
+      metadata[0].annotations["autopilot.gke.io/resource-adjustment"],
+      metadata[0].annotations["autopilot.gke.io/warden-version"],
+      spec[0].template[0].spec[0].container[0].resources,
+      spec[0].template[0].spec[0].security_context,
+      spec[0].template[0].spec[0].container[0].security_context,
+      spec[0].template[0].spec[0].toleration,
+    ]
+  }
 }
 
 resource "kubernetes_service" "web" {
@@ -114,51 +124,9 @@ resource "kubernetes_service" "web" {
       protocol    = "TCP"
     }
   }
-}
-
-resource "kubernetes_ingress_v1" "web" {
-  metadata {
-    name      = "${var.app_name}-ingress"
-    namespace = kubernetes_namespace.namespace.metadata[0].name
-    annotations = {
-      "kubernetes.io/ingress.class"                 = "gce"
-      "kubernetes.io/ingress.allow-http"            = "false"
-      "kubernetes.io/ingress.global-static-ip-name" = var.edge_ip_name
-      "networking.gke.io/managed-certificates"      = kubernetes_manifest.managed_cert.manifest.metadata.name
-    }
+  lifecycle {
+    ignore_changes = [
+      metadata[0].annotations["cloud.google.com/neg-status"],
+    ]
   }
-
-  spec {
-    default_backend {
-      service {
-        name = kubernetes_service.web.metadata[0].name
-        port {
-          number = 80
-        }
-      }
-    }
-
-    dynamic "rule" {
-      for_each = var.domains
-      content {
-        host = rule.value
-        http {
-          path {
-            path      = "/*"
-            path_type = "ImplementationSpecific"
-            backend {
-              service {
-                name = kubernetes_service.web.metadata[0].name
-                port {
-                  number = 80
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-  depends_on = [kubernetes_manifest.managed_cert]
 }

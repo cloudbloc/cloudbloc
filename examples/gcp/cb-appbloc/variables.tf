@@ -73,3 +73,9 @@ variable "html_path" {
   type        = string
   default     = "index.html"
 }
+
+variable "security_policy_name" {
+  type        = string
+  description = "Cloud Armor security policy name to attach to the Ingress"
+  default     = "edge-armor-shared"
+}

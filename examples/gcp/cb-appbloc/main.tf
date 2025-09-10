@@ -15,4 +15,5 @@ module "appbloc" {
   domains        = var.domains
   html_path      = local.html_abs_path
   labels         = { env = local.env }
+  cloudarmor_policy = var.security_policy_name
 }
