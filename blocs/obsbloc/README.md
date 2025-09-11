@@ -226,7 +226,7 @@ kubectl -n obsbloc exec deploy/obsbloc -- wget -qO- http://127.0.0.1:3000/api/he
 
 ## Uninstall
 
-```bash
+```
 terraform destroy
 # or:
 kubectl -n obsbloc delete ingress,svc,deploy,cm,sa,clusterrole,clusterrolebinding --all
