@@ -1,0 +1,26 @@
+{
+    "include-v-in-tag": false,
+    "tag-separator": "-",
+    "packages": {
+      "blocs/appbloc": {
+        "release-type": "terraform-module",
+        "component": "appbloc"
+      },
+      "blocs/obsbloc": {
+        "release-type": "terraform-module",
+        "component": "obsbloc"
+      },
+      "blocs/searchbloc": {
+        "release-type": "terraform-module",
+        "component": "searchbloc"
+      },
+      "modules/cloudarmor_policy": {
+        "release-type": "terraform-module",
+        "component": "cloudarmor"
+      },
+      "modules/gke": {
+        "release-type": "terraform-module",
+        "component": "gke"
+      }
+    }
+}
