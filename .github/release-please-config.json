@@ -14,7 +14,7 @@
         "release-type": "terraform-module",
         "component": "searchbloc"
       },
-      "modules/cloudarmor_policy": {
+      "modules/cloudarmor": {
         "release-type": "terraform-module",
         "component": "cloudarmor"
       },
