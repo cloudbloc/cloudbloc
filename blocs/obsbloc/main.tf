@@ -414,6 +414,20 @@ resource "kubernetes_deployment" "alertmanager" {
       }
     }
   }
+  lifecycle {
+    ignore_changes = [
+      # Autopilot mutates these:
+      metadata[0].annotations["autopilot.gke.io/resource-adjustment"],
+      metadata[0].annotations["autopilot.gke.io/warden-version"],
+
+      # Provider/server round-trip noise:
+      spec[0].template[0].spec[0].toleration,             # Autopilot injects arch toleration
+      spec[0].template[0].spec[0].container[0].resources, # adds ephemeral-storage
+      spec[0].template[0].spec[0].security_context,
+      spec[0].template[0].spec[0].container[0].security_context,
+      spec[0].template[0].spec[0].init_container[0].security_context,
+    ]
+  }
 }
 
 resource "kubernetes_service" "alertmanager" {
@@ -641,8 +655,9 @@ resource "kubernetes_deployment" "prometheus" {
       metadata[0].annotations["autopilot.gke.io/resource-adjustment"],
       metadata[0].annotations["autopilot.gke.io/warden-version"],
       spec[0].template[0].spec[0].container[0].resources,
-      # spec[0].template[0].spec[0].security_context,
-      # spec[0].template[0].spec[0].container[0].security_context,
+      spec[0].template[0].spec[0].security_context,
+      spec[0].template[0].spec[0].container[0].security_context,
+      spec[0].template[0].spec[0].init_container[0].security_context,
       spec[0].template[0].spec[0].toleration,
     ]
   }
