@@ -1,10 +1,3 @@
-# fresh-volume rotation knobs
-variable "data_rev" {
-  description = "Bump to force a brand-new volume and DB directory (e.g., 1,2,3)."
-  type        = number
-  default     = 1
-}
-
 resource "random_id" "pvc_suffix" {
   byte_length = 2
   keepers = {
