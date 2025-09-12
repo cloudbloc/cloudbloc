@@ -1,5 +1,5 @@
 {
-    "blocs/appbloc": "0.3.0",
+    "blocs/appbloc": "0.4.0",
     "blocs/obsbloc": "0.2.0",
     "blocs/searchbloc": "0.2.0",
     "modules/cloudarmor": "0.2.0",
