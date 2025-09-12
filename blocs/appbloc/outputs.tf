@@ -9,6 +9,7 @@ output "edge_ip_addr" {
 }
 
 output "dns_zone_name" {
-  description = "Cloud DNS managed zone name"
-  value       = google_dns_managed_zone.zone.name
+  value       = local.zone_name
+  description = "Active Cloud DNS zone name"
 }
+
