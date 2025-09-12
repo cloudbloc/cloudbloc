@@ -42,6 +42,11 @@ locals {
   }
 }
 
+resource "random_id" "pvc_suffix" {
+  byte_length = 2
+  keepers     = { data_rev = var.data_rev } # changes when data_rev changes
+}
+
 resource "kubernetes_namespace" "namespace" {
   metadata { name = var.namespace }
 }
@@ -52,6 +57,7 @@ resource "kubernetes_config_map" "grafana_ini" {
     name      = "grafana-ini"
     namespace = kubernetes_namespace.namespace.metadata[0].name
   }
+
   data = {
     "grafana.ini" = <<-EOT
       [auth.anonymous]
@@ -67,6 +73,7 @@ resource "kubernetes_config_map" "grafana_datasource" {
     name      = "grafana-datasource"
     namespace = kubernetes_namespace.namespace.metadata[0].name
   }
+
   data = {
     "prometheus-datasource.yml" = <<-EOT
       apiVersion: 1
@@ -86,6 +93,7 @@ resource "kubernetes_config_map" "grafana_dashboard_provider" {
     name      = "grafana-dashboard-provider"
     namespace = kubernetes_namespace.namespace.metadata[0].name
   }
+
   data = {
     "provider.yaml" = <<-EOT
     apiVersion: 1
@@ -154,7 +162,9 @@ resource "kubernetes_deployment" "grafana" {
           # Keep anonymous viewing controlled by grafana.ini you already mount
           # (no need to duplicate GF_AUTH_* envs unless you prefer env-only config)
 
-          port { container_port = 3000 }
+          port {
+            container_port = 3000
+          }
 
           resources {
             requests = { cpu = "100m", memory = "128Mi" }
@@ -256,8 +266,10 @@ resource "kubernetes_service" "grafana" {
   }
 
   spec {
-    type     = "ClusterIP"
-    selector = { app = var.app_name }
+    type = "ClusterIP"
+    selector = {
+      app = var.app_name
+    }
     port {
       name        = "http"
       port        = 80
@@ -288,6 +300,7 @@ resource "kubernetes_cluster_role" "prometheus" {
     resources  = ["nodes", "nodes/proxy", "services", "endpoints", "pods"]
     verbs      = ["get", "list", "watch"]
   }
+
   rule {
     api_groups = ["discovery.k8s.io"]
     resources  = ["endpointslices"]
@@ -313,6 +326,117 @@ resource "kubernetes_cluster_role_binding" "prometheus" {
   }
 }
 
+resource "kubernetes_config_map" "prometheus_rules" {
+  metadata {
+    name      = "prometheus-rules"
+    namespace = kubernetes_namespace.namespace.metadata[0].name
+  }
+  data = {
+    "base.yml" = <<-EOT
+    groups:
+    - name: k8s-basics
+      rules:
+      - alert: PodCrashLooping
+        expr: rate(kube_pod_container_status_restarts_total[5m]) > 0.1
+        for: 5m
+        labels: { severity: warning }
+        annotations:
+          summary: "Pod restarting frequently"
+      - alert: HighAPIErrorRate
+        expr: rate(apiserver_request_total{code=~"5.."}[5m]) > 1
+        for: 10m
+        labels: { severity: warning }
+        annotations:
+          summary: "API server 5xx rate is high"
+    EOT
+  }
+}
+
+resource "kubernetes_config_map" "alertmanager_config" {
+  metadata {
+    name      = "alertmanager"
+    namespace = kubernetes_namespace.namespace.metadata[0].name
+  }
+  data = {
+    "alertmanager.yml" = <<-EOT
+    route:
+      receiver: "default"
+    receivers:
+      - name: "default"
+        # replace with a real receiver later; starts “silent” for MVP
+    EOT
+  }
+}
+
+resource "kubernetes_deployment" "alertmanager" {
+  metadata {
+    name      = "alertmanager"
+    namespace = kubernetes_namespace.namespace.metadata[0].name
+    labels    = var.labels
+  }
+  spec {
+    replicas = 1
+    selector { match_labels = { app = "alertmanager" } }
+
+    template {
+      metadata { labels = merge({ app = "alertmanager" }, var.labels) }
+      spec {
+        container {
+          name  = "alertmanager"
+          image = "quay.io/prometheus/alertmanager:v0.27.0"
+          args  = ["--config.file=/etc/alertmanager/alertmanager.yml"]
+          port {
+            container_port = 9093
+          }
+
+          resources {
+            requests = {
+              cpu    = "50m"
+              memory = "100Mi"
+            }
+            limits = {
+              cpu    = "200m"
+              memory = "256Mi"
+            }
+          }
+
+          volume_mount {
+            name       = "cfg"
+            mount_path = "/etc/alertmanager/"
+            read_only  = true
+          }
+        }
+
+        volume {
+          name = "cfg"
+          config_map { name = kubernetes_config_map.alertmanager_config.metadata[0].name }
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_service" "alertmanager" {
+  metadata {
+    name      = "alertmanager"
+    namespace = kubernetes_namespace.namespace.metadata[0].name
+    labels    = var.labels
+  }
+
+  spec {
+    type = "ClusterIP"
+    selector = {
+      app = "alertmanager"
+    }
+
+    port {
+      name        = "http"
+      port        = 9093
+      target_port = 9093
+    }
+  }
+}
+
 # Prometheus scrape config
 resource "kubernetes_config_map" "prometheus" {
   metadata {
@@ -325,20 +449,74 @@ resource "kubernetes_config_map" "prometheus" {
       global:
         scrape_interval: 15s
 
+      alerting:
+        alertmanagers:
+          - static_configs:
+              - targets:
+                  - "alertmanager.${var.namespace}.svc.cluster.local:9093"
+
+      rule_files:
+        - /etc/prometheus/rules/*.yml
+
       scrape_configs:
         - job_name: 'prometheus'
           static_configs:
             - targets: ['localhost:9090']
 
-        - job_name: 'kubernetes-pods'
+        # Scrape only pods that opt-in via annotations:
+        #   prometheus.io/scrape: "true"
+        #   prometheus.io/port:   "8080"
+        #   prometheus.io/path:   "/metrics" (optional)
+        - job_name: 'kubernetes-pods-annotations'
           kubernetes_sd_configs:
             - role: pod
-
-        - job_name: 'kubernetes-nodes'
-          kubernetes_sd_configs:
-            - role: node
+          relabel_configs:
+            - action: keep
+              source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+              regex: "true"
+            - action: replace
+              source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+              target_label: __metrics_path__
+              regex: (.+)
+            - action: replace
+              source_labels: [__meta_kubernetes_pod_ip, __meta_kubernetes_pod_annotation_prometheus_io_port]
+              target_label: __address__
+              regex: (.+);(.+)
+              replacement: $1:$2
+            - action: labelmap
+              regex: __meta_kubernetes_pod_label_(.+)
+            - action: replace
+              source_labels: [__meta_kubernetes_namespace]
+              target_label: namespace
+            - action: replace
+              source_labels: [__meta_kubernetes_pod_name]
+              target_label: pod
     EOT
   }
+}
+
+
+
+resource "kubernetes_persistent_volume_claim" "prometheus" {
+  metadata {
+    name      = "prometheus-pvc-${random_id.pvc_suffix.hex}"
+    namespace = kubernetes_namespace.namespace.metadata[0].name
+    labels    = var.labels
+  }
+
+  spec {
+    access_modes = ["ReadWriteOnce"]
+
+    resources {
+      requests = {
+        storage = var.prometheus_storage_size
+      }
+    }
+
+    storage_class_name = var.prometheus_storage_class
+  }
+
+  wait_until_bound = false
 }
 
 resource "kubernetes_deployment" "prometheus" {
@@ -358,14 +536,36 @@ resource "kubernetes_deployment" "prometheus" {
       spec {
         service_account_name = kubernetes_service_account.prometheus.metadata[0].name
 
+        security_context {
+          run_as_non_root        = true
+          run_as_user            = 65534
+          run_as_group           = 65534
+          fs_group               = 65534
+          fs_group_change_policy = "OnRootMismatch"
+        }
+
+        init_container {
+          name    = "fix-perms"
+          image   = "busybox:1.36"
+          command = ["sh", "-c", "chown -R 65534:65534 /prometheus && chmod -R g+rwX /prometheus"]
+          security_context {
+            run_as_user = 0
+          }
+          volume_mount {
+            name       = "prometheus-data"
+            mount_path = "/prometheus"
+          }
+        }
+
         container {
           name  = "prometheus"
           image = var.prometheus_image
 
           args = [
             "--config.file=/etc/prometheus/prometheus.yml",
-            "--storage.tsdb.retention.time=1d",
-            "--storage.tsdb.path=/prometheus"
+            "--storage.tsdb.path=/prometheus",
+            "--storage.tsdb.retention.time=${var.prometheus_retention}",
+            "--storage.tsdb.retention.size=${var.prometheus_retention_size}",
           ]
 
           port {
@@ -385,6 +585,7 @@ resource "kubernetes_deployment" "prometheus" {
             initial_delay_seconds = 20
             period_seconds        = 10
           }
+
           readiness_probe {
             http_get {
               path = "/-/ready"
@@ -398,6 +599,17 @@ resource "kubernetes_deployment" "prometheus" {
             name       = "prometheus-config"
             mount_path = "/etc/prometheus/"
           }
+
+          volume_mount {
+            name       = "prometheus-data"
+            mount_path = "/prometheus"
+          }
+
+          volume_mount {
+            name       = "prometheus-rules"
+            mount_path = "/etc/prometheus/rules"
+            read_only  = true
+          }
         }
 
         volume {
@@ -406,19 +618,36 @@ resource "kubernetes_deployment" "prometheus" {
             name = kubernetes_config_map.prometheus.metadata[0].name
           }
         }
+
+        volume {
+          name = "prometheus-data"
+          persistent_volume_claim {
+            claim_name = kubernetes_persistent_volume_claim.prometheus.metadata[0].name
+          }
+        }
+
+        volume {
+          name = "prometheus-rules"
+          config_map {
+            name = kubernetes_config_map.prometheus_rules.metadata[0].name
+          }
+        }
       }
     }
   }
+
   lifecycle {
     ignore_changes = [
       metadata[0].annotations["autopilot.gke.io/resource-adjustment"],
       metadata[0].annotations["autopilot.gke.io/warden-version"],
       spec[0].template[0].spec[0].container[0].resources,
-      spec[0].template[0].spec[0].security_context,
-      spec[0].template[0].spec[0].container[0].security_context,
+      # spec[0].template[0].spec[0].security_context,
+      # spec[0].template[0].spec[0].container[0].security_context,
       spec[0].template[0].spec[0].toleration,
     ]
   }
+
+  # wait_for_rollout = false
 }
 
 resource "kubernetes_service" "prometheus" {
@@ -433,6 +662,7 @@ resource "kubernetes_service" "prometheus" {
     selector = {
       app = "prometheus"
     }
+
     port {
       name        = "http"
       port        = 9090

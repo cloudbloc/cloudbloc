@@ -93,3 +93,33 @@ variable "dashboards_json" {
   type        = map(string)
   default     = {}
 }
+
+variable "prometheus_retention" {
+  description = "Prometheus TSDB retention period"
+  type        = string
+  default     = "3d"
+}
+
+variable "prometheus_retention_size" {
+  description = "Prometheus TSDB retention size in GB"
+  type        = string
+  default     = "8GB"
+}
+
+variable "prometheus_storage_size" {
+  description = "PVC size for Prometheus TSDB"
+  type        = string
+  default     = "10Gi"
+}
+
+variable "prometheus_storage_class" {
+  description = "Optional StorageClass name for the PVC"
+  type        = string
+  default     = "standard-rwo"
+}
+
+variable "data_rev" {
+  description = "Bump to force a brand-new volume and Prom DB directory"
+  type        = number
+  default     = 1
+}

@@ -67,3 +67,10 @@ variable "public_search_key" {
   type        = string
   default     = ""
 }
+
+# fresh-volume rotation knobs
+variable "data_rev" {
+  description = "Bump to force a brand-new volume and DB directory (e.g., 1,2,3)."
+  type        = number
+  default     = 1
+}
