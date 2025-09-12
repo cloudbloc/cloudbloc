@@ -1,3 +1,7 @@
+locals {
+  env_checksum = sha256(jsonencode(var.env))
+}
+
 resource "kubernetes_namespace" "namespace" {
   metadata {
     name = var.namespace
@@ -5,11 +9,11 @@ resource "kubernetes_namespace" "namespace" {
 }
 
 resource "kubernetes_config_map" "web_html" {
+  count = var.enable_static_html ? 1 : 0
   metadata {
     name      = "web-html"
     namespace = kubernetes_namespace.namespace.metadata[0].name
   }
-
   data = {
     "index.html" = file(var.html_path)
   }
@@ -34,12 +38,23 @@ resource "kubernetes_deployment" "app" {
     template {
       metadata {
         labels = merge({ app = var.app_name }, var.labels)
+        annotations = {
+          "cloudbloc.io/env-checksum" = local.env_checksum
+        }
       }
 
       spec {
         container {
           name  = "web"
           image = var.image
+
+          dynamic "env" {
+            for_each = var.env
+            content {
+              name  = env.key
+              value = env.value
+            }
+          }
 
           port {
             container_port = var.container_port
@@ -76,22 +91,29 @@ resource "kubernetes_deployment" "app" {
           }
 
           # serve our HTML
-          volume_mount {
-            name       = "html"
-            mount_path = "/usr/share/nginx/html"
-            read_only  = true
+          dynamic "volume_mount" {
+            for_each = var.enable_static_html ? [1] : []
+            content {
+              name       = "html"
+              mount_path = "/usr/share/nginx/html"
+              read_only  = true
+            }
           }
         }
 
-        volume {
-          name = "html"
-          config_map {
-            name = kubernetes_config_map.web_html.metadata[0].name
+        dynamic "volume" {
+          for_each = var.enable_static_html ? [kubernetes_config_map.web_html[0].metadata[0].name] : []
+          content {
+            name = "html"
+            config_map {
+              name = volume.value
+            }
           }
         }
       }
     }
   }
+
   lifecycle {
     ignore_changes = [
       metadata[0].annotations["autopilot.gke.io/resource-adjustment"],

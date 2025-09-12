@@ -29,12 +29,6 @@ variable "replicas" {
   default     = 2
 }
 
-variable "service_type" {
-  description = "Service type (LoadBalancer | ClusterIP | NodePort)"
-  type        = string
-  default     = "LoadBalancer"
-}
-
 variable "labels" {
   description = "Additional labels to add to resources"
   type        = map(string)
@@ -68,4 +62,28 @@ variable "extra_ingress_annotations" {
   description = "Additional annotations to merge into the Ingress"
   type        = map(string)
   default     = {}
+}
+
+variable "env" {
+  description = "Environment variables for the container (non-secret)."
+  type        = map(string)
+  default     = {}
+}
+
+variable "enable_static_html" {
+  description = "Mount a demo index.html from a ConfigMap at /usr/share/nginx/html"
+  type        = bool
+  default     = false
+}
+
+variable "create_dns_zone" {
+  description = "Create a Cloud DNS managed zone from the apex in var.domains[0]. If false, use dns_zone_name."
+  type        = bool
+  default     = false
+}
+
+variable "dns_zone_name" {
+  description = "Existing Cloud DNS zone name (ignored if create_dns_zone=true)"
+  type        = string
+  default     = null
 }

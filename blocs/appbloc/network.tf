@@ -1,13 +1,33 @@
 locals {
+  zone_name = var.create_dns_zone ? google_dns_managed_zone.zone[0].name : data.google_dns_managed_zone.zone[0].name
   base_annotations = {
-    "kubernetes.io/ingress.class"                 = "gce"
-    "kubernetes.io/ingress.allow-http"            = "false"
+    "kubernetes.io/ingress.class" = "gce"
+    # Allow HTTP listener so GCLB can perform redirect
+    "kubernetes.io/ingress.allow-http"            = "true"
     "kubernetes.io/ingress.global-static-ip-name" = var.edge_ip_name
     "networking.gke.io/managed-certificates"      = kubernetes_manifest.managed_cert.manifest.metadata.name
+    "networking.gke.io/v1beta1.FrontendConfig"    = kubernetes_manifest.frontend_config.manifest.metadata.name
   }
 
   armor_annotation = var.cloudarmor_policy == null ? {} : {
     "gcp.cloud.google.com/security-policy" = var.cloudarmor_policy
+  }
+}
+
+# FrontendConfig to 301 redirect HTTP -> HTTPS
+resource "kubernetes_manifest" "frontend_config" {
+  manifest = {
+    apiVersion = "networking.gke.io/v1beta1"
+    kind       = "FrontendConfig"
+    metadata = {
+      name      = "${var.app_name}-frontend"
+      namespace = kubernetes_namespace.namespace.metadata[0].name
+    }
+    spec = {
+      redirectToHttps = {
+        enabled = true
+      }
+    }
   }
 }
 
@@ -17,8 +37,15 @@ resource "google_compute_global_address" "app_edge_ip" {
 
 }
 
+data "google_dns_managed_zone" "zone" {
+  count = var.create_dns_zone ? 0 : 1
+  name  = var.dns_zone_name
+}
+
 # DNS managed zone based on the first domain
 resource "google_dns_managed_zone" "zone" {
+  count = var.create_dns_zone ? 1 : 0
+
   name        = replace(var.domains[0], ".", "-") # e.g. "cloudbloc-io"
   dns_name    = "${var.domains[0]}."              # e.g. "cloudbloc.io."
   description = "Zone for ${var.domains[0]}"
@@ -30,7 +57,7 @@ resource "google_dns_record_set" "a_records" {
   name         = "${each.value}." # e.g. "cloudbloc.io.", "www.cloudbloc.io."
   type         = "A"
   ttl          = 300
-  managed_zone = google_dns_managed_zone.zone.name
+  managed_zone = local.zone_name
   rrdatas      = [google_compute_global_address.app_edge_ip.address]
 }
 

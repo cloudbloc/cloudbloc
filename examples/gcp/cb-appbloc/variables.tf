@@ -57,12 +57,6 @@ variable "app_replicas" {
   default     = 1
 }
 
-variable "service_type" {
-  description = "Kubernetes Service type (LoadBalancer | ClusterIP | NodePort)"
-  type        = string
-  default     = "LoadBalancer"
-}
-
 variable "domains" {
   type    = list(string)
   default = ["cloudbloc.io", "www.cloudbloc.io"]
