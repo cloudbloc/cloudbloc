@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.4.0](https://github.com/cloudbloc/cloudbloc/compare/appbloc-0.3.0...appbloc-0.4.0) (2025-09-12)
+
+
+### Features
+
+* **appbloc,searchbloc:** integrate Cloud Armor policy support and reduce plan drift ([3060314](https://github.com/cloudbloc/cloudbloc/commit/306031409a465cbc9d1f0a0b1f317c4d3a2c995b))
+* **appbloc:** bootstrap initial release ([c3f8666](https://github.com/cloudbloc/cloudbloc/commit/c3f8666d2fc38c3f3924a89e20a78b69c7e3cb80))
+* **cloudarmor:** add cloudarmor for appsbloc ([3b45a40](https://github.com/cloudbloc/cloudbloc/commit/3b45a4083614a64e7b12bd31dcddd17b2863fc85))
+* **cloudarmor:** bootstrap initial release ([c3f8666](https://github.com/cloudbloc/cloudbloc/commit/c3f8666d2fc38c3f3924a89e20a78b69c7e3cb80))
+* **gke:** bootstrap initial release ([c3f8666](https://github.com/cloudbloc/cloudbloc/commit/c3f8666d2fc38c3f3924a89e20a78b69c7e3cb80))
+* **obsbloc:** bootstrap initial release ([801a932](https://github.com/cloudbloc/cloudbloc/commit/801a93213e955798ea825fac89414d1cc9262b64))
+* **obsbloc:** bootstrap initial release ([c3f8666](https://github.com/cloudbloc/cloudbloc/commit/c3f8666d2fc38c3f3924a89e20a78b69c7e3cb80))
+* **searchbloc:** bootstrap initial release ([c3f8666](https://github.com/cloudbloc/cloudbloc/commit/c3f8666d2fc38c3f3924a89e20a78b69c7e3cb80))
+
 ## [0.2.0](https://github.com/cloudbloc/cloudbloc/compare/appbloc-0.1.0...appbloc-0.2.0) (2025-09-11)
 
 
