@@ -4,18 +4,6 @@ resource "google_service_account" "backups" {
   display_name = "SearchBloc backups writer"
 }
 
-resource "google_storage_bucket_iam_member" "writer" {
-  bucket = google_storage_bucket.backups.name
-  role   = "roles/storage.objectCreator"
-  member = "serviceAccount:${google_service_account.backups.email}"
-}
-
-resource "google_storage_bucket_iam_member" "viewer" {
-  bucket = google_storage_bucket.backups.name
-  role   = "roles/storage.objectViewer"
-  member = "serviceAccount:${google_service_account.backups.email}"
-}
-
 resource "google_storage_bucket_iam_member" "admin" {
   bucket = google_storage_bucket.backups.name
   role   = "roles/storage.objectAdmin"
