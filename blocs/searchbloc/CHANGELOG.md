@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.2](https://github.com/cloudbloc/cloudbloc/compare/searchbloc-0.4.1...searchbloc-0.4.2) (2025-09-18)
+
+
+### Bug Fixes
+
+* split main.tf into component files for all blocs ([dd8b918](https://github.com/cloudbloc/cloudbloc/commit/dd8b91825517d21c971c6fb25d24b1a226db41e3))
+
 ## [0.4.1](https://github.com/cloudbloc/cloudbloc/compare/searchbloc-0.4.0...searchbloc-0.4.1) (2025-09-18)
 
 
