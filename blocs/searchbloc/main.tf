@@ -276,8 +276,9 @@ resource "kubernetes_deployment" "meili" {
 
           resources {
             requests = {
-              cpu = "50m"
-            memory = "64Mi" }
+              cpu    = "50m"
+              memory = "64Mi"
+            }
             limits = {
               cpu    = "200m"
               memory = "256Mi"
@@ -518,7 +519,8 @@ resource "kubernetes_cron_job_v1" "meili_backup" {
                   cpu    = "100m"
                   memory = "256Mi"
                 }
-                limits = { cpu = "500m"
+                limits = {
+                  cpu    = "500m"
                   memory = "1Gi"
                 }
               }
