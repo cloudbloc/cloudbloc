@@ -1,5 +1,4 @@
 # Global static IP + ManagedCertificate + Ingress
-
 locals {
   base_annotations = {
     "kubernetes.io/ingress.class"                 = "gce"
