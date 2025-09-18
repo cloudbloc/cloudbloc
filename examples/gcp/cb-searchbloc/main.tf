@@ -1,6 +1,7 @@
 module "searchbloc" {
   source = "../../../blocs/searchbloc"
 
+  project_id        = var.project_id
   namespace         = "obsbloc" # same namespace as obsbloc
   app_name          = "searchbloc"
   storage_size      = "5Gi"

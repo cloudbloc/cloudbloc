@@ -6,6 +6,7 @@ resource "random_id" "pvc_suffix" {
 }
 
 locals {
+  backup_bucket_uri = "gs://${var.backup_bucket_name}"
   common_labels = merge(
     tomap({
       app = var.app_name
@@ -111,7 +112,6 @@ resource "kubernetes_secret" "meili" {
 
   type = "Opaque"
 
-  # kubernetes provider expects base64-encoded values for "data"
   data = {
     MEILI_MASTER_KEY = base64encode(var.master_key)
   }
@@ -274,6 +274,16 @@ resource "kubernetes_deployment" "meili" {
           name  = "ui"
           image = "nginx:1.27-alpine"
 
+          resources {
+            requests = {
+              cpu = "50m"
+            memory = "64Mi" }
+            limits = {
+              cpu    = "200m"
+              memory = "256Mi"
+            }
+          }
+
           port {
             container_port = 80
             name           = "web"
@@ -399,5 +409,135 @@ resource "kubernetes_service" "meili" {
     ignore_changes = [
       metadata[0].annotations["cloud.google.com/neg-status"],
     ]
+  }
+}
+
+resource "google_storage_bucket" "backups" {
+  project                     = var.project_id
+  name                        = var.backup_bucket_name
+  location                    = var.backup_bucket_location
+  storage_class               = "STANDARD"
+  uniform_bucket_level_access = true
+  public_access_prevention    = "enforced"
+
+  versioning { enabled = true } # protect against accidental overwrite
+
+  lifecycle_rule {
+    condition { age = 30 } # keep 30 days of backups
+    action { type = "Delete" }
+  }
+
+  retention_policy {
+    retention_period = 604800 # 7 days (seconds)
+  }
+}
+
+resource "google_service_account" "backups" {
+  project      = var.project_id
+  account_id   = "backups-writer"
+  display_name = "SearchBloc backups writer"
+}
+
+resource "google_storage_bucket_iam_member" "writer" {
+  bucket = google_storage_bucket.backups.name
+  role   = "roles/storage.objectCreator"
+  member = "serviceAccount:${google_service_account.backups.email}"
+}
+
+resource "google_storage_bucket_iam_member" "viewer" {
+  bucket = google_storage_bucket.backups.name
+  role   = "roles/storage.objectViewer"
+  member = "serviceAccount:${google_service_account.backups.email}"
+}
+
+resource "google_storage_bucket_iam_member" "admin" {
+  bucket = google_storage_bucket.backups.name
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:${google_service_account.backups.email}"
+}
+
+resource "kubernetes_service_account" "backup" {
+  metadata {
+    name      = "${var.app_name}-backup"
+    namespace = var.namespace
+    annotations = {
+      "iam.gke.io/gcp-service-account" = google_service_account.backups.email
+    }
+    labels = local.common_labels
+  }
+}
+
+# Allow KSA to impersonate GCP SA
+resource "google_service_account_iam_member" "wi_bind" {
+  service_account_id = google_service_account.backups.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "serviceAccount:${var.project_id}.svc.id.goog[${var.namespace}/${kubernetes_service_account.backup.metadata[0].name}]"
+}
+
+# CronJob (no secrets, WI auth)
+resource "kubernetes_cron_job_v1" "meili_backup" {
+  metadata {
+    name      = "${var.app_name}-backup"
+    namespace = var.namespace
+    labels    = local.common_labels
+  }
+
+  spec {
+    schedule                      = "0 3 * * *"
+    concurrency_policy            = "Forbid"
+    successful_jobs_history_limit = 1
+    failed_jobs_history_limit     = 3
+
+    job_template {
+      metadata {
+        labels = local.common_labels
+      }
+      spec {
+        backoff_limit = 2
+        template {
+          metadata {
+            labels = local.common_labels
+          }
+          spec {
+            service_account_name = kubernetes_service_account.backup.metadata[0].name
+            restart_policy       = "OnFailure"
+
+            # Make sure we can read Meili’s PVC (matches your Deployment)
+            security_context { fs_group = 10001 }
+
+            container {
+              name    = "backup"
+              image   = "gcr.io/google.com/cloudsdktool/google-cloud-cli:latest"
+              command = ["bash", "-lc"]
+              args = [
+                "gsutil -m rsync -r /meili_data ${local.backup_bucket_uri}/meili/$(date +%F)/"
+              ]
+
+              resources {
+                requests = {
+                  cpu    = "100m"
+                  memory = "256Mi"
+                }
+                limits = { cpu = "500m"
+                  memory = "1Gi"
+                }
+              }
+
+              volume_mount {
+                name       = "data"
+                mount_path = "/meili_data"
+              }
+            }
+
+            volume {
+              name = "data"
+              persistent_volume_claim {
+                claim_name = kubernetes_persistent_volume_claim.data.metadata[0].name
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
