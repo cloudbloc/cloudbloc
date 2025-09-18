@@ -1,7 +1,7 @@
 {
     "blocs/appbloc": "0.4.1",
     "blocs/obsbloc": "0.4.1",
-    "blocs/searchbloc": "0.4.0",
+    "blocs/searchbloc": "0.4.1",
     "modules/cloudarmor": "0.2.1",
     "modules/gke": "0.2.1"
 }

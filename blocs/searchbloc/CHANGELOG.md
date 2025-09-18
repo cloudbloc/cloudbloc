@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/cloudbloc/cloudbloc/compare/searchbloc-0.4.0...searchbloc-0.4.1) (2025-09-18)
+
+
+### Bug Fixes
+
+* **searchbloc:** correct pvc lifecycle ignore rules ([f5f34c5](https://github.com/cloudbloc/cloudbloc/commit/f5f34c582d44843122d6c7ac8a6f2077146254a9))
+
 ## [0.4.0](https://github.com/cloudbloc/cloudbloc/compare/searchbloc-0.3.3...searchbloc-0.4.0) (2025-09-18)
 
 
