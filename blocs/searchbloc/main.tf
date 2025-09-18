@@ -361,18 +361,22 @@ resource "kubernetes_deployment" "meili" {
       metadata[0].annotations["autopilot.gke.io/resource-adjustment"],
       metadata[0].annotations["autopilot.gke.io/warden-version"],
 
-      # pod-level
       spec[0].template[0].spec[0].toleration,
       spec[0].template[0].spec[0].security_context[0].seccomp_profile,
 
-      # containers
-      spec[0].template[0].spec[0].container[0].resources,
-      spec[0].template[0].spec[0].container[0].security_context, # meilisearch
-      spec[0].template[0].spec[0].container[1].security_context, # ui
+      # pod template annotations (Autopilot)
+      spec[0].template[0].metadata[0].annotations["autopilot.gke.io/resource-adjustment"],
+      spec[0].template[0].metadata[0].annotations["autopilot.gke.io/warden-version"],
 
-      # init containers
-      spec[0].template[0].spec[0].init_container[0].security_context, # prepare-data
-      spec[0].template[0].spec[0].init_container[1].security_context, # render-ui
+      # container resources + securityContext (Autopilot tweaks incl. ephemeral-storage)
+      spec[0].template[0].spec[0].container[0].resources,
+      spec[0].template[0].spec[0].container[1].resources,
+      spec[0].template[0].spec[0].container[0].security_context,
+      spec[0].template[0].spec[0].container[1].security_context,
+
+      # init containers (if Autopilot touches them)
+      spec[0].template[0].spec[0].init_container[0].security_context,
+      spec[0].template[0].spec[0].init_container[1].security_context,
     ]
   }
 
@@ -541,5 +545,24 @@ resource "kubernetes_cron_job_v1" "meili_backup" {
         }
       }
     }
+  }
+  lifecycle {
+    ignore_changes = [
+      # CronJob metadata annotations added by Autopilot
+      metadata[0].annotations["autopilot.gke.io/resource-adjustment"],
+      metadata[0].annotations["autopilot.gke.io/warden-version"],
+
+      # JobTemplate PodTemplate annotations (Autopilot)
+      spec[0].job_template[0].spec[0].template[0].metadata[0].annotations["autopilot.gke.io/resource-adjustment"],
+      spec[0].job_template[0].spec[0].template[0].metadata[0].annotations["autopilot.gke.io/warden-version"],
+
+      # Pod-level defaults injected by Autopilot
+      spec[0].job_template[0].spec[0].template[0].spec[0].toleration,
+      spec[0].job_template[0].spec[0].template[0].spec[0].security_context[0].seccomp_profile,
+
+      # Container-level defaults (resources incl. ephemeral-storage, securityContext)
+      spec[0].job_template[0].spec[0].template[0].spec[0].container[0].resources,
+      spec[0].job_template[0].spec[0].template[0].spec[0].container[0].security_context,
+    ]
   }
 }
