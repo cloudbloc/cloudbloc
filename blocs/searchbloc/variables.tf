@@ -74,3 +74,20 @@ variable "data_rev" {
   type        = number
   default     = 1
 }
+
+variable "project_id" {
+  description = "GCP project ID hosting the bucket & SA"
+  type        = string
+}
+
+
+variable "backup_bucket_name" {
+  description = "GCS bucket name (no gs://), e.g. 'searchbloc-backup-bucket'"
+  type        = string
+  default     = "searchbloc-backup-bucket"
+}
+
+variable "backup_bucket_location" {
+  type    = string
+  default = "US" # or "NORTHAMERICA-NORTHEAST1" for Toronto region, etc.
+}
