@@ -1,0 +1,13 @@
+name: Feature request
+description: Suggest an idea or new bloc
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes: { label: Problem to solve, render: markdown }
+  - type: textarea
+    id: proposal
+    attributes: { label: Proposal / API, render: markdown }
+  - type: input
+    id: scope
+    attributes: { label: Scope (which bloc?), placeholder: obsbloc }
