@@ -1,3 +1,8 @@
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](.github/CONTRIBUTING.md)
+[![release-please](https://img.shields.io/badge/release--please-monorepo-success)](https://github.com/googleapis/release-please)
+
+
 # Cloudbloc — Cloud Building Blocks
 
 ## ⚡ SaaS-as-Code
@@ -53,9 +58,9 @@ This is **infra for platform teams** who want control, speed, and massive SaaS c
 
 ## 📦 What’s inside
 
-* **AppBloc** — MVP for *Heroku*: public app ingress with ManagedCert, redirects, Cloud Armor hooks
-* **ObsBloc** — MVP for *Datadog*: Prometheus + Grafana, Autopilot-friendly, minimal alerting bootstrap
-* **SearchBloc** — MVP for *Elasticsearch*: Meilisearch + static UI behind Nginx, PVC, and daily GCS backups
+* **AppBloc** — *Heroku-core*: public app ingress with ManagedCert, redirects, Cloud Armor hooks
+* **ObsBloc** — *Datadog-core*: Prometheus + Grafana, Autopilot-friendly, minimal alerting bootstrap
+* **SearchBloc** — *Elasticsearch-core*: Meilisearch + static UI behind Nginx, PVC, and daily GCS backups
 * Infra helpers: **GKE** and **Cloud Armor** modules
 
 Live running examples:

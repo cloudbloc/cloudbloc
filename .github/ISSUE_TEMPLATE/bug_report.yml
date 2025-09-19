@@ -1,0 +1,19 @@
+name: Bug report
+description: Help us fix it
+labels: ["bug"]
+body:
+  - type: input
+    id: module
+    attributes: { label: Bloc/Module, placeholder: blocs/searchbloc }
+  - type: input
+    id: version
+    attributes: { label: Version, placeholder: searchbloc-v0.4.1 }
+  - type: input
+    id: tf
+    attributes: { label: Terraform version, placeholder: 1.6.x }
+  - type: textarea
+    id: repro
+    attributes: { label: Minimal repro (inputs), render: markdown }
+  - type: textarea
+    id: what-happened
+    attributes: { label: What happened?, render: markdown }
