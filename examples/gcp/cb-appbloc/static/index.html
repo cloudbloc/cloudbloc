@@ -218,11 +218,17 @@
               Cloudbloc is the next step after IaaS, IaC, and SaaS — <span class="accent">SaaS-as-Code (SaC)</span>.
             </p>
             <p class="subtitle">
-              Replace overpriced SaaS with versioned Terraform + Kubernetes blocs for observability, search, auth, and more — all inside <b>your</b> cloud.
+              Deploy a complete SaaS with one command — all inside <b>your</b> cloud.
             </p>
-            <p class="muted highlight">
-              🚀 Ship in minutes: one bloc, production-ready.
+            <p class="muted highlight" style="display:flex;align-items:flex-start;">
+              <span style="margin-right:0.5em;">🚀</span>
+              <span>
+                Ship in minutes with a single Terraform bloc — production-ready.<br>
+                <span class="accent">With near-zero infra work.</span>
+              </span>
             </p>
+
+
 
             <p class="muted">
                 Status: <span class="chip" aria-label="MVP / Alpha">MVP / Alpha</span>
@@ -316,8 +322,6 @@
           gap: 18px;
         }
 
-
-
         .hero .tile strong{
           display: block;
           font-weight: 800;
@@ -331,68 +335,87 @@
           .hero .tiles{ margin-top: 14px; }
         }
         .hero .tiles {
-        display: grid;
-        grid-template-columns: 1fr; /* stack vertically */
-        gap: 18px;
-      }
+          display: grid;
+          grid-template-columns: 1fr; /* stack vertically */
+          gap: 18px;
+        }
 
-      .hero .tile {
-        background: #fff;                 /* white background */
-        color: var(--ink);                /* dark text */
-        border: 1px solid var(--line);    /* light border */
-        border-radius: 16px;
-        padding: 22px 24px;
-        box-shadow: var(--shadow);        /* subtle drop shadow */
-      }
+        .hero .tile {
+          background: #fff;                 /* white background */
+          color: var(--ink);                /* dark text */
+          border: 1px solid var(--line);    /* light border */
+          border-radius: 16px;
+          padding: 22px 24px;
+          box-shadow: var(--shadow);        /* subtle drop shadow */
+        }
 
-      .hero .tile strong {
-        display: block;
-        font-weight: 700;
-        font-size: 1.1rem;
-        margin-bottom: 6px;
-      }
+        .hero .tile strong {
+          display: block;
+          font-weight: 700;
+          font-size: 1.1rem;
+          margin-bottom: 6px;
+        }
+        .hero-text .highlight {
+          font-weight: 500;         /* was 600; lighter = calmer */
+        }
     </style>
 
 
-<!-- Why -->
-<section id="why">
-    <div class="container">
-      <h2 class="section-title">Why Cloudbloc</h2>
+        <!-- Why -->
+        <section id="why">
+            <div class="container">
+              <h2 class="section-title">Why Cloudbloc</h2>
 
-      <!-- Big card -->
-      <div class="card highlight">
-        <h3 class="title-accent">⚡ SaaS without the bloat</h3>
-        <p class="muted">
-          Cloudbloc is a long-horizon bet: shifting billions away from bloated SaaS contracts
-          and back into in-house capability. Teams regain control of
-          <span class="accent">data, cost, and velocity</span> — with
-          <b>enterprise-grade reliability</b> and <b>security</b>.
-        </p>
-        <p class="muted">
-          Stop paying for features you don’t use. Run the same core capabilities in your own cloud for
-          <span class="accent">~10% of the cost</span> — without <b>10× the effort</b>.
-        </p>
-      </div>
+            <!-- Big card -->
+            <div class="card highlight">
+              <h3 class="title-accent">⚡ Deploy SaaS in minutes, no infra hassle</h3>
+              <p class="muted">
+                With <span class="accent">Cloudbloc</span>, deploy an entire SaaS in minutes —
+                a single Terraform "bloc" (module). Near-zero infra work required.
+              </p>
+
+              <div class="mini-section">
+                <h4 class="mini-title">🔧 How it works</h4>
+                <p class="muted">
+                  <span style="display:block; font-weight:600; margin-bottom:0.4em;">
+                    One Terraform module (bloc) = One SaaS replacement.
+                  </span>
+                  Each bloc is a pre-built Terraform module that provisions the required cloud + Kubernetes resources.
+                  Set a few variables and the stack goes live — production-ready, without YAML sprawl or manual setup.
+                </p>
+              </div>
 
 
+              <p class="muted">
+                Cloudbloc is a long-horizon bet: shifting billions away from bloated SaaS contracts and back into in-house capability.
+                Teams regain control of <span class="accent">data, cost, and velocity</span> with enterprise-grade reliability and security.
+              </p>
 
-      <div class="grid cols-3">
-        <div class="card">
-          <h3>⚡ Launch in Minutes</h3>
-          <p class="muted">
-            Ship a full SaaS capability with <b>one Terraform module</b>. No YAML sprawl, no wasted weekends.
-          </p>
+              <p class="muted highlight" style="text-align:center; margin-top:1.5em;">
+                Stop paying for features you don’t use. Run core SaaS in your own cloud for <span class="accent">~10% of the cost</span> —
+                with minimal infra overhead.
+              </p>
+
+
         </div>
 
-        <div class="card">
-          <h3>💰 Own the Economics</h3>
-          <p class="muted">
-            Move recurring SaaS spend into durable platform investment. Scale usage without price shocks.
-          </p>
-        </div>
+        <div class="grid cols-3">
+          <div class="card">
+            <h3>⚡ Launch in Minutes</h3>
+            <p class="muted">
+              Ship a full SaaS capability with <b>one Terraform bloc</b>. No YAML sprawl, no wasted weekends.
+            </p>
+          </div>
 
-        <div class="card">
-          <h3>️☁️ Cloud-native, not lock-in</h3>
+          <div class="card">
+            <h3>💰 Own the Economics</h3>
+            <p class="muted">
+              Move recurring SaaS spend into durable platform investment. Scale usage without price shocks.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>️☁️ Cloud-native, not lock-in</h3>
           <p class="muted">
             Mix blocs like <b>AppBloc, ObsBloc, and SearchBloc</b> to fit your stack. Skip the SaaS lock-in,
             keep the savings.
@@ -433,24 +456,40 @@
         color: var(--purple);
         font-weight: 600;
       }
+      .mini-section {
+        margin: 1.5em 0;
+        padding: 1.25em 1.5em;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #f7f8ff, #fafbff);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      }
+
+      .mini-title {
+        margin: 0 0 0.5em 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--purple);
+      }
     </style>
 
     <!-- Blocs -->
     <section id="blocs" class="alt">
       <div class="container">
         <h2 class="section-title">Blocs</h2>
-        <p class="section-sub">Pick the blocs you need. Live demos running on GKE:</p>
+        <p class="section-sub">
+          Pick the SaaS you need and launch it with a bloc — a few lines of Terraform, that’s it.
+        </p>
 
         <div class="grid cols-3">
           <!-- AppBloc -->
           <div class="card bloc-card app">
             <div class="bloc-header">
               <h3>AppBloc</h3>
-              <span class="bloc-badge">Heroku-style</span>
+              <span class="bloc-badge">Heroku-core</span>
             </div>
             <p class="bloc-text">
-              Public app ingress with <b>LB</b>, <b>ManagedCertificate</b>, redirects,
-              and <b>Firewall</b>. Perfect for static apps or containerized services.
+              <b>Heroku, minus the bloat.</b>
+              Just ingress, TLS, redirects, and firewall — the core you actually need.
             </p>
             <p><a class="bloc-link" href="https://cloudbloc.io" target="_blank" rel="noopener">cloudbloc.io →</a></p>
             <pre class="bloc-code"><code>module "appbloc" {
@@ -465,11 +504,11 @@
           <div class="card bloc-card obs">
             <div class="bloc-header">
               <h3>ObsBloc</h3>
-              <span class="bloc-badge">Datadog-style</span>
+              <span class="bloc-badge">Datadog-core</span>
             </div>
             <p class="bloc-text">
-              <b>Prometheus + Grafana</b> (anonymous Viewer by default),
-              with minimal alerting bootstrap and <b>ingress</b>.
+              <b>Prometheus + Grafana</b> with ingress and minimal alerting out of the box.
+                 The core of Datadog, without the SaaS bill.
             </p>
             <p><a class="bloc-link" href="https://obsbloc.cloudbloc.io" target="_blank" rel="noopener">obsbloc.cloudbloc.io →</a></p>
             <pre class="bloc-code"><code>module "obsbloc" {
@@ -484,11 +523,11 @@
           <div class="card bloc-card search">
             <div class="bloc-header">
               <h3>SearchBloc</h3>
-              <span class="bloc-badge">Elastic-style</span>
+              <span class="bloc-badge">Elastic-core</span>
             </div>
             <p class="bloc-text">
-              <b>Meilisearch</b> with a sleek static UI (Nginx), PVC-backed data,
-              and daily <b>Storage backups</b>
+              <b>Meilisearch</b> with a sleek static UI (Nginx), PVC-backed storage,
+              and daily automated backups. Elastic, boiled down to the essentials.
             </p>
             <p><a class="bloc-link" href="https://searchbloc.cloudbloc.io" target="_blank" rel="noopener">searchbloc.cloudbloc.io →</a></p>
             <pre class="bloc-code"><code>module "searchbloc" {
@@ -503,7 +542,13 @@
           </div>
         </div>
       </div>
+      <p style="text-align:center; margin-top:2em;">
+        <span class="chip">⚠️ MVP — features and stability still evolving</span>
+      </p>
     </section>
+
+
+
 
     <!-- Evolution (unchanged) -->
     <section id="evolution" aria-labelledby="evolution-title">
@@ -765,7 +810,7 @@
         <div class="gs-panel gs-left">
             <h2 id="gs-title">Get started</h2>
             <p class="muted">
-            Explore the repo, drop in a module, commit, and ship.
+            Explore the repo, drop in a bloc, commit, and ship.
             Pin a version with <code>?ref=&lt;bloc&gt;-vX.Y.Z</code>.
             Releases are managed via <b>release-please</b> (manifest mode).
             </p>
@@ -783,17 +828,18 @@
             <span class="lang">Terraform</span>
             <button class="copy" data-copy="#gs-code" aria-label="Copy code">Copy</button>
             </div>
-            <pre id="gs-code" class="code"><code>provider "google" {
-        project = var.project_id
-        region  = var.region
-    }
-
+            <pre id="gs-code" class="code"><code>
     data "google_client_config" "default" {}
 
     data "google_container_cluster" "gke" {
         project  = var.project_id
         location = var.region
         name     = var.cluster_name
+    }
+
+    provider "google" {
+      project = var.project_id
+      region  = var.region
     }
 
     provider "kubernetes" {

@@ -1,11 +1,17 @@
-# CloudBloc — Cloud Building Blocks
+# Cloudbloc — Cloud Building Blocks
 
 ## ⚡ SaaS-as-Code
+**One Terraform module (bloc) = One SaaS replacement.**
 
-**CloudBloc** is the next step after *IaaS, IaC, and SaaS.*
-👉 **SaaS-as-Code**: opinionated Terraform + Kubernetes modules that let you replace expensive SaaS with **self-hosted building blocks on GCP.**
+**Cloudbloc** is the next step after *IaaS, IaC, and SaaS.*
 
-💡 With CloudBloc, you can **Deploy an entire SaaS with a single bloc** in minutes — just one Terraform module.
+👉 **SaaS-as-Code**: opinionated Terraform + Kubernetes modules that let you replace overpriced SaaS with **self-hosted building blocks on your Cloud.**
+
+💡 With Cloudbloc, you don’t stitch together infra — you drop in **one module** and get a **complete SaaS replacement** running in your cluster.
+Just set a few variables → production-ready stack. No YAML sprawl. No manual plumbing.
+
+🔧 **How it works:**
+Each bloc is a pre-packaged Terraform module that wires up the right cloud + Kubernetes resources for you. **Minimal infra work, maximum leverage.**
 
 > 🔓 **Everything in this repository is open source and will remain free forever.**
 
@@ -16,7 +22,7 @@
 Most teams burn **\$50K–\$500K per year** on SaaS, and actually use **10–20% of the features.**
 With today’s OSS ecosystem, you can cover the critical pieces for **10% of the cost** — if you have the right building blocks.
 
-**CloudBloc delivers those blocks.**
+**Cloudbloc delivers those blocks.**
 Deploy production-ready modules straight into your GCP cluster:
 
 * **No YAML wrangling**
@@ -33,9 +39,9 @@ Deploy production-ready modules straight into your GCP cluster:
 
 ---
 
-### 🧱 What is CloudBloc?
+### 🧱 What is Cloudbloc?
 
-CloudBloc is a suite of **Terraform + Kubernetes modules** (“blocs”) that give you clean, opinionated, self-hosted replacements for common SaaS.
+Cloudbloc is a suite of **Terraform + Kubernetes modules** (“blocs”) that give you clean, opinionated, self-hosted replacements for common SaaS.
 
 * **Ship quickly** with sane defaults
 * **Customize infinitely** to fit your stack
@@ -164,7 +170,7 @@ module "searchbloc" {
 
 ---
 
-## 🌟 Why CloudBloc
+## 🌟 Why Cloudbloc
 
 * **Own your stack**: run core infra in your cloud, not someone else’s
 * **Sane defaults**: Autopilot-aware equality rules and resource hints keep plans quiet
@@ -180,7 +186,7 @@ timeline
     2006 : IaaS — Infrastructure on demand (AWS EC2, GCP Compute Engine)
     2012 : IaC — Declarative infra as code (Terraform, CloudFormation)
     2010s : SaaS — Fully managed apps (Datadog, Dropbox, Snowflake)
-    2020s+ : SaaC — SaaS-as-Code (CloudBloc: ObsBloc, SearchBloc, AppBloc)
+    2020s+ : SaaC — SaaS-as-Code (Cloudbloc: ObsBloc, SearchBloc, AppBloc)
 ```
 
 ---
