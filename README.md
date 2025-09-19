@@ -85,7 +85,7 @@ Release automation: **release-please (manifest mode)** with per-bloc tagging (e.
 
 ```hcl
 module "appbloc" {
-  source = "github.com/cloudbloc-io/cloudbloc//blocs/appbloc?ref=appbloc-v0.4.1"
+  source = "github.com/cloudbloc/cloudbloc//blocs/appbloc?ref=appbloc-v0.4.1"
 
   namespace      = var.app_namespace
   app_name       = "cloudbloc-webapp-${var.environment}"
@@ -115,7 +115,7 @@ module "appbloc" {
 
 ```hcl
 module "obsbloc" {
-  source = "github.com/cloudbloc-io/cloudbloc//blocs/obsbloc?ref=obsbloc-v0.4.1"
+  source = "github.com/cloudbloc/cloudbloc//blocs/obsbloc?ref=obsbloc-v0.4.1"
 
   namespace    = var.namespace
   app_name     = var.app_name
@@ -146,7 +146,7 @@ module "obsbloc" {
 
 ```hcl
 module "searchbloc" {
-  source = "github.com/cloudbloc-io/cloudbloc//blocs/searchbloc?ref=searchbloc-v0.4.1"
+  source = "github.com/cloudbloc/cloudbloc//blocs/searchbloc?ref=searchbloc-v0.4.1"
 
   project_id        = var.project_id
   namespace         = "obsbloc"
