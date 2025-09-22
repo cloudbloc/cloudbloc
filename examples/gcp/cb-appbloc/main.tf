@@ -4,7 +4,8 @@ locals {
 }
 
 module "appbloc" {
-  source         = "../../../blocs/appbloc"
+  source = "github.com/cloudbloc/cloudbloc//blocs/appbloc?ref=appbloc-0.4.2"
+  # source         = "../../../blocs/appbloc"
   namespace      = var.app_namespace
   app_name       = "cloudbloc-webapp-${var.environment}"
 
