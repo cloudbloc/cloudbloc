@@ -8,12 +8,38 @@
 ## ⚡ SaaS-as-Code
 **One Terraform module (bloc) = One SaaS replacement.**
 
-**Cloudbloc** is the next step after *IaaS, IaC, and SaaS.*
-
 👉 **SaaS-as-Code**: opinionated Terraform + Kubernetes modules that let you replace overpriced SaaS with **self-hosted building blocks on your Cloud.**
 
-💡 With Cloudbloc, you don’t stitch together infra — you drop in **one module** and get a **complete SaaS replacement** running in your cluster.
+💡 With Cloudbloc, you don’t stitch together infra. You drop in **one module** and get a **core SaaS replacement** running in your cluster.
 Just set a few variables → production-ready stack. No YAML sprawl. No manual plumbing.
+
+> 🔓 **Everything in this repository is open source and will remain free forever.**
+
+---
+
+## 🌐 Live Demos
+
+| Bloc          | Live URL                                              | Replacement        |
+|---------------|-------------------------------------------------------|--------------------|
+| 🚀 **AppBloc**   | [cloudbloc.io](https://cloudbloc.io)                     | Heroku Core             |
+| 📊 **ObsBloc**   | [obsbloc.cloudbloc.io](https://obsbloc.cloudbloc.io)     | Datadog Core            |
+| 🔍 **SearchBloc**| [searchbloc.cloudbloc.io](https://searchbloc.cloudbloc.io) | Elasticsearch/Algolia Core |
+
+---
+### 📸 Screenshots
+
+**🚀 AppBloc**
+<img src="./screenshots/appbloc_demo.png" alt="AppBloc Demo" width="800"/>
+
+**📊 ObsBloc**
+<img src="./screenshots/obsbloc_demo.png" alt="ObsBloc Demo" width="800"/>
+
+**🔍 SearchBloc**
+<img src="./screenshots/searchbloc_demo.png" alt="SearchBloc Demo" width="800"/>
+
+---
+
+**Cloudbloc** is the next step after *IaaS, IaC, and SaaS.*
 
 🔧 **How it works:**
 Each bloc is a pre-packaged Terraform module that wires up the right cloud + Kubernetes resources for you. **Minimal infra work, maximum leverage.**
@@ -96,7 +122,7 @@ Release automation: **release-please (manifest mode)** with per-bloc tagging (e.
 
 ```hcl
 module "appbloc" {
-  source = "github.com/cloudbloc/cloudbloc//blocs/appbloc?ref=appbloc-v0.4.1"
+  source = "github.com/cloudbloc/cloudbloc//blocs/appbloc?ref=appbloc-0.4.2"
 
   namespace      = var.app_namespace
   app_name       = "cloudbloc-webapp-${var.environment}"
@@ -126,7 +152,7 @@ module "appbloc" {
 
 ```hcl
 module "obsbloc" {
-  source = "github.com/cloudbloc/cloudbloc//blocs/obsbloc?ref=obsbloc-v0.4.1"
+  source = "github.com/cloudbloc/cloudbloc//blocs/obsbloc?ref=obsbloc-0.4.2"
 
   namespace    = var.namespace
   app_name     = var.app_name
@@ -157,7 +183,7 @@ module "obsbloc" {
 
 ```hcl
 module "searchbloc" {
-  source = "github.com/cloudbloc/cloudbloc//blocs/searchbloc?ref=searchbloc-v0.4.1"
+  source = "github.com/cloudbloc/cloudbloc//blocs/searchbloc?ref=searchbloc-0.4.2"
 
   project_id        = var.project_id
   namespace         = "obsbloc"

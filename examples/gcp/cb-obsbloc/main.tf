@@ -1,5 +1,6 @@
 module "obsbloc" {
-  source       = "../../../blocs/obsbloc"
+  source = "github.com/cloudbloc/cloudbloc//blocs/obsbloc?ref=obsbloc-0.4.2"
+  # source       = "../../../blocs/obsbloc"
   namespace    = var.namespace
   app_name     = var.app_name
   edge_ip_name = var.edge_ip_name

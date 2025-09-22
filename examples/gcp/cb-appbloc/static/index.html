@@ -493,7 +493,7 @@
             </p>
             <p><a class="bloc-link" href="https://cloudbloc.io" target="_blank" rel="noopener">cloudbloc.io →</a></p>
             <pre class="bloc-code"><code>module "appbloc" {
-      source   = "github.com/cloudbloc/cloudbloc//blocs/appbloc?ref=appbloc-v0.4.1"
+      source   = "github.com/cloudbloc/cloudbloc//blocs/appbloc?ref=appbloc-0.4.2"
       app_name = "cloudbloc-webapp-${var.environment}"
       image    = var.app_image
       domains  = var.domains
@@ -512,7 +512,7 @@
             </p>
             <p><a class="bloc-link" href="https://obsbloc.cloudbloc.io" target="_blank" rel="noopener">obsbloc.cloudbloc.io →</a></p>
             <pre class="bloc-code"><code>module "obsbloc" {
-      source        = "github.com/cloudbloc/cloudbloc//blocs/obsbloc?ref=obsbloc-v0.4.1"
+      source        = "github.com/cloudbloc/cloudbloc//blocs/obsbloc?ref=obsbloc-0.4.1"
       namespace     = var.namespace
       domains       = var.domains
       edge_ip_name  = var.edge_ip_name
@@ -531,7 +531,7 @@
             </p>
             <p><a class="bloc-link" href="https://searchbloc.cloudbloc.io" target="_blank" rel="noopener">searchbloc.cloudbloc.io →</a></p>
             <pre class="bloc-code"><code>module "searchbloc" {
-      source     = "github.com/cloudbloc/cloudbloc//blocs/searchbloc?ref=searchbloc-v0.4.1"
+      source     = "github.com/cloudbloc/cloudbloc//blocs/searchbloc?ref=searchbloc-0.4.2"
       project_id = var.project_id
       namespace  = "obsbloc"
       app_name   = "searchbloc"
@@ -849,7 +849,7 @@
     }
 
     module "appbloc" {
-        source   = "github.com/cloudbloc/cloudbloc//blocs/appbloc?ref=appbloc-v0.4.1"
+        source   = "github.com/cloudbloc/cloudbloc//blocs/appbloc?ref=appbloc-0.4.2"
         app_name = "cloudbloc-webapp-${var.environment}"
         image    = var.app_image
         domains  = var.domains
