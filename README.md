@@ -99,12 +99,12 @@ All can be deployed within minutes on your own cloud using the pre-built blocs.
 
 **Versions (latest):**
 
-* `blocs/appbloc`: **v0.4.1**
-* `blocs/obsbloc`: **v0.4.1**
-* `blocs/searchbloc`: **v0.4.1**
+* `blocs/appbloc`: **v0.4.2**
+* `blocs/obsbloc`: **v0.4.2**
+* `blocs/searchbloc`: **v0.4.2**
 * `modules/gke`: **v0.2.1**, `modules/cloudarmor`: **v0.2.1**
 
-Release automation: **release-please (manifest mode)** with per-bloc tagging (e.g. `searchbloc-v0.4.1`).
+Release automation: **release-please (manifest mode)** with per-bloc tagging (e.g. `searchbloc-0.4.2`).
 
 ---
 
@@ -217,7 +217,7 @@ timeline
     2006 : IaaS — Infrastructure on demand (AWS EC2, GCP Compute Engine)
     2012 : IaC — Declarative infra as code (Terraform, CloudFormation)
     2010s : SaaS — Fully managed apps (Datadog, Dropbox, Snowflake)
-    2020s+ : SaaC — SaaS-as-Code (Cloudbloc: ObsBloc, SearchBloc, AppBloc)
+    2020s+ : SaC — SaaS-as-Code (Cloudbloc: ObsBloc, SearchBloc, AppBloc)
 ```
 
 ---
@@ -260,7 +260,7 @@ User ⇄ HTTPS ⇄ Google LB ⇄ Ingress ⇄ Service ⇄ Pod(s)
 
 ## 🗺 Status & Roadmap
 
-**Status:** MVP/Alpha. The basics work; production hardening is ongoing.
+**Status:** MVP/Alpha on real GKE clusters. Built for GCP; AWS next.
 
 **Next milestones:**
 
@@ -275,7 +275,7 @@ User ⇄ HTTPS ⇄ Google LB ⇄ Ingress ⇄ Service ⇄ Pod(s)
 ## 🔖 Versioning & releases
 
 * Conventional Commits per bloc scope, e.g. `feat(searchbloc): ...`, `fix(obsbloc): ...`
-* Monorepo **release-please (manifest)** creates tags like `searchbloc-v0.4.1`
+* Monorepo **release-please (manifest)** creates tags like `searchbloc-0.4.2`
 * Consumers should pin to a tag in the module source `?ref=…`
 
 To trigger a patch release of one bloc without code changes:
@@ -302,6 +302,7 @@ git push
 * Never commit secrets. Pass `meili_master_key` via TF vars or a secret manager
 * Prefer TLS for public endpoints and limit ingress with Cloud Armor where applicable
 * Autopilot users: equality rules are tuned to avoid noisy plan diffs; open an issue if you see churn
+* Production: use Cloud Armor or equivalent WAF for public endpoints (examples included).
 
 ---
 
