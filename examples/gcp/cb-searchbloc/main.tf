@@ -1,5 +1,5 @@
 module "searchbloc" {
-  source = "github.com/cloudbloc/cloudbloc//blocs/searchbloc?ref=searchbloc-0.4.2"
+  source = "github.com/cloudbloc/cloudbloc//blocs/gcp/searchbloc?ref=searchbloc-0.4.2"
   # source = "../../../blocs/searchbloc"
 
   project_id        = var.project_id
