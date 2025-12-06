@@ -99,9 +99,9 @@ All can be deployed within minutes on your own cloud using the pre-built blocs.
 
 **Versions (latest):**
 
-* `blocs/appbloc`: **v0.4.2**
-* `blocs/obsbloc`: **v0.4.2**
-* `blocs/searchbloc`: **v0.4.2**
+* `blocs/gcp/appbloc`: **v0.4.2**
+* `blocs/gcp/obsbloc`: **v0.4.2**
+* `blocs/gcp/searchbloc`: **v0.4.2**
 * `modules/gke`: **v0.2.1**, `modules/cloudarmor`: **v0.2.1**
 
 Release automation: **release-please (manifest mode)** with per-bloc tagging (e.g. `searchbloc-0.4.2`).
@@ -122,7 +122,7 @@ Release automation: **release-please (manifest mode)** with per-bloc tagging (e.
 
 ```hcl
 module "appbloc" {
-  source = "github.com/cloudbloc/cloudbloc//blocs/appbloc?ref=appbloc-0.4.2"
+  source = "github.com/cloudbloc/cloudbloc//blocs/gcp/appbloc?ref=gcp-appbloc-0.4.2"
 
   namespace      = var.app_namespace
   app_name       = "cloudbloc-webapp-${var.environment}"
@@ -183,7 +183,7 @@ module "obsbloc" {
 
 ```hcl
 module "searchbloc" {
-  source = "github.com/cloudbloc/cloudbloc//blocs/searchbloc?ref=searchbloc-0.4.2"
+  source = "github.com/cloudbloc/cloudbloc//blocs/gcp/searchbloc?ref=gcp-searchbloc-0.4.2"
 
   project_id        = var.project_id
   namespace         = "obsbloc"
@@ -198,6 +198,41 @@ module "searchbloc" {
 > SearchBloc does not create its own ingress. Instead, it plugs into **ObsBloc’s ingress** when you enable
 > `enable_searchbloc = true` in ObsBloc.
 > It will then be reachable at `https://<searchbloc_domains>` via ObsBloc’s edge LB.
+
+---
+
+## Blocs layout (gcp vs edge)
+
+This repo provides reusable Terraform "blocs" for different deployment targets:
+
+- blocs/gcp/... — modules and stacks targeted at Google Cloud Platform.
+- blocs/edge/... — equivalent modules configured for edge / homelab environments.
+
+Switching module sources
+- GitHub-style module:
+  - GCP: `source = "github.com/cloudbloc/cloudbloc//blocs/gcp/<bloc>?ref=<tag>"`
+  - Edge: `source = "github.com/cloudbloc/cloudbloc//blocs/edge/<bloc>?ref=<tag>"`
+- Local/relative module:
+  - GCP: `source = "../../blocs/gcp/<bloc>"`
+  - Edge: `source = "../../blocs/edge/<bloc>"`
+
+Note: Consumers should not change variables/outputs inside the bloc modules; only module `source` strings are typically changed to pick gcp vs edge.
+
+## sitebloc (static site hosting)
+
+A GCP module for static site hosting backed by a Google Cloud Storage bucket is available at:
+`blocs/gcp/sitebloc`
+
+Example usage (examples/gcp/cb-sitebloc):
+- From the example directory:
+```bash
+cd examples/gcp/cb-sitebloc
+terraform init -upgrade
+terraform plan -var-file=example.tfvars
+```
+
+## Security / tfvars
+- Sensitive tfvars are excluded by .gitignore. Use -var-file to pass secrets or keep per-environment tfvars outside version control.
 
 ---
 
