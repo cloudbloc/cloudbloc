@@ -1,6 +1,6 @@
 module "searchbloc" {
-  source = "github.com/cloudbloc/cloudbloc//blocs/gcp/searchbloc?ref=searchbloc-0.4.2"
-  # source = "../../../blocs/searchbloc"
+  source = "github.com/cloudbloc/cloudbloc//blocs/gcp/searchbloc?ref=gcp-searchbloc-0.4.2"
+  # source = "../../../blocs/gcp/searchbloc"
 
   project_id        = var.project_id
   namespace         = "obsbloc" # same namespace as obsbloc
