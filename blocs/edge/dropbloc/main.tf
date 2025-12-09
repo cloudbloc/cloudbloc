@@ -1,9 +1,31 @@
+locals {
+  # If user doesn’t specify a canonical host, fall back to domain
+  nextcloud_canonical_host = (
+    var.nextcloud_canonical_host != "" ?
+    var.nextcloud_canonical_host :
+    var.nextcloud_hostname
+  )
+
+  nextcloud_canonical_protocol = var.nextcloud_canonical_protocol
+}
+
 resource "kubernetes_namespace_v1" "this" {
   metadata {
     name = var.namespace
   }
 }
 
+# StorageClass for local hostPath PVs (no provisioner)
+resource "kubernetes_storage_class_v1" "nextcloud_local" {
+  metadata {
+    name = var.storage_class_name
+  }
+
+  storage_provisioner = "kubernetes.io/no-provisioner"
+  volume_binding_mode = "WaitForFirstConsumer"
+}
+
+# Static PV backed by hostPath on the Tiny
 resource "kubernetes_persistent_volume_v1" "nextcloud_data" {
   metadata {
     name = "nextcloud-data-pv"
@@ -11,31 +33,31 @@ resource "kubernetes_persistent_volume_v1" "nextcloud_data" {
 
   spec {
     capacity = {
-      storage = "800Gi"
+      storage = var.data_size
     }
 
-    access_modes = ["ReadWriteOnce"]
-
+    access_modes                     = ["ReadWriteOnce"]
     persistent_volume_reclaim_policy = "Retain"
-    storage_class_name               = "nextcloud-local-storage"
+    storage_class_name               = var.storage_class_name
 
     persistent_volume_source {
       host_path {
-        path = "/mnt/dropbloc/nextcloud-data"
+        path = var.data_host_path
         type = "DirectoryOrCreate"
       }
     }
   }
+
+  depends_on = [kubernetes_storage_class_v1.nextcloud_local]
 }
 
-
+# PVC in the same namespace, bound to the PV above
 resource "kubernetes_persistent_volume_claim_v1" "nextcloud_data" {
   metadata {
     name      = "nextcloud-data-pvc"
     namespace = kubernetes_namespace_v1.this.metadata[0].name
   }
 
-  # So Terraform doesn't spin forever if binding is a bit slow
   wait_until_bound = true
 
   spec {
@@ -43,15 +65,16 @@ resource "kubernetes_persistent_volume_claim_v1" "nextcloud_data" {
 
     resources {
       requests = {
-        storage = "800Gi"
+        storage = var.data_size
       }
     }
 
-    storage_class_name = "nextcloud-local-storage"
+    storage_class_name = var.storage_class_name
     volume_name        = kubernetes_persistent_volume_v1.nextcloud_data.metadata[0].name
   }
 }
 
+# Nextcloud Helm release
 resource "helm_release" "nextcloud" {
   name      = "nextcloud"
   namespace = kubernetes_namespace_v1.this.metadata[0].name
@@ -60,8 +83,7 @@ resource "helm_release" "nextcloud" {
   chart      = "nextcloud"
   version    = var.chart_version
 
-  # Make Terraform/Helm less strict for homelab
-  timeout = 600 # 10 minutes, just in case
+  timeout = 600
   wait    = false
 
   values = [
@@ -70,53 +92,55 @@ resource "helm_release" "nextcloud" {
         type       = "NodePort"
         port       = 80
         targetPort = 80
-        nodePort   = 30080
+        nodePort   = var.service_node_port
       }
 
-      # You currently have no ingress controller; keep this off for now
       ingress = {
         enabled = false
         hosts   = []
       }
 
       nextcloud = {
-        host = "10.0.0.187:30080"
+        host = "${var.node_ip}:${var.service_node_port}"
 
         trustedDomains = [
-          "10.0.0.187",
-          "10.0.0.187:30080"
+          var.node_ip,
+          "${var.node_ip}:${var.service_node_port}",
+          local.nextcloud_canonical_host,
         ]
 
         extraEnv = [
           {
             name  = "OVERWRITEHOST"
-            value = "10.0.0.187:30080"
+            value = local.nextcloud_canonical_host
+
           },
           {
             name  = "OVERWRITEPROTOCOL"
-            value = "http"
+            value = local.nextcloud_canonical_protocol
+
           },
           {
             name  = "PHP_MEMORY_LIMIT"
-            value = "2048M"
+            value = var.php_memory_limit
           },
           {
             name  = "PHP_UPLOAD_LIMIT"
-            value = "16G"
+            value = var.php_upload_limit
           },
           {
             name  = "PHP_MAX_EXECUTION_TIME"
-            value = "3600"
+            value = var.php_max_execution_time
           },
         ]
 
         phpConfigs = {
           "zz-custom.ini" = <<-EOT
-memory_limit = 2048M
-upload_max_filesize = 16G
-post_max_size = 16G
-max_execution_time = 3600
-max_input_time = 3600
+memory_limit = ${var.php_memory_limit}
+upload_max_filesize = ${var.php_upload_limit}
+post_max_size = ${var.php_upload_limit}
+max_execution_time = ${var.php_max_execution_time}
+max_input_time = ${var.php_max_execution_time}
 EOT
         }
 
@@ -136,27 +160,19 @@ EOT
         readOnlyRootFilesystem = false
       }
 
-      # Use the internal DB (sqlite/mariadb via chart) – fine for homelab
       internalDatabase = {
         enabled = true
       }
 
-      # Persistence:
-      # - main app/config (/var/www/html) -> stays on internal disk (default storage)
-      # - data directory (/var/www/html/data) -> goes to SSD via our PVC
       persistence = {
-        # Keep this true so the chart still uses a PVC for /var/www/html
-        # but let it use the default StorageClass (no existingClaim here).
         enabled = true
 
-        # Put ONLY the big user data (photos/videos/files) on the SSD
         nextcloudData = {
           enabled       = true
           existingClaim = kubernetes_persistent_volume_claim_v1.nextcloud_data.metadata[0].name
         }
       }
 
-      # Relax probes so it doesn't flap during init on homelab
       livenessProbe = {
         enabled = false
       }
@@ -172,27 +188,29 @@ EOT
   ]
 }
 
+########################
+# Cloudflared (Tunnel) #
+########################
+
 # Secret: cloudflared credentials.json
 resource "kubernetes_secret" "cloudflared_credentials" {
+  count = var.enable_cloudflared ? 1 : 0
+
   metadata {
     name      = "cloudflared-credentials"
     namespace = kubernetes_namespace_v1.this.metadata[0].name
   }
 
-  # Pass the raw file contents; provider handles encoding
   data = {
     "credentials.json" = file(var.cloudflared_credentials_file)
   }
 
   type = "Opaque"
-
-  depends_on = [
-    kubernetes_namespace_v1.this
-  ]
 }
 
-# ConfigMap: cloudflared config.yaml
 resource "kubernetes_config_map" "cloudflared_config" {
+  count = var.enable_cloudflared ? 1 : 0
+
   metadata {
     name      = "cloudflared-config"
     namespace = kubernetes_namespace_v1.this.metadata[0].name
@@ -209,14 +227,13 @@ ingress:
   - service: http_status:404
 EOT
   }
-
-  depends_on = [
-    kubernetes_namespace_v1.this
-  ]
 }
+
 
 # Deployment: cloudflared
 resource "kubernetes_deployment" "cloudflared" {
+  count = var.enable_cloudflared ? 1 : 0
+
   metadata {
     name      = "cloudflared"
     namespace = kubernetes_namespace_v1.this.metadata[0].name
@@ -269,7 +286,8 @@ resource "kubernetes_deployment" "cloudflared" {
           name = "config"
 
           config_map {
-            name = kubernetes_config_map.cloudflared_config.metadata[0].name
+            # safe because count = 1 when enabled, 0 when disabled
+            name = kubernetes_config_map.cloudflared_config[0].metadata[0].name
 
             items {
               key  = "config.yaml"
@@ -282,7 +300,7 @@ resource "kubernetes_deployment" "cloudflared" {
           name = "credentials"
 
           secret {
-            secret_name = kubernetes_secret.cloudflared_credentials.metadata[0].name
+            secret_name = kubernetes_secret.cloudflared_credentials[0].metadata[0].name
           }
         }
       }
@@ -292,6 +310,6 @@ resource "kubernetes_deployment" "cloudflared" {
   depends_on = [
     kubernetes_namespace_v1.this,
     kubernetes_config_map.cloudflared_config,
-    kubernetes_secret.cloudflared_credentials
+    kubernetes_secret.cloudflared_credentials,
   ]
 }
