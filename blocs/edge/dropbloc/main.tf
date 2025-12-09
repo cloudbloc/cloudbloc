@@ -32,29 +32,46 @@ resource "helm_release" "nextcloud" {
       }
 
       nextcloud = {
-        # External hostname you actually use (same as Cloudflare + app)
-        host = var.nextcloud_hostname
+        host = "10.0.0.187:30080"
 
         trustedDomains = [
-          var.nextcloud_hostname,
           "10.0.0.187",
+          "10.0.0.187:30080"
         ]
 
-        # Use env vars to configure real external URL
         extraEnv = [
           {
             name  = "OVERWRITEHOST"
-            value = var.nextcloud_hostname
+            value = "10.0.0.187:30080"
           },
           {
             name  = "OVERWRITEPROTOCOL"
-            value = "https"
+            value = "http"
           },
           {
-            name  = "OVERWRITECLIURL"
-            value = "https://${var.nextcloud_hostname}"
-          }
+            name  = "PHP_MEMORY_LIMIT"
+            value = "2048M"
+          },
+          {
+            name  = "PHP_UPLOAD_LIMIT"
+            value = "16G"
+          },
+          {
+            name  = "PHP_MAX_EXECUTION_TIME"
+            value = "3600"
+          },
+
         ]
+
+        phpConfigs = {
+          "zz-custom.ini" = <<-EOT
+memory_limit = 2048M
+upload_max_filesize = 16G
+post_max_size = 16G
+max_execution_time = 3600
+max_input_time = 3600
+EOT
+        }
 
         username = var.admin_username
         password = var.admin_password
