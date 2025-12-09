@@ -4,6 +4,54 @@ resource "kubernetes_namespace_v1" "this" {
   }
 }
 
+resource "kubernetes_persistent_volume_v1" "nextcloud_data" {
+  metadata {
+    name = "nextcloud-data-pv"
+  }
+
+  spec {
+    capacity = {
+      storage = "800Gi"
+    }
+
+    access_modes = ["ReadWriteOnce"]
+
+    persistent_volume_reclaim_policy = "Retain"
+    storage_class_name               = "nextcloud-local-storage"
+
+    persistent_volume_source {
+      host_path {
+        path = "/mnt/dropbloc/nextcloud-data"
+        type = "DirectoryOrCreate"
+      }
+    }
+  }
+}
+
+
+resource "kubernetes_persistent_volume_claim_v1" "nextcloud_data" {
+  metadata {
+    name      = "nextcloud-data-pvc"
+    namespace = kubernetes_namespace_v1.this.metadata[0].name
+  }
+
+  # So Terraform doesn't spin forever if binding is a bit slow
+  wait_until_bound = true
+
+  spec {
+    access_modes = ["ReadWriteOnce"]
+
+    resources {
+      requests = {
+        storage = "800Gi"
+      }
+    }
+
+    storage_class_name = "nextcloud-local-storage"
+    volume_name        = kubernetes_persistent_volume_v1.nextcloud_data.metadata[0].name
+  }
+}
+
 resource "helm_release" "nextcloud" {
   name      = "nextcloud"
   namespace = kubernetes_namespace_v1.this.metadata[0].name
@@ -60,7 +108,6 @@ resource "helm_release" "nextcloud" {
             name  = "PHP_MAX_EXECUTION_TIME"
             value = "3600"
           },
-
         ]
 
         phpConfigs = {
@@ -77,19 +124,35 @@ EOT
         password = var.admin_password
       }
 
+      podSecurityContext = {
+        fsGroup             = 33
+        fsGroupChangePolicy = "OnRootMismatch"
+      }
+
+      securityContext = {
+        runAsUser              = 33
+        runAsGroup             = 33
+        runAsNonRoot           = true
+        readOnlyRootFilesystem = false
+      }
+
       # Use the internal DB (sqlite/mariadb via chart) – fine for homelab
       internalDatabase = {
         enabled = true
       }
 
-      # 🔒 REAL PERSISTENCE (this is the missing piece)
-      # This matches the official chart:
-      # persistence.enabled + persistence.nextcloudData.enabled
+      # Persistence:
+      # - main app/config (/var/www/html) -> stays on internal disk (default storage)
+      # - data directory (/var/www/html/data) -> goes to SSD via our PVC
       persistence = {
+        # Keep this true so the chart still uses a PVC for /var/www/html
+        # but let it use the default StorageClass (no existingClaim here).
         enabled = true
+
+        # Put ONLY the big user data (photos/videos/files) on the SSD
         nextcloudData = {
-          enabled = true
-          size    = "50Gi"
+          enabled       = true
+          existingClaim = kubernetes_persistent_volume_claim_v1.nextcloud_data.metadata[0].name
         }
       }
 
@@ -104,7 +167,8 @@ EOT
   ]
 
   depends_on = [
-    kubernetes_namespace_v1.this
+    kubernetes_namespace_v1.this,
+    kubernetes_persistent_volume_claim_v1.nextcloud_data,
   ]
 }
 
