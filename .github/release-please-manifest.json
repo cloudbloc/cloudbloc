@@ -1,7 +1,9 @@
 {
-    "blocs/appbloc": "0.4.2",
-    "blocs/obsbloc": "0.4.2",
-    "blocs/searchbloc": "0.4.2",
+    "blocs/gcp/appbloc": "0.4.2",
+    "blocs/gcp/obsbloc": "0.4.2",
+    "blocs/gcp/searchbloc": "0.4.2",
+    "blocs/gcp/sitebloc": "0.0.1",
+    "blocs/edge/dropbloc": "0.1.0",
     "modules/cloudarmor": "0.2.1",
     "modules/gke": "0.2.1"
 }
