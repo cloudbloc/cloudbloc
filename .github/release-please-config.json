@@ -1,26 +1,34 @@
 {
-    "include-v-in-tag": false,
-    "tag-separator": "-",
-    "packages": {
-      "blocs/appbloc": {
-        "release-type": "terraform-module",
-        "component": "appbloc"
-      },
-      "blocs/obsbloc": {
-        "release-type": "terraform-module",
-        "component": "obsbloc"
-      },
-      "blocs/searchbloc": {
-        "release-type": "terraform-module",
-        "component": "searchbloc"
-      },
-      "modules/cloudarmor": {
-        "release-type": "terraform-module",
-        "component": "cloudarmor"
-      },
-      "modules/gke": {
-        "release-type": "terraform-module",
-        "component": "gke"
-      }
+  "include-v-in-tag": false,
+  "tag-separator": "-",
+  "packages": {
+    "blocs/gcp/appbloc": {
+      "release-type": "terraform-module",
+      "component": "appbloc"
+    },
+    "blocs/gcp/obsbloc": {
+      "release-type": "terraform-module",
+      "component": "obsbloc"
+    },
+    "blocs/gcp/searchbloc": {
+      "release-type": "terraform-module",
+      "component": "searchbloc"
+    },
+    "blocs/gcp/sitebloc": {
+      "release-type": "terraform-module",
+      "component": "sitebloc"
+    },
+    "blocs/edge/dropbloc": {
+      "release-type": "terraform-module",
+      "component": "dropbloc"
+    },
+    "modules/cloudarmor": {
+      "release-type": "terraform-module",
+      "component": "cloudarmor"
+    },
+    "modules/gke": {
+      "release-type": "terraform-module",
+      "component": "gke"
     }
+  }
 }
