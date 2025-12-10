@@ -1,26 +1,26 @@
 {
-  "include-v-in-tag": false,
+  "include-v-in-tag": true,
   "tag-separator": "-",
   "packages": {
     "blocs/gcp/appbloc": {
       "release-type": "terraform-module",
-      "component": "appbloc"
+      "component": "gcp-appbloc"
     },
     "blocs/gcp/obsbloc": {
       "release-type": "terraform-module",
-      "component": "obsbloc"
+      "component": "gcp-obsbloc"
     },
     "blocs/gcp/searchbloc": {
       "release-type": "terraform-module",
-      "component": "searchbloc"
+      "component": "gcp-searchbloc"
     },
     "blocs/gcp/sitebloc": {
       "release-type": "terraform-module",
-      "component": "sitebloc"
+      "component": "gcp-sitebloc"
     },
     "blocs/edge/dropbloc": {
       "release-type": "terraform-module",
-      "component": "dropbloc"
+      "component": "edge-dropbloc"
     },
     "modules/cloudarmor": {
       "release-type": "terraform-module",
