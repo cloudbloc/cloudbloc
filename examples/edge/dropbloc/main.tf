@@ -15,10 +15,7 @@ module "dropbloc" {
   admin_username = "admin"
   admin_password = "supersecurepassword"
 
-  service_node_port      = 30080
-  php_memory_limit       = "2048M"
-  php_upload_limit       = "16G"
-  php_max_execution_time = 3600
+  service_node_port = 30080
 
   enable_cloudflared           = true
   cloudflared_credentials_file = abspath("${path.module}/credentials.json")
