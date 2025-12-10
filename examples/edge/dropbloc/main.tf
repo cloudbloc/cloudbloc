@@ -2,7 +2,6 @@ module "dropbloc" {
   source = "github.com/cloudbloc/cloudbloc//blocs/edge/dropbloc?ref=edge-dropbloc-v0.1.0"
   # source = "../../../blocs/edge/dropbloc"
 
-
   namespace      = "dropbloc"
   node_ip        = "10.0.0.187" # LAN IP
   data_host_path = "/mnt/dropbloc/nextcloud-data"
