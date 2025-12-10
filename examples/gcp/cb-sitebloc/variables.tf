@@ -13,13 +13,13 @@ variable "environment" {
 variable "region" {
   description = "The GCP region to deploy resources in"
   type        = string
-  default = "us-east-1"
+  default     = "us-east-1"
 }
 
 variable "site_name" {
   description = "The name of the Google Cloud Storage bucket for static site hosting."
   type        = string
-  default = "sitebloc.cloudbloc.io"
+  default     = "sitebloc.cloudbloc.io"
 }
 
 variable "location" {

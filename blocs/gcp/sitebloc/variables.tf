@@ -23,7 +23,7 @@ variable "website_not_found_page" {
 
 variable "cors_configuration" {
   description = "CORS configuration for the bucket."
-  type        = list(object({
+  type = list(object({
     origin          = list(string)
     method          = list(string)
     max_age_seconds = number

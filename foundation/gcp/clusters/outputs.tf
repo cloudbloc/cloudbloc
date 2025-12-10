@@ -4,7 +4,7 @@ output "gke_name" {
 }
 
 output "gke_endpoint" {
-  value       = module.gke.endpoint   # NOTE: your module already includes "https://"
+  value       = module.gke.endpoint # NOTE: your module already includes "https://"
   description = "API endpoint"
 }
 

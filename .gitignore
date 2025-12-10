@@ -43,3 +43,5 @@ terraform.rc
 # macOS junk
 .DS_Store
 **/.DS_Store
+
+examples/edge/dropbloc/credentials.json
