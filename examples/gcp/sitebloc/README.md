@@ -1,4 +1,4 @@
-# cb-sitebloc (example)
+# sitebloc (example)
 
 This example demonstrates how to host a static site using the sitebloc module.
 
@@ -16,7 +16,7 @@ To switch to a local module during development:
 
 Commands
 ```bash
-cd examples/gcp/cb-sitebloc
+cd examples/gcp/sitebloc
 terraform init -upgrade
 terraform plan -var-file=example.tfvars
 ```

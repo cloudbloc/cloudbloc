@@ -22,7 +22,7 @@ Notes
 
 Commands
 ```bash
-cd examples/gcp/cb-sitebloc
+cd examples/gcp/sitebloc
 terraform init -upgrade
 terraform plan -var-file=example.tfvars
 ```

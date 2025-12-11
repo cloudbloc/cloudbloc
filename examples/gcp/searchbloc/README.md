@@ -1,4 +1,4 @@
-# cb-searchbloc — SearchBloc (Meilisearch) Demo
+# searchbloc — SearchBloc (Meilisearch) Demo
 
 A minimal, production‑lean demo of **SearchBloc** powered by **Meilisearch** on GKE. This README walks you from zero → searchable UI using a realistic `products` index.
 
