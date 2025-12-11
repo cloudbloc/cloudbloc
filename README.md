@@ -223,10 +223,10 @@ Note: Consumers should not change variables/outputs inside the bloc modules; onl
 A GCP module for static site hosting backed by a Google Cloud Storage bucket is available at:
 `blocs/gcp/sitebloc`
 
-Example usage (examples/gcp/cb-sitebloc):
+Example usage (examples/gcp/sitebloc):
 - From the example directory:
 ```bash
-cd examples/gcp/cb-sitebloc
+cd examples/gcp/sitebloc
 terraform init -upgrade
 terraform plan -var-file=example.tfvars
 ```

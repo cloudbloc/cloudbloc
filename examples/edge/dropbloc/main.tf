@@ -1,5 +1,5 @@
 module "dropbloc" {
-  source = "github.com/cloudbloc/cloudbloc//blocs/edge/dropbloc?ref=edge-dropbloc-v0.1.0"
+  source = "github.com/cloudbloc/cloudbloc//blocs/edge/dropbloc?ref=edge-dropbloc-v0.2.0"
   # source = "../../../blocs/edge/dropbloc"
 
   namespace      = "dropbloc"

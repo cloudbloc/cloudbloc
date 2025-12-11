@@ -7,7 +7,7 @@ Examples live under `examples/`. Each example demonstrates how to call blocs in 
 
 Run an example:
 ```bash
-cd examples/gcp/cb-sitebloc
+cd examples/gcp/sitebloc
 terraform init -upgrade
 terraform plan -var-file=example.tfvars
 ```
