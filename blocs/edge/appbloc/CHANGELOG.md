@@ -1,13 +1,11 @@
 # Changelog
 
-## [0.2.0](https://github.com/cloudbloc/cloudbloc/compare/edge-dropbloc-v0.1.1...edge-dropbloc-v0.2.0) (2025-12-11)
+## 0.1.0 (2025-12-11)
 
 
 ### Features
 
 * **appbloc:** add appbloc module for homelab and on-prem deployment ([#35](https://github.com/cloudbloc/cloudbloc/issues/35)) ([856ee28](https://github.com/cloudbloc/cloudbloc/commit/856ee28db02c5f273df9e24cb6ea3a650812ca3a))
-
-## [0.1.1](https://github.com/cloudbloc/cloudbloc/compare/edge-dropbloc-v0.1.0...edge-dropbloc-v0.1.1) (2025-12-10)
 
 
 ### Bug Fixes
