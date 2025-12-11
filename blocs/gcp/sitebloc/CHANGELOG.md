@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.3](https://github.com/cloudbloc/cloudbloc/compare/gcp-sitebloc-v0.0.2...gcp-sitebloc-v0.0.3) (2025-12-11)
+
+
+### Bug Fixes
+
+* update example paths and module sources ([#37](https://github.com/cloudbloc/cloudbloc/issues/37)) ([471d31f](https://github.com/cloudbloc/cloudbloc/commit/471d31fdce3750e93cadff1224613c2ca2c721bd))
+
 ## [0.0.2](https://github.com/cloudbloc/cloudbloc/compare/gcp-sitebloc-v0.0.1...gcp-sitebloc-v0.0.2) (2025-12-10)
 
 
