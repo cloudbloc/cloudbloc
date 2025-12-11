@@ -22,6 +22,10 @@
       "release-type": "terraform-module",
       "component": "edge-dropbloc"
     },
+    "blocs/edge/appbloc": {
+      "release-type": "terraform-module",
+      "component": "edge-appbloc"
+    },
     "modules/cloudarmor": {
       "release-type": "terraform-module",
       "component": "cloudarmor"

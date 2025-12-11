@@ -2,7 +2,7 @@
 
 A production-ready, self-hosted **Nextcloud** module designed for:
 
-* Homelabs (Tiny PC, NUC, Lenovo Tiny)
+* Homelabs (Local PC, NUC, Lenovo Tiny)
 * External SSD / NVMe local storage
 * On-prem production nodes
 * Optional **Cloudflare Tunnel** for secure HTTPS without exposing ports
@@ -26,7 +26,7 @@ Everything is fully automated through Terraform.
 
 | Variable                           | Description                                        |
 | ---------------------------------- | -------------------------------------------------- |
-| `node_ip`                          | LAN IP of your Tiny or node (ex: `192.168.1.50`)   |
+| `node_ip`                          | LAN IP of your local or node (ex: `192.168.1.50`)   |
 | `data_host_path`                   | Directory on your SSD/NVMe to store Nextcloud data |
 | `admin_username`, `admin_password` | Nextcloud admin login                              |
 
@@ -43,7 +43,7 @@ Your tunnel and credentials cannot be reused by others.
 
 ---
 
-# 📦 **1. Prepare Storage on Your Tiny**
+# 📦 **1. Prepare Storage on Local**
 
 This is the only manual step:
 

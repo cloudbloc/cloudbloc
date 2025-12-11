@@ -1,0 +1,1047 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cloudbloc — SaaS-as-Code</title>
+    <meta name="description" content="Cloudbloc brings beautiful, production-ready building blocks for infra-as-code. Deploy SaaS as Code — fast, safe, and tasteful." />
+    <meta property="og:title" content="Cloudbloc — SaaS-as-Code" />
+    <meta property="og:description" content="Ship with style. Operate with confidence." />
+    <meta property="og:type" content="website" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#6C3AF5" />
+    <link rel="canonical" href="https://cloudbloc.io/">
+    <meta property="og:url" content="https://cloudbloc.io/">
+    <meta property="og:image" content="https://cloudbloc.io/og.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" href="/favicon.ico">
+
+
+    <style>
+      /* --- Light Professional Theme (HashiCorp-style seamless background) --- */
+      :root{
+        --purple:#6C3AF5; --purple-2:#8E67FF;
+        --page:#f7f8ff; --page-2:#fafbff;
+        --ink:#1a1b2b; --muted:#5b5e75; --line:#e8eaf5;
+        --radius:16px;
+        --shadow:0 12px 28px rgba(20,24,60,.08), 0 2px 6px rgba(20,24,60,.06);
+      }
+      *{box-sizing:border-box}
+      html,body{height:100%}
+      html{scroll-behavior:smooth}
+      body{
+        margin:0;
+        font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+        color:var(--ink);
+        background:
+          radial-gradient(1200px 800px at 12% -10%, rgba(142,103,255,.10) 0%, rgba(142,103,255,0) 55%),
+          radial-gradient(900px 600px at 110% -15%, rgba(108,58,245,.09) 0%, rgba(108,58,245,0) 58%),
+          linear-gradient(180deg, var(--page-2) 0%, var(--page) 45%, #f6f7ff 100%);
+        min-height:100%;
+        position:relative;
+        overflow-x:hidden;
+      }
+      body::after{content:"";position:fixed;inset:0;pointer-events:none;
+        background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.025'/></svg>");
+        background-size:160px 160px;opacity:.75;mix-blend-mode:multiply}
+      a{color:#5e46ff;text-decoration:none}
+      a:hover{text-decoration:underline}
+      img{max-width:100%;display:block;height:auto}
+      .container{width:min(1120px,92vw);margin:0 auto}
+
+      /* --- Top Nav --- */
+      .nav-wrap{position:sticky;top:0;z-index:50;backdrop-filter:blur(10px);
+        background:linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.65));
+        border-bottom:1px solid var(--line)}
+      nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0}
+      .brand{display:flex;align-items:center;gap:12px;color:var(--ink)}
+      .logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--purple),var(--purple-2));display:grid;place-items:center;box-shadow:0 6px 18px rgba(108,58,245,.35)}
+      .logo svg{width:22px;height:22px;fill:#fff}
+      .brand b{font-size:18px;letter-spacing:.2px}
+      .nav-links{display:flex;gap:22px;font-weight:600}
+      .nav-links a{color:var(--ink);opacity:.9}
+      .nav-links a:hover{opacity:1}
+      .nav-cta{display:flex;gap:10px;align-items:center}
+      .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 16px;border-radius:12px;border:1px solid var(--line);cursor:pointer;background:#fff;color:var(--ink);font-weight:700;letter-spacing:.2px;box-shadow:var(--shadow);transition:transform .06s ease, background .2s ease, border-color .2s ease}
+      .btn:active{transform:translateY(1px)}
+      .btn.primary{background:linear-gradient(135deg,var(--purple),var(--purple-2));border-color:transparent;color:#fff}
+      .btn.ghost{background:#fff}
+      .menu-toggle{display:none;appearance:none;background:transparent;border:0;color:var(--ink);padding:10px;border-radius:10px}
+      .mobile-panel{display:none;background:#ffffff; border:1px solid var(--line); border-radius:12px; margin-top:10px; padding:12px; box-shadow:var(--shadow)}
+      .mobile-panel a{display:block;padding:12px;border-radius:8px;color:var(--ink)}
+      .mobile-panel .split{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+
+      /* --- Hero --- */
+      header.hero{padding:60px 0 90px}
+      .kicker{display:inline-flex;align-items:center;gap:8px;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--purple),var(--purple-2));padding:6px 10px;border-radius:999px}
+      .title{font-size:clamp(2rem,5vw,3.2rem);line-height:1.15;font-weight:900;letter-spacing:.2px;margin:14px 0;color:var(--ink)}
+      .title .grad{background:linear-gradient(90deg,var(--purple),var(--purple-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+      .subtitle{color:var(--muted);max-width:780px;margin:0}
+      .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:44px;align-items:center;margin-top:26px}
+      .tiles{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+      .tile{background:#ffffff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+      .tile strong{display:block;margin-bottom:6px}
+
+      /* --- Sections --- */
+      section{padding:56px 0}
+      .section-title{font-size:clamp(1.6rem,2.8vw,2rem);margin:0 0 8px;color:var(--ink)}
+      .section-sub{color:var(--muted);margin:0 0 22px}
+      .grid{display:grid;gap:20px}
+      /* MORE FORGIVING 3-COL GRID */
+      .grid.cols-3{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+      /* Cards flex so code sits neatly at bottom */
+      .card{background:#ffffff;border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);display:flex;flex-direction:column}
+      .alt{background:linear-gradient(180deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,.65) 100%)}
+
+      /* --- Code Block --- */
+      pre{background:#0f1126;color:#e9e9ff;border:1px solid #dfe0f5;border-radius:14px;padding:16px;overflow:auto;box-shadow:var(--shadow);font-size:13px;line-height:1.4;max-height:220px}
+      .card pre{margin-top:auto}
+
+      /* --- Footer --- */
+      footer{padding:52px 0 72px;color:var(--muted)}
+      .footer-box{background:#ffffff;border:1px solid var(--line);border-radius:var(--radius);padding:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;box-shadow:var(--shadow)}
+      .footer-links{display:flex;gap:10px}
+
+      /* --- Utilities --- */
+      .chip{font-size:12px;color:#fff;background:linear-gradient(135deg,var(--purple),var(--purple-2));padding:6px 10px;border-radius:999px}
+      .muted{color:var(--muted)}
+      a:focus-visible, .btn:focus-visible, .bloc-link:focus-visible {
+        outline: 3px solid var(--purple);
+        outline-offset: 2px;
+        border-radius: 10px;
+      }
+
+
+      /* --- Responsive --- */
+      @media (max-width: 980px){
+        .hero-grid{grid-template-columns:1fr;gap:26px}
+        header.hero{padding:44px 0 72px}
+        .tiles{grid-template-columns:1fr}
+      }
+      @media (max-width: 860px){
+        .nav-links,.nav-cta{display:none}
+        .menu-toggle{display:inline-flex}
+        .mobile-panel.open{display:block}
+      }
+      @media (max-width: 760px){
+        section{padding:64px 0}
+      }
+      @media (max-width: 520px){
+        .btn{width:100%}
+        .mobile-panel .split{grid-template-columns:1fr}
+      }
+      @media (prefers-reduced-motion: reduce){
+        *{scroll-behavior:auto}
+        .btn{transition:none}
+      }
+      #vision .highlight {
+        border: 1px solid rgba(0,0,0,.06);
+        box-shadow: 0 4px 12px rgba(0,0,0,.05);
+        transition: transform .2s ease, box-shadow .2s ease;
+        }
+        #vision .highlight:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 6px 18px rgba(0,0,0,.08);
+        }
+        #vision .card h3 {
+        font-size: 1.1rem;
+        margin-bottom: .5rem;
+        }
+
+    </style>
+  </head>
+
+  <body>
+    <div class="nav-wrap">
+      <div class="container">
+        <nav aria-label="Main">
+          <a class="brand" href="#">
+            <span class="logo" aria-hidden="true">
+              <svg viewBox="0 0 24 24" role="img" aria-label="Cloudbloc logo"><path d="M12 2 3 6.5v11L12 22l9-4.5v-11L12 2Zm0 2.2 6.8 3.4L12 11 5.2 7.6 12 4.2ZM5 9.3l6 3v7.2l-6-3V9.3Zm14 0v7.2l-6 3V12.3l6-3Z"/></svg>
+            </span>
+            <b>Cloudbloc</b>
+          </a>
+
+          <div class="nav-links" role="navigation" aria-label="Primary">
+            <a href="#why">Why</a>
+            <a href="#blocs">Blocs</a>
+            <a href="#vision">Vision</a>
+            <a href="https://github.com/cloudbloc/cloudbloc" target="_blank" rel="noopener">GitHub</a>
+          </div>
+          <div class="nav-cta">
+            <a class="btn ghost"
+            href="https://github.com/cloudbloc/cloudbloc"
+            target="_blank"
+            rel="noopener"
+            aria-label="Star on GitHub">
+            ⭐ Star on GitHub
+            </a>
+
+            <a class="btn primary" href="#get-started">Get started</a>
+          </div>
+
+          <button class="menu-toggle" id="menuToggle" aria-controls="mobilePanel" aria-expanded="false" aria-label="Open menu">
+            <svg width="26" height="22" viewBox="0 0 24 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="0" y="0" width="24" height="2" rx="1" fill="currentColor"/>
+              <rect x="0" y="8" width="24" height="2" rx="1" fill="currentColor"/>
+              <rect x="0" y="16" width="24" height="2" rx="1" fill="currentColor"/>
+            </svg>
+          </button>
+        </nav>
+
+        <div id="mobilePanel" class="mobile-panel" aria-label="Mobile menu">
+          <a href="#why">Why</a>
+          <a href="#blocs">Blocs</a>
+          <a href="#vision">Vision</a>
+          <div class="split">
+            <a class="btn ghost" href="https://github.com/cloudbloc/cloudbloc" target="_blank" rel="noopener">Star</a>
+            <a class="btn primary" href="#get-started">Get started</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero -->
+    <header class="hero">
+        <div class="container">
+        <div class="hero-grid">
+
+            <div class="hero-text">
+            <span class="kicker">⚡ SaaS-as-Code</span>
+
+            <h1 class="title">
+              Deploy SaaS for free,<br><span class="grad">10× cheaper to run</span>.
+            </h1>
+
+
+            <p class="subtitle">
+              Cloudbloc is the next step after IaaS, IaC, and SaaS — <span class="accent">SaaS-as-Code (SaC)</span>.
+            </p>
+            <p class="subtitle">
+              Deploy a complete SaaS with one command — all inside <b>your</b> cloud.
+            </p>
+            <p class="muted highlight" style="display:flex;align-items:flex-start;">
+              <span style="margin-right:0.5em;">🚀</span>
+              <span>
+                Ship in minutes with a single Terraform bloc — production-ready.<br>
+                <span class="accent">With near-zero infra work.</span>
+              </span>
+            </p>
+
+
+
+            <p class="muted">
+                Status: <span class="chip" aria-label="MVP / Alpha">MVP / Alpha</span>
+            </p>
+            </div>
+            <div class="tiles" aria-label="Highlights">
+              <div class="tile">
+                <strong>Free & Open Source</strong>
+                  Skip lock-in. Clean Terraform + Kubernetes patterns, battle-tested for production.
+              </div>
+              <div class="tile">
+                <strong>10× cost reduction</strong>
+                  Stop renting commodity SaaS. Run the same capabilities for a fraction of the price.
+              </div>
+              <div class="tile">
+                <strong>Full control & Compliance</strong>
+                  Keep data, logs, and secrets inside your accounts. Deterministic rollbacks with GitOps.
+              </div>
+
+            </div>
+        </div>
+        </div>
+    </header>
+
+    <style>
+        .hero-text {
+        max-width: 720px;
+        }
+
+        .hero-text .kicker {
+        display: inline-block;
+        font-size: 1rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: #fff;
+        background: linear-gradient(135deg, var(--purple), var(--purple-2));
+        padding: 6px 12px;
+        border-radius: 999px;
+        box-shadow: 0 4px 12px rgba(108,58,245,0.35);
+        margin-bottom: 1rem;
+        }
+
+        .hero-text .title {
+        font-size: clamp(2.2rem, 5vw, 3rem);
+        font-weight: 800;
+        line-height: 1.2;
+        margin: 0 0 1rem 0;
+        color: var(--ink);
+        }
+
+        .hero-text .grad {
+        background: linear-gradient(90deg, var(--purple), var(--purple-2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        }
+
+        .hero-text .subtitle {
+        font-size: 1.15rem;
+        margin: 0 0 0.8rem 0;
+        color: var(--muted);
+        line-height: 1.5;
+        }
+
+        .hero-text .highlight {
+        font-weight: 600;
+        color: var(--ink);
+        margin-top: 1.2rem;
+        }
+
+        .subtitle .accent {
+        background: linear-gradient(90deg, var(--purple), var(--purple-2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 700;
+        }
+
+        .accent-line {
+        margin: 0.6rem 0 1rem 0; /* breathing room around SaaS-as-Code line */
+        text-align: left;        /* or center if you prefer */
+        }
+
+        /* --- HERO RIGHT-COLUMN: 3 stacked cards like the screenshot --- */
+        .hero-grid{
+          grid-template-columns: 1.1fr 0.9fr; /* left copy / right cards */
+        }
+
+        .hero .tiles{
+          display: grid;
+          grid-template-columns: 1fr; /* stack vertically */
+          gap: 18px;
+        }
+
+        .hero .tile strong{
+          display: block;
+          font-weight: 800;
+          font-size: 1.1rem;
+          margin-bottom: 6px;
+        }
+
+        /* Optional: keep them stacked on all screens */
+        @media (max-width: 980px){
+          .hero-grid{ grid-template-columns: 1fr; }
+          .hero .tiles{ margin-top: 14px; }
+        }
+        .hero .tiles {
+          display: grid;
+          grid-template-columns: 1fr; /* stack vertically */
+          gap: 18px;
+        }
+
+        .hero .tile {
+          background: #fff;                 /* white background */
+          color: var(--ink);                /* dark text */
+          border: 1px solid var(--line);    /* light border */
+          border-radius: 16px;
+          padding: 22px 24px;
+          box-shadow: var(--shadow);        /* subtle drop shadow */
+        }
+
+        .hero .tile strong {
+          display: block;
+          font-weight: 700;
+          font-size: 1.1rem;
+          margin-bottom: 6px;
+        }
+        .hero-text .highlight {
+          font-weight: 500;         /* was 600; lighter = calmer */
+        }
+    </style>
+
+
+        <!-- Why -->
+        <section id="why">
+            <div class="container">
+              <h2 class="section-title">Why Cloudbloc</h2>
+
+            <!-- Big card -->
+            <div class="card highlight">
+              <h3 class="title-accent">⚡ Deploy SaaS in minutes, no infra hassle</h3>
+              <p class="muted">
+                With <span class="accent">Cloudbloc</span>, deploy an entire SaaS in minutes —
+                a single Terraform "bloc" (module). Near-zero infra work required.
+              </p>
+
+              <div class="mini-section">
+                <h4 class="mini-title">🔧 How it works</h4>
+                <p class="muted">
+                  <span style="display:block; font-weight:600; margin-bottom:0.4em;">
+                    One Terraform module (bloc) = One SaaS replacement.
+                  </span>
+                  Each bloc is a pre-built Terraform module that provisions the required cloud + Kubernetes resources.
+                  Set a few variables and the stack goes live — production-ready, without YAML sprawl or manual setup.
+                </p>
+              </div>
+
+
+              <p class="muted">
+                Cloudbloc is a long-horizon bet: shifting billions away from bloated SaaS contracts and back into in-house capability.
+                Teams regain control of <span class="accent">data, cost, and velocity</span> with enterprise-grade reliability and security.
+              </p>
+
+              <p class="muted highlight" style="text-align:center; margin-top:1.5em;">
+                Stop paying for features you don’t use. Run core SaaS in your own cloud for <span class="accent">~10% of the cost</span> —
+                with minimal infra overhead.
+              </p>
+
+
+        </div>
+
+        <div class="grid cols-3">
+          <div class="card">
+            <h3>⚡ Launch in Minutes</h3>
+            <p class="muted">
+              Ship a full SaaS capability with <b>one Terraform bloc</b>. No YAML sprawl, no wasted weekends.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>💰 Own the Economics</h3>
+            <p class="muted">
+              Move recurring SaaS spend into durable platform investment. Scale usage without price shocks.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>️☁️ Cloud-native, not lock-in</h3>
+          <p class="muted">
+            Mix blocs like <b>AppBloc, ObsBloc, and SearchBloc</b> to fit your stack. Skip the SaaS lock-in,
+            keep the savings.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+    <style>
+        /* Add spacing between single card and grid */
+        #why .card + .grid {
+        margin-top: 2rem; /* adjust: 1.5rem = tighter, 3rem = roomier */
+        }
+
+        /* Optional: add consistent vertical rhythm for all blocks */
+        #why .card,
+        #why .grid {
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
+        }
+        .card.highlight {
+        background: #fff;
+        border-left: 4px solid var(--purple);
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      }
+
+      .title-accent {
+        color: var(--purple);
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+      }
+
+      .accent {
+        color: var(--purple);
+        font-weight: 600;
+      }
+      .mini-section {
+        margin: 1.5em 0;
+        padding: 1.25em 1.5em;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #f7f8ff, #fafbff);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      }
+
+      .mini-title {
+        margin: 0 0 0.5em 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--purple);
+      }
+    </style>
+
+    <!-- Blocs -->
+    <section id="blocs" class="alt">
+      <div class="container">
+        <h2 class="section-title">Blocs</h2>
+        <p class="section-sub">
+          Pick the SaaS you need and launch it with a bloc — a few lines of Terraform, that’s it.
+        </p>
+
+        <div class="grid cols-3">
+          <!-- AppBloc -->
+          <div class="card bloc-card app">
+            <div class="bloc-header">
+              <h3>AppBloc</h3>
+              <span class="bloc-badge">Heroku-core</span>
+            </div>
+            <p class="bloc-text">
+              <b>Heroku, minus the bloat.</b>
+              Just ingress, TLS, redirects, and firewall — the core you actually need.
+            </p>
+            <p><a class="bloc-link" href="https://cloudbloc.io" target="_blank" rel="noopener">cloudbloc.io →</a></p>
+            <pre class="bloc-code"><code>module "appbloc" {
+      source   = "github.com/cloudbloc/cloudbloc//blocs/appbloc?ref=appbloc-0.4.2"
+      app_name = "cloudbloc-webapp-${var.environment}"
+      image    = var.app_image
+      domains  = var.domains
+    }</code></pre>
+          </div>
+
+          <!-- ObsBloc -->
+          <div class="card bloc-card obs">
+            <div class="bloc-header">
+              <h3>ObsBloc</h3>
+              <span class="bloc-badge">Datadog-core</span>
+            </div>
+            <p class="bloc-text">
+              <b>Prometheus + Grafana</b> with ingress and minimal alerting out of the box.
+                 The core of Datadog, without the SaaS bill.
+            </p>
+            <p><a class="bloc-link" href="https://obsbloc.cloudbloc.io" target="_blank" rel="noopener">obsbloc.cloudbloc.io →</a></p>
+            <pre class="bloc-code"><code>module "obsbloc" {
+      source        = "github.com/cloudbloc/cloudbloc//blocs/obsbloc?ref=obsbloc-0.4.1"
+      namespace     = var.namespace
+      domains       = var.domains
+      edge_ip_name  = var.edge_ip_name
+    }</code></pre>
+          </div>
+
+          <!-- SearchBloc -->
+          <div class="card bloc-card search">
+            <div class="bloc-header">
+              <h3>SearchBloc</h3>
+              <span class="bloc-badge">Elastic-core</span>
+            </div>
+            <p class="bloc-text">
+              <b>Meilisearch</b> with a sleek static UI (Nginx), PVC-backed storage,
+              and daily automated backups. Elastic, boiled down to the essentials.
+            </p>
+            <p><a class="bloc-link" href="https://searchbloc.cloudbloc.io" target="_blank" rel="noopener">searchbloc.cloudbloc.io →</a></p>
+            <pre class="bloc-code"><code>module "searchbloc" {
+      source     = "github.com/cloudbloc/cloudbloc//blocs/searchbloc?ref=searchbloc-0.4.2"
+      project_id = var.project_id
+      namespace  = "obsbloc"
+      app_name   = "searchbloc"
+    }
+    # Exposed via ObsBloc:
+    # enable_searchbloc   = true
+    # searchbloc_domains  = ["searchbloc.cloudbloc.io"]</code></pre>
+          </div>
+        </div>
+      </div>
+      <p style="text-align:center; margin-top:2em;">
+        <span class="chip">⚠️ MVP — features and stability still evolving</span>
+      </p>
+    </section>
+
+
+
+
+    <!-- Evolution (unchanged) -->
+    <section id="evolution" aria-labelledby="evolution-title">
+      <div class="card evolution-card">
+        <h3 id="evolution-title" class="evo-title">Evolution of Infrastructure</h3>
+        <ol class="evo-timeline">
+          <li>
+            <span class="evo-year">2006</span>
+            <span class="evo-tag">IaaS</span>
+            <p class="muted">Infrastructure on demand (IaaS) — <b>AWS</b>, <b>GCP</b>, <b>Azure</b></p>
+          </li>
+          <li>
+            <span class="evo-year">2012</span>
+            <span class="evo-tag">IaC</span>
+            <p class="muted">Declarative infra as code (IaC) — <b>Terraform</b>, <b>CloudFormation</b></p>
+          </li>
+          <li>
+            <span class="evo-year">2010s</span>
+            <span class="evo-tag">SaaS</span>
+            <p class="muted">Fully managed apps (SaaS) — <b>Datadog</b>, <b>Dropbox</b>, <b>Elasticsearch</b></p>
+          </li>
+          <li class="highlight">
+            <span class="evo-year">2020s+</span>
+            <!-- FIX: accent -> evo-accent -->
+            <span class="evo-tag evo-accent">SaC</span>
+            <p class="muted"><b>SaaS-as-Code</b> — Cloudbloc: <b>AppBloc</b>, <b>ObsBloc</b>, <b>SearchBloc</b></p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Evolution styles (unchanged) -->
+    <style>
+      .evo-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--ink);
+        position: relative;
+        padding-left: 14px;
+      }
+      .evo-title::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0.2em;
+        bottom: 0.2em;
+        width: 4px;
+        border-radius: 2px;
+        background: linear-gradient(180deg, var(--purple), var(--purple-2));
+      }
+
+      .evolution-card {
+        padding: 20px;
+      }
+      .evo-title {
+        margin: 0 0 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+      }
+      .evo-timeline {
+        list-style: none;
+        margin: 0;
+        padding: 0 0 0 20px;
+        position: relative;
+      }
+      .evo-timeline::before {
+        content: "";
+        position: absolute;
+        left: 8px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--border-color, #ddd);
+      }
+      .evo-timeline li {
+        position: relative;
+        margin-bottom: 16px;
+        padding-left: 12px;
+      }
+      .evo-timeline li::before {
+        content: "";
+        position: absolute;
+        left: -2px;
+        top: 6px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--purple, #6C3AF5);
+      }
+      .evo-year {
+        font-weight: 600;
+        margin-right: 8px;
+      }
+      .evo-tag {
+        font-size: 0.8rem;
+        padding: 2px 6px;
+        border-radius: 6px;
+        background: var(--tag-bg, #f0f0f0);
+      }
+      /* FIX: scope + rename so it doesn't override hero .accent gradient */
+      #evolution .evo-accent {
+        background: var(--purple, #6C3AF5);
+        color: #fff;
+      }
+      .highlight {
+        background: rgba(108, 58, 245, 0.05);
+        border-radius: 8px;
+        padding: 8px 12px;
+      }
+    </style>
+
+    <!-- Blocs styles (scoped; no conflicts) -->
+    <style>
+      /* Visual pop without touching Evolution styles */
+      #blocs .bloc-card{
+        --bloc-accent: var(--purple, #6C3AF5);
+        border-left: 4px solid var(--bloc-accent); /* single accent system */
+        border-radius: 12px;
+        padding: 1.25rem;
+        background: #fff;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        transition: transform 160ms ease, box-shadow 160ms ease;
+      }
+      #blocs .bloc-card:hover{
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      }
+
+      /* Per-bloc colors */
+      #blocs .bloc-card.app   { --bloc-accent: #3b82f6; } /* blue */
+      #blocs .bloc-card.obs   { --bloc-accent: #8e67ff; } /* purple */
+      #blocs .bloc-card.search{ --bloc-accent: #22c55e; } /* green */
+
+      /* Header + badge */
+      #blocs .bloc-header{
+        display:flex; align-items:center; justify-content:space-between;
+        gap:8px; margin-bottom:.5rem;
+      }
+      #blocs .bloc-header h3{
+        margin:0; font-size:1.1rem; font-weight:800; color: var(--bloc-accent);
+      }
+      #blocs .bloc-badge{
+        background: var(--bloc-accent); color:#fff;
+        font-size:.72rem; padding:.22rem .5rem; border-radius:8px;
+        font-weight:600; white-space:nowrap;
+      }
+
+      /* Copy and link readability */
+      #blocs .bloc-text{
+        color: var(--text, #222);
+        line-height:1.6;
+        margin:.5rem 0 1rem;
+      }
+      #blocs .bloc-link{
+        font-weight:700; color: var(--purple, #6C3AF5);
+        text-decoration:none; border-bottom:1px solid rgba(108,58,245,0.25);
+      }
+      #blocs .bloc-link:hover{
+        text-decoration:underline; border-color: var(--purple, #6C3AF5);
+      }
+
+      /* Dev-docs style code blocks */
+      #blocs .bloc-code{
+        background:#0d1117; color:#e9e9ff;
+        border-radius:12px; padding:14px;
+        font:13px/1.45 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+        border:1px solid #20232f;
+        margin-top:1rem; overflow-x:auto;
+      }
+
+      /* Responsive: stack cards on smaller screens */
+      @media (max-width: 960px){
+        #blocs .grid.cols-3{ grid-template-columns: 1fr; }
+      }
+
+    /* Evolution width aligned with Blocs container */
+    #evolution {
+      max-width: 1200px;   /* match your .container size */
+      margin: 0 auto;      /* center it */
+      padding: 0 20px;     /* keep breathing room on smaller screens */
+    }
+    #evolution .evolution-card {
+      width: 100%;
+    }
+    /* --- Blocs: mobile optimization (drop-in) --- */
+    #blocs .grid.cols-3{
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    }
+
+    /* Keep cards snug and readable on phones */
+    @media (max-width: 960px){
+      #blocs .bloc-card{
+        padding:16px;
+        border-left-width:3px;
+        border-radius:12px;
+      }
+      #blocs .bloc-header{
+        align-items:flex-start;
+        gap:6px;
+        flex-wrap:wrap;          /* allow title/badge to wrap */
+      }
+      #blocs .bloc-header h3{
+        font-size:1rem;
+        line-height:1.1;
+      }
+      #blocs .bloc-badge{
+        font-size:.68rem;
+        padding:.18rem .45rem;
+        border-radius:7px;
+      }
+      #blocs .bloc-text{
+        margin:.5rem 0 .75rem;
+      }
+    }
+
+    /* Code blocks: smaller font, never force page-wide overflow */
+    #blocs .bloc-code{
+      max-width:100%;
+      width:100%;
+      overflow:auto;                     /* contain horizontal scroll */
+      -webkit-overflow-scrolling:touch;  /* smooth on iOS */
+      font-size:13px;
+      line-height:1.5;
+      margin-top:.75rem;
+    }
+    #blocs .bloc-code code{
+      white-space:pre;   /* keep code readable; use horizontal scroll instead of wrapping */
+      word-break:normal;
+    }
+
+    @media (max-width: 640px){
+      #blocs .bloc-code{ font-size:11.5px; padding:12px; border-radius:10px; }
+      #blocs .bloc-card{ padding:14px; }
+    }
+
+    /* Make bloc links easier to tap */
+    #blocs .bloc-link{
+      display:inline-block;
+      padding-bottom:2px;
+      border-bottom:1px solid rgba(108,58,245,0.25);
+      margin-top:.25rem;
+    }
+    #blocs .bloc-link:focus-visible{
+      outline:2px solid var(--purple);
+      outline-offset:2px;
+    }
+
+    /* Add a tiny vertical rhythm between cards on mobile */
+    @media (max-width: 960px){
+      #blocs .grid.cols-3{ gap:16px; }
+    }
+    </style>
+
+
+    <!-- Get Started-->
+    <section id="get-started" aria-labelledby="gs-title" class="gs">
+        <div class="gs-split card">
+        <!-- Left panel -->
+        <div class="gs-panel gs-left">
+            <h2 id="gs-title">Get started</h2>
+            <p class="muted">
+            Explore the repo, drop in a bloc, commit, and ship.
+            Pin a version with <code>?ref=&lt;bloc&gt;-vX.Y.Z</code>.
+            Releases are managed via <b>release-please</b> (manifest mode).
+            </p>
+            <ol class="gs-list">
+            <li><b>Auth</b>: <code>gcloud auth login</code></li>
+            <li><b>Providers</b>: set your <code>project</code> and <code>region</code>.</li>
+            <li><b>Pin</b>: reference the bloc tag in your module source.</li>
+            <li><b>Ship</b>: <code>terraform init && terraform apply</code>.</li>
+            </ol>
+        </div>
+
+        <!-- Right panel -->
+        <div class="gs-panel gs-right" role="region" aria-label="Terraform example">
+            <div class="code-head">
+            <span class="lang">Terraform</span>
+            <button class="copy" data-copy="#gs-code" aria-label="Copy code">Copy</button>
+            </div>
+            <pre id="gs-code" class="code"><code>
+    data "google_client_config" "default" {}
+
+    data "google_container_cluster" "gke" {
+        project  = var.project_id
+        location = var.region
+        name     = var.cluster_name
+    }
+
+    provider "google" {
+      project = var.project_id
+      region  = var.region
+    }
+
+    provider "kubernetes" {
+        host                   = "https://${data.google_container_cluster.gke.endpoint}"
+        cluster_ca_certificate = base64decode(data.google_container_cluster.gke.master_auth[0].cluster_ca_certificate)
+        token                  = data.google_client_config.default.access_token
+    }
+
+    module "appbloc" {
+        source   = "github.com/cloudbloc/cloudbloc//blocs/appbloc?ref=appbloc-0.4.2"
+        app_name = "cloudbloc-webapp-${var.environment}"
+        image    = var.app_image
+        domains  = var.domains
+    }</code></pre>
+        </div>
+        </div>
+    </section>
+
+    <style>
+        .gs {
+        --gs-border: var(--border-color, #E6E8F0);
+        --gs-bg: var(--card-bg, #0f1220);
+        --gs-purple: var(--purple, #6C3AF5);
+        }
+
+        .gs-split {
+        max-width: 1120px;
+        margin-inline: auto;
+        display: grid;
+        gap: 0;
+        border: 1px solid rgba(230,232,240,0.18);
+        border-radius: 16px;
+        overflow: hidden;
+        background: var(--gs-bg);
+        box-sizing: border-box;
+        }
+        @media (min-width: 980px){
+        /* KEY FIX: both columns are shrinkable */
+        .gs-split{
+            grid-template-columns: minmax(0,1fr) minmax(420px, 620px);
+            column-gap: 0;
+        }
+        }
+
+        .gs-panel { padding: 24px; }
+
+        /* Left panel — clear text */
+        .gs-left { color: #e7ebf3; min-width: 0; }
+        .gs-left h2 { margin: 0 0 8px; color: #fff; }
+        .gs-left p { margin: 0 0 14px; color: #cfd5e3; }
+        .gs-left .muted { color: #b6bccb !important; }
+        .gs-list { margin: 0; padding-left: 18px; display: grid; gap: 10px; }
+        .gs-list li b { color: #fff; font-weight: 700; }
+        .gs-left code{
+        background: rgba(255,255,255,0.10);
+        border: 1px solid rgba(255,255,255,0.22);
+        color: #f5f7fb;
+        padding: 2px 6px; border-radius: 6px; font-size: .9em;
+        }
+
+        /* Divider */
+        .gs-right{
+        border-top: 1px solid rgba(230,232,240,0.14);
+        min-width: 0;              /* KEY FIX */
+        padding-right: 20px;       /* room for scrollbar corner */
+        }
+        @media (min-width: 980px){
+        .gs-right{ border-top: none; border-left: 1px solid rgba(230,232,240,0.14); }
+        }
+
+        /* Code panel */
+        .code-head{
+        display:flex; align-items:center; justify-content:space-between;
+        margin: 0 0 8px;           /* remove negative margins */
+        padding: 6px 8px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.04), transparent);
+        border-radius: 8px;
+        }
+        .lang{ font-size:.75rem; padding:4px 8px; border:1px solid rgba(255,255,255,0.12);
+            border-radius:999px; background:rgba(255,255,255,0.05); color:#e1e6f3; }
+        .copy{ font:inherit; font-size:.8rem; padding:6px 10px; border-radius:8px;
+            border:1px solid rgba(255,255,255,0.18); background:transparent; color:#e1e6f3; cursor:pointer; }
+        .copy:hover{ border-color: var(--gs-purple); }
+
+        .code{
+        margin:0; padding:12px;
+        color:#eef2fb; background:#0b0e1a;
+        font:500 13.5px/1.55 ui-monospace, SFMono-Regular, Menlo, Monaco, "Courier New", monospace;
+        overflow-x:auto; overflow-y:auto;  /* ensure horizontal scroll instead of clipping */
+        max-height:420px; width:100%; max-width:100%; box-sizing:border-box;
+        border:1px solid rgba(255,255,255,0.08); border-radius:10px;
+        }
+        .code::-webkit-scrollbar{ height:8px; width:8px; }
+        .code::-webkit-scrollbar-thumb{ background: rgba(255,255,255,0.14); border-radius:8px; }
+    </style>
+
+    <script>
+        document.addEventListener("click", (e) => {
+        const btn = e.target.closest(".copy");
+        if (!btn) return;
+        const el = document.querySelector(btn.dataset.copy);
+        if (!el) return;
+        navigator.clipboard.writeText(el.innerText).then(() => {
+            const prev = btn.textContent;
+            btn.textContent = "Copied";
+            setTimeout(() => (btn.textContent = prev), 1100);
+        });
+        });
+    </script>
+
+
+
+<!-- Vision -->
+<section id="vision" class="alt">
+    <div class="container">
+      <h2 class="section-title">Our vision</h2>
+      <p class="section-sub">
+        SaaS is bloated and costly.
+        <b>Cloudbloc gives you lean building blocks</b> —
+        <span style="color:var(--purple)">90% cheaper</span>, <b>deploy in one command</b>, <b>customize without limits</b>.
+      </p>
+
+      <!-- Pillars -->
+      <div class="grid cols-3" style="align-items:stretch; margin-top:24px">
+        <div class="card highlight">
+          <h3>💸 Cost Clarity</h3>
+          <p class="muted">
+            Run transparent infra you can forecast. Pay for compute, not markup.
+          </p>
+        </div>
+
+        <div class="card highlight">
+          <h3>⚡ One-bloc Deploy</h3>
+          <p class="muted">
+            Drop in a Terraform bloc, pin a version, and ship to prod in minutes — no YAML grind.
+          </p>
+        </div>
+
+        <div class="card highlight">
+          <h3>🧩 Open & Extensible</h3>
+          <p class="muted">
+            Open-source cores, clean APIs, and a thriving community of modules & integrations.
+          </p>
+        </div>
+      </div>
+
+      <!-- Roadmap -->
+      <div class="card" style="margin-top:28px">
+        <h3 style="margin:0 0 10px 0">Roadmap (next)</h3>
+        <ul class="muted" style="columns:2; column-gap:28px">
+          <li><b>Multi-cloud</b>: AWS parity after GCP hardening.</li>
+          <li><b>Full suite</b>: mature all blocs (AppBloc, ObsBloc, SearchBloc, AuthBloc) in parallel.</li>
+          <li><b>GitOps-first workflow</b>: Everything is code. Plan, review, and roll back using your existing <code>CI/CD </code>and <code>ArgoCD/Flux</code> pipelines.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="footer-box">
+          <div>
+            <strong>Ready to deploy an entire SaaS?</strong><br/>
+            Start with one bloc, expand at your pace.
+          </div>
+          <div class="footer-links">
+            <a class="btn primary" href="https://github.com/cloudbloc/cloudbloc" target="_blank" rel="noopener">GitHub</a>
+            <a class="btn ghost" href="mailto:hello@cloudbloc.io">Contact</a>
+          </div>
+        </div>
+        <div style="margin-top:22px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px">
+          <div>© <span id="y"></span> <b>Cloudbloc<sup>™</sup></b></div>
+          <div class="muted">Made with ❤️ for builders.</div>
+        </div>
+        <div style="margin-top:12px;font-size:0.8rem;line-height:1.4" class="muted">
+          All product names, logos, and brands are property of their respective owners.
+          Cloudbloc<sup>™</sup> is not affiliated with, sponsored by, or endorsed by those companies.
+        </div>
+      </div>
+    </footer>
+
+
+    <script>
+      // Year stamp
+      document.getElementById('y').textContent = new Date().getFullYear();
+
+      // Mobile menu
+      const btn = document.getElementById('menuToggle');
+      const panel = document.getElementById('mobilePanel');
+      if (btn && panel) {
+        btn.addEventListener('click', () => {
+          const open = panel.classList.toggle('open');
+          btn.setAttribute('aria-expanded', String(open));
+          btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+        });
+        panel.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+          panel.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+          btn.setAttribute('aria-label', 'Open menu');
+        }));
+      }
+    </script>
+  </body>
+</html>
