@@ -6,7 +6,7 @@ variable "namespace" {
 
 variable "data_host_path" {
   type        = string
-  description = "Host path on the Tiny to store Nextcloud data (photos, videos, files)."
+  description = "Host path on local to store Nextcloud data (photos, videos, files)."
   default     = "/mnt/dropbloc/nextcloud-data"
 }
 
@@ -36,7 +36,7 @@ variable "service_node_port" {
 
 variable "node_ip" {
   type        = string
-  description = "LAN IP address of the Tiny node that exposes the NodePort."
+  description = "LAN IP address of the local node that exposes the NodePort."
 }
 
 variable "nextcloud_hostname" {

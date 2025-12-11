@@ -25,7 +25,7 @@ resource "kubernetes_storage_class_v1" "nextcloud_local" {
   volume_binding_mode = "WaitForFirstConsumer"
 }
 
-# Static PV backed by hostPath on the Tiny
+# Static PV backed by hostPath on local
 resource "kubernetes_persistent_volume_v1" "nextcloud_data" {
   metadata {
     name = "nextcloud-data-pv"

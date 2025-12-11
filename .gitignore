@@ -45,3 +45,5 @@ terraform.rc
 **/.DS_Store
 
 examples/edge/dropbloc/credentials.json
+examples/edge/appbloc/credentials.json
+
