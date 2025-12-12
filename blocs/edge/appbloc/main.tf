@@ -211,6 +211,14 @@ resource "kubernetes_cron_job_v1" "worker" {
               command = var.worker_command
               args    = var.worker_args
 
+              dynamic "security_context" {
+                for_each = var.worker_security_context != null ? [var.worker_security_context] : []
+                content {
+                  run_as_user  = security_context.value.runAsUser
+                  run_as_group = security_context.value.runAsGroup
+                }
+              }
+
               resources {
                 requests = {
                   cpu    = var.worker_requests_cpu
@@ -225,6 +233,13 @@ resource "kubernetes_cron_job_v1" "worker" {
 
 
             restart_policy = var.worker_restart_policy
+
+            dynamic "security_context" {
+              for_each = var.worker_security_context != null ? [var.worker_security_context] : []
+              content {
+                fs_group = security_context.value.fsGroup
+              }
+            }
 
             dynamic "image_pull_secrets" {
               for_each = var.worker_image_pull_secret != null ? [1] : []

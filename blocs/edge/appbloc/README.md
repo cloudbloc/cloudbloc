@@ -118,6 +118,18 @@ module "appbloc" {
 }
 ```
 
+### Worker security context
+
+Lock down the optional worker CronJob by specifying user/group IDs:
+
+```hcl
+worker_security_context = {
+  runAsUser  = 33
+  runAsGroup = 33
+  fsGroup    = 33
+}
+```
+
 ---
 
 # 🌐 Setting Up Cloudflare Tunnel (One-Time)

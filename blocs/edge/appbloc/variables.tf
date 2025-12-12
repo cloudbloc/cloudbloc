@@ -210,3 +210,13 @@ variable "worker_limits_memory" {
   type        = string
   default     = "512Mi"
 }
+
+variable "worker_security_context" {
+  description = "Optional security context for the worker CronJob pod/container (UID/GID/fsGroup)."
+  type = object({
+    runAsUser  = optional(number)
+    runAsGroup = optional(number)
+    fsGroup    = optional(number)
+  })
+  default = null
+}
