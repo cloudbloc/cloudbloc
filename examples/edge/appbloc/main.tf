@@ -4,8 +4,8 @@ locals {
 }
 
 module "appbloc" {
-  source = "github.com/cloudbloc/cloudbloc//blocs/edge/appbloc?ref=edge-appbloc-v0.1.0"
-  # source = "../../../blocs/edge/appbloc"
+  # source = "github.com/cloudbloc/cloudbloc//blocs/edge/appbloc?ref=edge-appbloc-v0.1.0"
+  source = "../../../blocs/edge/appbloc"
 
   namespace      = var.app_namespace
   app_name       = "cloudbloc-webapp-${var.environment}"
