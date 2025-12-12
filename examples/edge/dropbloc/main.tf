@@ -1,6 +1,6 @@
 module "dropbloc" {
-  source = "github.com/cloudbloc/cloudbloc//blocs/edge/dropbloc?ref=edge-dropbloc-v0.2.0"
-  # source = "../../../blocs/edge/dropbloc"
+  # source = "github.com/cloudbloc/cloudbloc//blocs/edge/dropbloc?ref=edge-dropbloc-v0.2.0"
+  source = "../../../blocs/edge/dropbloc"
 
   namespace      = "dropbloc"
   node_ip        = "10.0.0.187" # LAN IP
@@ -21,4 +21,6 @@ module "dropbloc" {
   enable_cloudflared           = true
   cloudflared_credentials_file = abspath("${path.module}/credentials.json")
   cloudflared_tunnel_id        = "26b4d1ec-384f-477e-a404-f3d7352b45db"
+
+  nextcloud_cron_schedule = "*/5 * * * *"
 }

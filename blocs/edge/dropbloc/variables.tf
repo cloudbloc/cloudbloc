@@ -106,3 +106,26 @@ variable "nextcloud_canonical_protocol" {
   default     = "https"
 }
 
+variable "nextcloud_image_registry" {
+  type        = string
+  description = "Container registry hosting the Nextcloud image."
+  default     = "docker.io"
+}
+
+variable "nextcloud_image_repository" {
+  type        = string
+  description = "Repository for the Nextcloud image (without registry)."
+  default     = "library/nextcloud"
+}
+
+variable "nextcloud_image_tag" {
+  type        = string
+  description = "Tag for the Nextcloud container image (defaults to the Helm chart's appVersion + flavor)."
+  default     = "32.0.2-apache"
+}
+
+variable "nextcloud_cron_schedule" {
+  description = "Cron schedule for running Nextcloud cron.php."
+  type        = string
+  default     = "*/5 * * * *"
+}

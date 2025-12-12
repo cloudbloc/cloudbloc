@@ -84,7 +84,7 @@ resource "helm_release" "nextcloud" {
   version    = var.chart_version
 
   timeout = 600
-  wait    = false
+  wait    = true
 
   values = [
     yamlencode({
@@ -95,9 +95,25 @@ resource "helm_release" "nextcloud" {
         nodePort   = var.service_node_port
       }
 
+      image = {
+        registry   = var.nextcloud_image_registry
+        repository = var.nextcloud_image_repository
+        tag        = var.nextcloud_image_tag
+      }
+
       ingress = {
         enabled = false
         hosts   = []
+      }
+
+      cronjob = {
+        enabled = true
+        type    = "cronjob"
+
+        cronjob = {
+          schedule = var.nextcloud_cron_schedule
+          command  = ["php", "-f", "/var/www/html/cron.php", "--", "--verbose"]
+        }
       }
 
       nextcloud = {
@@ -229,6 +245,42 @@ EOT
   }
 }
 
+resource "kubernetes_secret_v1" "cloudflared_credentials_v1" {
+  count = var.enable_cloudflared ? 1 : 0
+
+  metadata {
+    name      = "cloudflared-credentials-v1"
+    namespace = kubernetes_namespace_v1.this.metadata[0].name
+  }
+
+  data = {
+    "credentials.json" = file(var.cloudflared_credentials_file)
+  }
+
+  type = "Opaque"
+}
+
+resource "kubernetes_config_map_v1" "cloudflared_config_v1" {
+  count = var.enable_cloudflared ? 1 : 0
+
+  metadata {
+    name      = "cloudflared-config-v1"
+    namespace = kubernetes_namespace_v1.this.metadata[0].name
+  }
+
+  data = {
+    "config.yaml" = <<-EOT
+tunnel: ${var.cloudflared_tunnel_id}
+credentials-file: /etc/cloudflared/credentials/credentials.json
+
+ingress:
+  - hostname: ${var.nextcloud_hostname}
+    service: http://nextcloud.${var.namespace}.svc.cluster.local:80
+  - service: http_status:404
+EOT
+  }
+}
+
 
 # Deployment: cloudflared
 resource "kubernetes_deployment" "cloudflared" {
@@ -287,7 +339,7 @@ resource "kubernetes_deployment" "cloudflared" {
 
           config_map {
             # safe because count = 1 when enabled, 0 when disabled
-            name = kubernetes_config_map.cloudflared_config[0].metadata[0].name
+            name = kubernetes_config_map_v1.cloudflared_config_v1[0].metadata[0].name
 
             items {
               key  = "config.yaml"
@@ -300,7 +352,7 @@ resource "kubernetes_deployment" "cloudflared" {
           name = "credentials"
 
           secret {
-            secret_name = kubernetes_secret.cloudflared_credentials[0].metadata[0].name
+            secret_name = kubernetes_secret_v1.cloudflared_credentials_v1[0].metadata[0].name
           }
         }
       }
@@ -309,7 +361,7 @@ resource "kubernetes_deployment" "cloudflared" {
 
   depends_on = [
     kubernetes_namespace_v1.this,
-    kubernetes_config_map.cloudflared_config,
-    kubernetes_secret.cloudflared_credentials,
+    kubernetes_config_map_v1.cloudflared_config_v1,
+    kubernetes_secret_v1.cloudflared_credentials_v1,
   ]
 }
