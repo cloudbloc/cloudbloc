@@ -22,5 +22,10 @@ module "dropbloc" {
   cloudflared_credentials_file = abspath("${path.module}/credentials.json")
   cloudflared_tunnel_id        = "26b4d1ec-384f-477e-a404-f3d7352b45db"
 
+  nextcloud_files_scan_paths = [
+    "yprk/files/yt",
+    "donggu/files/yt",
+  ]
+
   nextcloud_cron_schedule = "*/5 * * * *"
 }

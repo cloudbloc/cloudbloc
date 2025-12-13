@@ -112,7 +112,27 @@ resource "helm_release" "nextcloud" {
 
         cronjob = {
           schedule = var.nextcloud_cron_schedule
-          command  = ["php", "-f", "/var/www/html/cron.php", "--", "--verbose"]
+          command = [
+            "/bin/sh",
+            "-lc",
+            join(
+              "\n",
+              concat(
+                [
+                  "set -euo pipefail",
+                  "php -f /var/www/html/cron.php -- --verbose",
+                ],
+                flatten([
+                  for path in var.nextcloud_files_scan_paths : [
+                    "echo \"[scan] ${path}\"",
+                    "php -f /var/www/html/occ files:scan --path='${path}' -v",
+                  ]
+                  if trimspace(path) != ""
+                ])
+              )
+            )
+          ]
+
         }
       }
 

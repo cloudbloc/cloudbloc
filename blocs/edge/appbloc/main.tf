@@ -130,7 +130,7 @@ resource "kubernetes_deployment_v1" "app" {
 }
 
 ########################################
-# NEW: Optional YouTube automation worker (CronJob)
+# NEW: Optional automation worker (CronJob)
 ########################################
 
 resource "kubernetes_cron_job_v1" "worker" {

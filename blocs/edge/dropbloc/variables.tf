@@ -129,3 +129,9 @@ variable "nextcloud_cron_schedule" {
   type        = string
   default     = "*/5 * * * *"
 }
+
+variable "nextcloud_files_scan_paths" {
+  description = "Optional list of Nextcloud data paths to rescan after cron.php completes."
+  type        = list(string)
+  default     = []
+}
