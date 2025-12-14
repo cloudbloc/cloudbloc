@@ -153,7 +153,23 @@ After apply:
 
 ---
 
-# 🛠️ **4. Outputs**
+# ⏱ **4. Nextcloud Cron Runner**
+
+Nextcloud’s `backgroundjobs_mode = cron` requires `cron.php` to run frequently or file metadata (like uploads created by other pods) will fall behind. Dropbloc enables the Helm chart’s built-in CronJob (`nextcloud-cron`) so Kubernetes handles `php -f /var/www/html/cron.php -- --verbose` every 5 minutes by default using the same image as the primary app.
+
+* Tune how often it runs using `nextcloud_cron_schedule`.
+
+After applying Terraform you can confirm it’s running:
+
+```bash
+kubectl -n dropbloc get cronjob nextcloud-cron
+kubectl -n dropbloc get jobs --sort-by=.metadata.creationTimestamp | tail -n 5
+kubectl -n dropbloc logs job/<latest-nextcloud-cron-job>
+```
+
+---
+
+# 🛠️ **5. Outputs**
 
 After `apply`, Terraform prints:
 
@@ -164,7 +180,7 @@ nextcloud_public_url = cloud.mydomain.com
 
 ---
 
-# 🧪 **5. Tips & Best Practices**
+# 🧪 **6. Tips & Best Practices**
 
 ### Storage
 

@@ -1,6 +1,9 @@
 locals {
   # still useful for rolling pods on env change
   env_checksum = sha256(jsonencode(var.env))
+
+  # If worker_env is empty, inherit env from web container
+  worker_env = length(var.worker_env) > 0 ? var.worker_env : var.env
 }
 
 resource "kubernetes_namespace_v1" "namespace" {
@@ -104,6 +107,13 @@ resource "kubernetes_deployment_v1" "app" {
           }
         }
 
+        dynamic "image_pull_secrets" {
+          for_each = var.worker_image_pull_secret != null ? [1] : []
+          content {
+            name = var.worker_image_pull_secret
+          }
+        }
+
         dynamic "volume" {
           for_each = var.enable_static_html ? [kubernetes_config_map_v1.web_html[0].metadata[0].name] : []
           content {
@@ -111,6 +121,156 @@ resource "kubernetes_deployment_v1" "app" {
 
             config_map {
               name = volume.value
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+########################################
+# NEW: Optional automation worker (CronJob)
+########################################
+
+resource "kubernetes_cron_job_v1" "worker" {
+  count = var.enable_worker ? 1 : 0
+
+  metadata {
+    name      = "${var.app_name}-worker"
+    namespace = kubernetes_namespace_v1.namespace.metadata[0].name
+    labels    = merge({ app = "${var.app_name}-worker" }, var.labels)
+  }
+
+  spec {
+    schedule                      = var.worker_schedule
+    concurrency_policy            = var.worker_concurrency_policy
+    successful_jobs_history_limit = var.worker_successful_jobs_history_limit
+    failed_jobs_history_limit     = var.worker_failed_jobs_history_limit
+
+    job_template {
+      metadata {
+        labels = merge({ app = "${var.app_name}-worker" }, var.labels)
+      }
+
+      spec {
+        backoff_limit = var.worker_backoff_limit
+
+        template {
+          metadata {
+            labels = merge({ app = "${var.app_name}-worker" }, var.labels)
+          }
+
+          spec {
+            container {
+              name = "worker"
+              # If worker_image is "", reuse the main image
+              image = var.worker_image != "" ? var.worker_image : var.image
+
+              dynamic "env" {
+                for_each = local.worker_env
+                content {
+                  name  = env.key
+                  value = env.value
+                }
+              }
+
+              dynamic "env" {
+                for_each = var.worker_env_from_secret
+                content {
+                  name = env.key
+                  value_from {
+                    secret_key_ref {
+                      name = env.value
+                      key  = env.key
+                    }
+                  }
+                }
+              }
+
+              # Optional hostPath mounts for /input and /output
+              dynamic "volume_mount" {
+                for_each = var.worker_input_host_path != null ? [1] : []
+                content {
+                  name       = "worker-input"
+                  mount_path = "/input"
+                  read_only  = false
+                }
+              }
+
+              dynamic "volume_mount" {
+                for_each = var.worker_output_host_path != null ? [1] : []
+                content {
+                  name       = "worker-output"
+                  mount_path = "/output"
+                  read_only  = false
+                }
+              }
+
+              # command/args are attributes, not blocks
+              command = var.worker_command
+              args    = var.worker_args
+
+              dynamic "security_context" {
+                for_each = var.worker_security_context != null ? [var.worker_security_context] : []
+                content {
+                  run_as_user  = security_context.value.runAsUser
+                  run_as_group = security_context.value.runAsGroup
+                }
+              }
+
+              resources {
+                requests = {
+                  cpu    = var.worker_requests_cpu
+                  memory = var.worker_requests_memory
+                }
+                limits = {
+                  cpu    = var.worker_limits_cpu
+                  memory = var.worker_limits_memory
+                }
+              }
+            }
+
+
+            restart_policy = var.worker_restart_policy
+
+            dynamic "security_context" {
+              for_each = var.worker_security_context != null ? [var.worker_security_context] : []
+              content {
+                fs_group = security_context.value.fsGroup
+              }
+            }
+
+            dynamic "image_pull_secrets" {
+              for_each = var.worker_image_pull_secret != null ? [1] : []
+              content {
+                name = var.worker_image_pull_secret
+              }
+            }
+
+            # Optional hostPath volumes backing /input and /output
+            dynamic "volume" {
+              for_each = var.worker_input_host_path != null ? [1] : []
+              content {
+                name = "worker-input"
+
+                host_path {
+                  path = var.worker_input_host_path
+                  type = "DirectoryOrCreate"
+                }
+              }
+            }
+
+            dynamic "volume" {
+              for_each = var.worker_output_host_path != null ? [1] : []
+              content {
+                name = "worker-output"
+
+                host_path {
+                  path = var.worker_output_host_path
+                  type = "DirectoryOrCreate"
+                }
+              }
             }
           }
         }
@@ -267,5 +427,3 @@ resource "kubernetes_deployment_v1" "cloudflared" {
     }
   }
 }
-
-
