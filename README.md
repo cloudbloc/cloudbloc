@@ -87,6 +87,7 @@ This is **infra for platform teams** who want control, speed, and massive SaaS c
 * **AppBloc** — *Heroku-core*: public app ingress with ManagedCert, redirects, Cloud Armor hooks
 * **ObsBloc** — *Datadog-core*: Prometheus + Grafana, Autopilot-friendly, minimal alerting bootstrap
 * **SearchBloc** — *Elasticsearch-core*: Meilisearch + static UI behind Nginx, PVC, and daily GCS backups
+* **AccessBloc (edge)** — *Tailscale-core*: private tailnet access, subnet routing, and optional exit-node support for Tiny/homelab nodes
 * Infra helpers: **GKE** and **Cloud Armor** modules
 
 Live running examples:
