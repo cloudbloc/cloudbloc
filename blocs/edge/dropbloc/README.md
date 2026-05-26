@@ -26,7 +26,7 @@ Everything is fully automated through Terraform.
 
 | Variable                           | Description                                        |
 | ---------------------------------- | -------------------------------------------------- |
-| `node_ip`                          | LAN IP of your local or node (ex: `192.168.1.50`)   |
+| `node_ip`                          | LAN IP of your local or node (ex: `10.0.0.187`)   |
 | `data_host_path`                   | Directory on your SSD/NVMe to store Nextcloud data |
 | `admin_username`, `admin_password` | Nextcloud admin login                              |
 
@@ -78,7 +78,7 @@ To reproduce a Dropbloc deployment on a fresh local node or Tiny, do these manua
    Reserve or statically configure the IP you will pass as `node_ip`, for example:
 
    ```hcl
-   node_ip = "192.168.1.50"
+   node_ip = "10.0.0.187"
    ```
 
 3. Mount persistent storage.
@@ -108,7 +108,7 @@ To reproduce a Dropbloc deployment on a fresh local node or Tiny, do these manua
 
    ```hcl
    nextcloud_hostname           = "dropbloc.cloudbloc.io"
-   cloudflared_tunnel_id        = "123e4567-e89b-12d3-a456-426614174000"
+   cloudflared_tunnel_id        = "26b4d1ec-384f-477e-a404-f3d7352b45db"
    cloudflared_credentials_file = abspath("${path.module}/credentials.json")
    ```
 
@@ -131,7 +131,7 @@ To reproduce a Dropbloc deployment on a fresh local node or Tiny, do these manua
    ```bash
    kubectl -n dropbloc get all
    kubectl -n dropbloc get cronjob nextcloud-cron
-   curl http://192.168.1.50:30080
+   curl http://10.0.0.187:30080
    ```
 
 ---
@@ -146,12 +146,12 @@ module "dropbloc" {
   source = "github.com/cloudbloc/cloudbloc//blocs/edge/dropbloc"
 
   namespace      = "dropbloc"
-  node_ip        = "192.168.1.50"
+  node_ip        = "10.0.0.187"
   data_host_path = "/mnt/dropbloc/nextcloud-data"
   data_size      = "800Gi"
 
   # Canonical host tells Nextcloud what URLs to generate internally
-  nextcloud_canonical_host     = "192.168.1.50:30080"
+  nextcloud_canonical_host     = "10.0.0.187:30080"
   nextcloud_canonical_protocol = "http"
 
   # You can leave hostname blank if not using Cloudflare
@@ -168,7 +168,7 @@ module "dropbloc" {
 After apply:
 
 👉 **Open Nextcloud:**
-`http://192.168.1.50:30080`
+`http://10.0.0.187:30080`
 
 ---
 
@@ -189,7 +189,7 @@ module "dropbloc" {
   source = "github.com/cloudbloc/cloudbloc//blocs/edge/dropbloc"
 
   namespace      = "dropbloc"
-  node_ip        = "192.168.1.50"
+  node_ip        = "10.0.0.187"
   data_host_path = "/mnt/dropbloc/nextcloud-data"
   data_size      = "800Gi"
 
@@ -210,14 +210,14 @@ module "dropbloc" {
 
   # USER-SPECIFIC:
   cloudflared_credentials_file = abspath("${path.module}/credentials.json")
-  cloudflared_tunnel_id        = "123e4567-e89b-12d3-a456-426614174000"
+  cloudflared_tunnel_id        = "26b4d1ec-384f-477e-a404-f3d7352b45db"
 }
 ```
 
 After apply:
 
 👉 **LAN Access:**
-`http://192.168.1.50:30080`
+`http://10.0.0.187:30080`
 
 👉 **Public HTTPS Access:**
 `https://dropbloc.cloudbloc.io`
@@ -245,7 +245,7 @@ kubectl -n dropbloc logs job/<latest-nextcloud-cron-job>
 After `apply`, Terraform prints:
 
 ```txt
-nextcloud_lan_url    = http://192.168.1.50:30080
+nextcloud_lan_url    = http://10.0.0.187:30080
 nextcloud_public_url = dropbloc.cloudbloc.io
 ```
 
@@ -261,7 +261,7 @@ nextcloud_public_url = dropbloc.cloudbloc.io
 
 ### Security
 
-* LAN IP (e.g., `192.168.1.50`) is **not public**
+* LAN IP (e.g., `10.0.0.187`) is **not public**
 * Even if someone joins your WiFi, they can easily discover LAN hosts:
 
   * `arp -a`

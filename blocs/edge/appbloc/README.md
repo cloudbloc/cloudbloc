@@ -86,7 +86,7 @@ To reproduce an Appbloc Edge deployment on a fresh local node or Tiny, do these 
    Reserve or statically configure the node IP you will use for LAN NodePort access. The module does not need the IP as an input, but users need it to test the NodePort URL:
 
    ```bash
-   curl http://192.168.1.50:30081
+   curl http://10.0.0.187:30081
    ```
 
 3. Choose an available NodePort.
@@ -119,7 +119,7 @@ To reproduce an Appbloc Edge deployment on a fresh local node or Tiny, do these 
 
    ```hcl
    cloudflared_hostname         = "cloudbloc.io"
-   cloudflared_tunnel_id        = "123e4567-e89b-12d3-a456-426614174000"
+   cloudflared_tunnel_id        = "109c1cc5-0788-4761-bbe6-06cfd05c769f"
    cloudflared_credentials_json = file("${path.module}/credentials.json")
    ```
 
@@ -142,7 +142,7 @@ To reproduce an Appbloc Edge deployment on a fresh local node or Tiny, do these 
    ```bash
    kubectl -n appbloc get all
    kubectl -n appbloc logs deploy/cloudflared
-   curl http://192.168.1.50:30081
+   curl http://10.0.0.187:30081
    curl https://cloudbloc.io
    ```
 
@@ -187,7 +187,7 @@ module "appbloc" {
 
   # Enable Cloudflare Tunnel for HTTPS public access
   enable_cloudflared           = true
-  cloudflared_tunnel_id        = "123e4567-e89b-12d3-a456-426614174000"
+  cloudflared_tunnel_id        = "109c1cc5-0788-4761-bbe6-06cfd05c769f"
   cloudflared_hostname         = "cloudbloc.io"
   cloudflared_credentials_json = file("${path.module}/credentials.json")
 }
@@ -317,7 +317,7 @@ kubectl logs -n appbloc deploy/cloudflared -f
 ### Test LAN:
 
 ```bash
-curl http://192.168.1.50:30081
+curl http://10.0.0.187:30081
 ```
 
 ### Test public:
