@@ -92,7 +92,8 @@ From an example/root module, pass the Tiny host and storage settings:
 
 ```hcl
 module "streambloc" {
-  source = "../../../blocs/edge/streambloc"
+  source = "github.com/cloudbloc/cloudbloc//blocs/edge/streambloc?ref=edge-streambloc-v0.1.0"
+  # source = "../../../blocs/edge/streambloc"
 
   tiny_host = "10.0.0.187"
   tiny_user = "yprk"

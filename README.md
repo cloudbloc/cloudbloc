@@ -103,9 +103,10 @@ All can be deployed within minutes on your own cloud using the pre-built blocs.
 * `blocs/gcp/appbloc`: **v0.4.2**
 * `blocs/gcp/obsbloc`: **v0.4.2**
 * `blocs/gcp/searchbloc`: **v0.4.2**
+* `blocs/edge/streambloc`: **pending v0.1.0**
 * `modules/gke`: **v0.2.1**, `modules/cloudarmor`: **v0.2.1**
 
-Release automation: **release-please (manifest mode)** with per-bloc tagging (e.g. `searchbloc-0.4.2`).
+Release automation: **release-please (manifest mode)** with per-bloc tagging (e.g. `gcp-searchbloc-v0.4.2`, `edge-streambloc-v0.1.0`).
 
 ---
 

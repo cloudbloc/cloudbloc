@@ -26,6 +26,10 @@
       "release-type": "terraform-module",
       "component": "edge-appbloc"
     },
+    "blocs/edge/streambloc": {
+      "release-type": "terraform-module",
+      "component": "edge-streambloc"
+    },
     "modules/cloudarmor": {
       "release-type": "terraform-module",
       "component": "cloudarmor"

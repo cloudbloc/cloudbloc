@@ -1,5 +1,6 @@
 module "streambloc" {
-  source = "../../../blocs/edge/streambloc"
+  source = "github.com/cloudbloc/cloudbloc//blocs/edge/streambloc?ref=edge-streambloc-v0.1.0"
+  # source = "../../../blocs/edge/streambloc"
 
   tiny_host            = var.tiny_host
   tiny_user            = var.tiny_user
