@@ -4,6 +4,18 @@ This example deploys StreamBloc to a Tiny over SSH, using Terraform to run an id
 
 It is private-network only. Use Tailscale for secure remote access.
 
+The example calls StreamBloc by tag:
+
+```hcl
+source = "github.com/cloudbloc/cloudbloc//blocs/edge/streambloc?ref=edge-streambloc-v0.1.0"
+```
+
+For local development, switch the source to:
+
+```hcl
+source = "../../../blocs/edge/streambloc"
+```
+
 ## What Terraform Does
 
 - connects to the Tiny with SSH
