@@ -65,7 +65,78 @@ If the directory exists and is writable, Dropbloc will use it.
 
 ---
 
-# 🚀 **2. Example Usage: LAN-Only Setup (no Cloudflare)**
+# 🔁 **2. Manual Restore Checklist**
+
+To reproduce a Dropbloc deployment on a fresh local node or Tiny, do these manual steps before running Terraform:
+
+1. Install the OS and Kubernetes on the node.
+
+   Dropbloc expects a working Kubernetes cluster. Installing k3s, MicroK8s, or another Kubernetes distribution is outside this module.
+
+2. Assign a stable LAN IP.
+
+   Reserve or statically configure the IP you will pass as `node_ip`, for example:
+
+   ```hcl
+   node_ip = "192.168.1.50"
+   ```
+
+3. Mount persistent storage.
+
+   Format and mount the SSD/NVMe/disk that will back `data_host_path`. The mount must survive reboot.
+
+4. Prepare the Nextcloud data directory on the node.
+
+   ```bash
+   sudo mkdir -p /mnt/dropbloc/nextcloud-data
+   sudo chmod 750 /mnt/dropbloc
+   sudo chmod 770 /mnt/dropbloc/nextcloud-data
+   sudo chown -R 33:33 /mnt/dropbloc/nextcloud-data
+   ```
+
+5. Copy kubeconfig to the machine running Terraform.
+
+   Point the Kubernetes and Helm providers at that kubeconfig, then verify access:
+
+   ```bash
+   kubectl --kubeconfig ~/.kube/edge get nodes
+   ```
+
+6. If using Cloudflare Tunnel, create or restore the tunnel.
+
+   Create the tunnel in your Cloudflare account, route your hostname to it, and keep the generated `credentials.json` outside git.
+
+   ```hcl
+   nextcloud_hostname           = "cloud.example.com"
+   cloudflared_tunnel_id        = "YOUR-TUNNEL-ID"
+   cloudflared_credentials_file = abspath("${path.module}/credentials.json")
+   ```
+
+7. Provide secrets through local inputs.
+
+   Use a strong `admin_password`. Do not commit real passwords, kubeconfigs, tunnel credentials, or `.tfvars` files containing secrets.
+
+8. Initialize and apply Terraform from your Dropbloc root.
+
+   If your root uses a remote backend, make sure the backend bucket/state location already exists and your local credentials can access it.
+
+   ```bash
+   terraform init
+   terraform plan
+   terraform apply
+   ```
+
+9. Validate the deployment.
+
+   ```bash
+   kubectl -n dropbloc get all
+   kubectl -n dropbloc get cronjob nextcloud-cron
+   curl http://192.168.1.50:30080
+   ```
+
+---
+
+# 🚀 **3. Example Usage: LAN-Only Setup (no Cloudflare)**
 
 This is the simplest setup.
 Nextcloud is only available on your **local network**.
@@ -101,7 +172,7 @@ After apply:
 
 ---
 
-# 🌐 **3. Example Usage: LAN + Cloudflare Tunnel (Public HTTPS)**
+# 🌐 **4. Example Usage: LAN + Cloudflare Tunnel (Public HTTPS)**
 
 To expose Nextcloud globally without opening ports:
 
@@ -153,7 +224,7 @@ After apply:
 
 ---
 
-# ⏱ **4. Nextcloud Cron Runner**
+# ⏱ **5. Nextcloud Cron Runner**
 
 Nextcloud’s `backgroundjobs_mode = cron` requires `cron.php` to run frequently or file metadata (like uploads created by other pods) will fall behind. Dropbloc enables the Helm chart’s built-in CronJob (`nextcloud-cron`) so Kubernetes handles `php -f /var/www/html/cron.php -- --verbose` every 5 minutes by default using the same image as the primary app.
 
@@ -169,7 +240,7 @@ kubectl -n dropbloc logs job/<latest-nextcloud-cron-job>
 
 ---
 
-# 🛠️ **5. Outputs**
+# 🛠️ **6. Outputs**
 
 After `apply`, Terraform prints:
 
@@ -180,7 +251,7 @@ nextcloud_public_url = cloud.mydomain.com
 
 ---
 
-# 🧪 **6. Tips & Best Practices**
+# 🧪 **7. Tips & Best Practices**
 
 ### Storage
 
