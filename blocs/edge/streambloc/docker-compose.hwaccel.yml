@@ -1,0 +1,11 @@
+services:
+  jellyfin:
+    # Intel QuickSync / VAAPI hardware transcoding when /dev/dri exists.
+    # In Jellyfin, enable Dashboard -> Playback -> Transcoding -> VAAPI or QSV.
+    devices:
+      - /dev/dri:/dev/dri
+
+    # Common Debian/Ubuntu render/video group ids. Adjust in .env if your host differs.
+    group_add:
+      - "${VIDEO_GID:-44}"
+      - "${RENDER_GID:-109}"

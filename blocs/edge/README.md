@@ -4,6 +4,7 @@ This directory mirrors the GCP blocs but is configured for edge/homelab deployme
 
 Use-case
 - Replace `blocs/gcp/<module>` with `blocs/edge/<module>` in example or environment module sources to target edge/homelab.
+- `streambloc` provides a Docker Compose based Jellyfin media server for Tiny/homelab streaming.
 
 Examples:
 - Relative:

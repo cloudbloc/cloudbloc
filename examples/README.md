@@ -4,6 +4,7 @@ Examples live under `examples/`. Each example demonstrates how to call blocs in 
 
 - examples/gcp/* — GCP-targeted examples (use `blocs/gcp/...` sources).
 - examples/edge/* — edge-targeted examples (use `blocs/edge/...` sources).
+- examples/edge/streambloc — Docker Compose Jellyfin example for a Tiny or homelab node.
 
 Run an example:
 ```bash
