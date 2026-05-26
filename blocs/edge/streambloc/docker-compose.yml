@@ -11,63 +11,82 @@ services:
 
     environment:
       TZ: ${TZ:-UTC}
-      JELLYFIN_PublishedServerUrl: "http://${JELLYFIN_BIND_IP:-127.0.0.1}:${JELLYFIN_HTTP_PORT:-8096}"
+      JELLYFIN_PublishedServerUrl: "${JELLYFIN_PUBLIC_URL:-http://127.0.0.1:8096}"
 
     volumes:
       - ${STREAMBLOC_ROOT:-/srv/streambloc}/jellyfin/config:/config
       - ${STREAMBLOC_ROOT:-/srv/streambloc}/jellyfin/cache:/cache
-      - ${MEDIA_ROOT:-/srv/media}:/media:ro
+      - ${MEDIA_ROOT:-/srv/media}:/data:ro
 
     # Optional DLNA discovery. Keep disabled until needed.
     # network_mode: host
 
-  # Future optional services. These are intentionally disabled for the initial bloc.
-  #
-  # sonarr:
-  #   image: lscr.io/linuxserver/sonarr:latest
-  #   container_name: ${COMPOSE_PROJECT_NAME:-streambloc}-sonarr
-  #   restart: unless-stopped
-  #   volumes:
-  #     - ${STREAMBLOC_ROOT:-/srv/streambloc}/sonarr/config:/config
-  #     - ${MEDIA_ROOT:-/srv/media}:/media
-  #   ports:
-  #     - "${SONARR_BIND_IP:-127.0.0.1}:8989:8989/tcp"
-  #
-  # radarr:
-  #   image: lscr.io/linuxserver/radarr:latest
-  #   container_name: ${COMPOSE_PROJECT_NAME:-streambloc}-radarr
-  #   restart: unless-stopped
-  #   volumes:
-  #     - ${STREAMBLOC_ROOT:-/srv/streambloc}/radarr/config:/config
-  #     - ${MEDIA_ROOT:-/srv/media}:/media
-  #   ports:
-  #     - "${RADARR_BIND_IP:-127.0.0.1}:7878:7878/tcp"
-  #
-  # prowlarr:
-  #   image: lscr.io/linuxserver/prowlarr:latest
-  #   container_name: ${COMPOSE_PROJECT_NAME:-streambloc}-prowlarr
-  #   restart: unless-stopped
-  #   volumes:
-  #     - ${STREAMBLOC_ROOT:-/srv/streambloc}/prowlarr/config:/config
-  #   ports:
-  #     - "${PROWLARR_BIND_IP:-127.0.0.1}:9696:9696/tcp"
-  #
-  # bazarr:
-  #   image: lscr.io/linuxserver/bazarr:latest
-  #   container_name: ${COMPOSE_PROJECT_NAME:-streambloc}-bazarr
-  #   restart: unless-stopped
-  #   volumes:
-  #     - ${STREAMBLOC_ROOT:-/srv/streambloc}/bazarr/config:/config
-  #     - ${MEDIA_ROOT:-/srv/media}:/media
-  #   ports:
-  #     - "${BAZARR_BIND_IP:-127.0.0.1}:6767:6767/tcp"
-  #
-  # qbittorrent:
-  #   image: lscr.io/linuxserver/qbittorrent:latest
-  #   container_name: ${COMPOSE_PROJECT_NAME:-streambloc}-qbittorrent
-  #   restart: unless-stopped
-  #   volumes:
-  #     - ${STREAMBLOC_ROOT:-/srv/streambloc}/qbittorrent/config:/config
-  #     - ${MEDIA_ROOT:-/srv/media}/downloads:/downloads
-  #   ports:
-  #     - "${QBITTORRENT_BIND_IP:-127.0.0.1}:8080:8080/tcp"
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:${SONARR_VERSION:-latest}
+    container_name: ${COMPOSE_PROJECT_NAME:-streambloc}-sonarr
+    restart: unless-stopped
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      TZ: ${TZ:-UTC}
+    volumes:
+      - ${STREAMBLOC_ROOT:-/srv/streambloc}/sonarr/config:/config
+      - ${MEDIA_ROOT:-/srv/media}:/data
+    ports:
+      - "${SONARR_BIND_IP:-127.0.0.1}:${SONARR_HTTP_PORT:-8989}:8989/tcp"
+
+  radarr:
+    image: lscr.io/linuxserver/radarr:${RADARR_VERSION:-latest}
+    container_name: ${COMPOSE_PROJECT_NAME:-streambloc}-radarr
+    restart: unless-stopped
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      TZ: ${TZ:-UTC}
+    volumes:
+      - ${STREAMBLOC_ROOT:-/srv/streambloc}/radarr/config:/config
+      - ${MEDIA_ROOT:-/srv/media}:/data
+    ports:
+      - "${RADARR_BIND_IP:-127.0.0.1}:${RADARR_HTTP_PORT:-7878}:7878/tcp"
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:${PROWLARR_VERSION:-latest}
+    container_name: ${COMPOSE_PROJECT_NAME:-streambloc}-prowlarr
+    restart: unless-stopped
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      TZ: ${TZ:-UTC}
+    volumes:
+      - ${STREAMBLOC_ROOT:-/srv/streambloc}/prowlarr/config:/config
+    ports:
+      - "${PROWLARR_BIND_IP:-127.0.0.1}:${PROWLARR_HTTP_PORT:-9696}:9696/tcp"
+
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:${BAZARR_VERSION:-latest}
+    container_name: ${COMPOSE_PROJECT_NAME:-streambloc}-bazarr
+    restart: unless-stopped
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      TZ: ${TZ:-UTC}
+    volumes:
+      - ${STREAMBLOC_ROOT:-/srv/streambloc}/bazarr/config:/config
+      - ${MEDIA_ROOT:-/srv/media}:/data
+    ports:
+      - "${BAZARR_BIND_IP:-127.0.0.1}:${BAZARR_HTTP_PORT:-6767}:6767/tcp"
+
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:${QBITTORRENT_VERSION:-latest}
+    container_name: ${COMPOSE_PROJECT_NAME:-streambloc}-qbittorrent
+    restart: unless-stopped
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      TZ: ${TZ:-UTC}
+      WEBUI_PORT: ${QBITTORRENT_HTTP_PORT:-8080}
+    volumes:
+      - ${STREAMBLOC_ROOT:-/srv/streambloc}/qbittorrent/config:/config
+      - ${MEDIA_ROOT:-/srv/media}:/data
+    ports:
+      - "${QBITTORRENT_BIND_IP:-127.0.0.1}:${QBITTORRENT_HTTP_PORT:-8080}:8080/tcp"
