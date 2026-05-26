@@ -107,8 +107,8 @@ To reproduce a Dropbloc deployment on a fresh local node or Tiny, do these manua
    Create the tunnel in your Cloudflare account, route your hostname to it, and keep the generated `credentials.json` outside git.
 
    ```hcl
-   nextcloud_hostname           = "cloud.example.com"
-   cloudflared_tunnel_id        = "YOUR-TUNNEL-ID"
+   nextcloud_hostname           = "cloud.mydomain.com"
+   cloudflared_tunnel_id        = "123e4567-e89b-12d3-a456-426614174000"
    cloudflared_credentials_file = abspath("${path.module}/credentials.json")
    ```
 
@@ -210,7 +210,7 @@ module "dropbloc" {
 
   # USER-SPECIFIC:
   cloudflared_credentials_file = abspath("${path.module}/credentials.json")
-  cloudflared_tunnel_id        = "YOUR-TUNNEL-ID"
+  cloudflared_tunnel_id        = "123e4567-e89b-12d3-a456-426614174000"
 }
 ```
 
