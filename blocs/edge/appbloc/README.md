@@ -73,6 +73,81 @@ If `enable_cloudflared = true`:
 
 ---
 
+# 🔁 Manual Restore Checklist
+
+To reproduce an Appbloc Edge deployment on a fresh local node or Tiny, do these manual steps before running Terraform:
+
+1. Install the OS and Kubernetes on the node.
+
+   Appbloc expects a working Kubernetes cluster. Installing k3s, MicroK8s, or another Kubernetes distribution is outside this module.
+
+2. Assign a stable LAN IP.
+
+   Reserve or statically configure the node IP you will use for LAN NodePort access. The module does not need the IP as an input, but users need it to test the NodePort URL:
+
+   ```bash
+   curl http://192.168.1.50:30081
+   ```
+
+3. Choose an available NodePort.
+
+   Pick a port in the Kubernetes NodePort range, usually `30000-32767`, and pass it as `node_port`.
+
+   ```hcl
+   node_port = 30081
+   ```
+
+4. Copy kubeconfig to the machine running Terraform.
+
+   Point the Kubernetes and Helm providers at that kubeconfig, then verify access:
+
+   ```bash
+   kubectl --kubeconfig ~/.kube/edge get nodes
+   ```
+
+5. Prepare static content if using static HTML mode.
+
+   If `enable_static_html = true`, make sure the file passed through `html_path` exists in your Terraform root, for example:
+
+   ```text
+   static/index.html
+   ```
+
+6. If using Cloudflare Tunnel, create or restore the tunnel.
+
+   Create the tunnel in your Cloudflare account, route your hostname and `www` hostname to it, and keep the generated credentials outside git.
+
+   ```hcl
+   cloudflared_hostname         = "app.example.com"
+   cloudflared_tunnel_id        = "YOUR-TUNNEL-ID"
+   cloudflared_credentials_json = file("${path.module}/credentials.json")
+   ```
+
+7. Provide any app environment variables through local inputs.
+
+   Use `env` only for non-secret variables. Do not commit passwords, API keys, kubeconfigs, tunnel credentials, or `.tfvars` files containing secrets.
+
+8. Initialize and apply Terraform from your Appbloc root.
+
+   If your root uses a remote backend, make sure the backend bucket/state location already exists and your local credentials can access it.
+
+   ```bash
+   terraform init
+   terraform plan
+   terraform apply
+   ```
+
+9. Validate the deployment.
+
+   ```bash
+   kubectl -n appbloc get all
+   kubectl -n appbloc logs deploy/cloudflared
+   curl http://192.168.1.50:30081
+   curl https://app.example.com
+   ```
+
+---
+
 # 📁 Example Usage
 
 Assuming your Terraform root has:
@@ -82,7 +157,7 @@ static/index.html
 credentials.json
 ```
 
-And you want to serve `cloudbloc.io` from your homelab:
+And you want to serve `app.example.com` from your homelab:
 
 ```hcl
 locals {
@@ -112,8 +187,8 @@ module "appbloc" {
 
   # Enable Cloudflare Tunnel for HTTPS public access
   enable_cloudflared           = true
-  cloudflared_tunnel_id        = "109c1cc5-0788-4761-bbe6-06cfd05c769f"
-  cloudflared_hostname         = "cloudbloc.io"
+  cloudflared_tunnel_id        = "YOUR-TUNNEL-ID"
+  cloudflared_hostname         = "app.example.com"
   cloudflared_credentials_json = file("${path.module}/credentials.json")
 }
 ```
@@ -161,8 +236,8 @@ cp ~/.cloudflared/<id>.json edge-appbloc/credentials.json
 5. Add DNS routes:
 
 ```bash
-cloudflared tunnel route dns appbloc-tunnel cloudbloc.io
-cloudflared tunnel route dns appbloc-tunnel www.cloudbloc.io
+cloudflared tunnel route dns appbloc-tunnel app.example.com
+cloudflared tunnel route dns appbloc-tunnel www.app.example.com
 ```
 
 ---
@@ -242,13 +317,13 @@ kubectl logs -n appbloc deploy/cloudflared -f
 ### Test LAN:
 
 ```bash
-curl http://10.0.0.187:30081
+curl http://192.168.1.50:30081
 ```
 
 ### Test public:
 
 ```
-https://cloudbloc.io
+https://app.example.com
 ```
 
 ---
@@ -260,8 +335,8 @@ https://cloudbloc.io
 Ensure ConfigMap includes:
 
 ```
-- hostname: cloudbloc.io
-- hostname: www.cloudbloc.io
+- hostname: app.example.com
+- hostname: www.app.example.com
 ```
 
 ### Error: “record already exists”
