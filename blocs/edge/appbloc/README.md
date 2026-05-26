@@ -118,7 +118,7 @@ To reproduce an Appbloc Edge deployment on a fresh local node or Tiny, do these 
    Create the tunnel in your Cloudflare account, route your hostname and `www` hostname to it, and keep the generated credentials outside git.
 
    ```hcl
-   cloudflared_hostname         = "app.mydomain.com"
+   cloudflared_hostname         = "cloudbloc.io"
    cloudflared_tunnel_id        = "123e4567-e89b-12d3-a456-426614174000"
    cloudflared_credentials_json = file("${path.module}/credentials.json")
    ```
@@ -143,7 +143,7 @@ To reproduce an Appbloc Edge deployment on a fresh local node or Tiny, do these 
    kubectl -n appbloc get all
    kubectl -n appbloc logs deploy/cloudflared
    curl http://192.168.1.50:30081
-   curl https://app.mydomain.com
+   curl https://cloudbloc.io
    ```
 
 ---
@@ -157,7 +157,7 @@ static/index.html
 credentials.json
 ```
 
-And you want to serve `app.mydomain.com` from your homelab:
+And you want to serve `cloudbloc.io` from your homelab:
 
 ```hcl
 locals {
@@ -188,7 +188,7 @@ module "appbloc" {
   # Enable Cloudflare Tunnel for HTTPS public access
   enable_cloudflared           = true
   cloudflared_tunnel_id        = "123e4567-e89b-12d3-a456-426614174000"
-  cloudflared_hostname         = "app.mydomain.com"
+  cloudflared_hostname         = "cloudbloc.io"
   cloudflared_credentials_json = file("${path.module}/credentials.json")
 }
 ```
@@ -236,8 +236,8 @@ cp ~/.cloudflared/<id>.json edge-appbloc/credentials.json
 5. Add DNS routes:
 
 ```bash
-cloudflared tunnel route dns appbloc-tunnel app.mydomain.com
-cloudflared tunnel route dns appbloc-tunnel www.app.mydomain.com
+cloudflared tunnel route dns appbloc-tunnel cloudbloc.io
+cloudflared tunnel route dns appbloc-tunnel www.cloudbloc.io
 ```
 
 ---
@@ -323,7 +323,7 @@ curl http://192.168.1.50:30081
 ### Test public:
 
 ```
-https://app.mydomain.com
+https://cloudbloc.io
 ```
 
 ---
@@ -335,8 +335,8 @@ https://app.mydomain.com
 Ensure ConfigMap includes:
 
 ```
-- hostname: app.mydomain.com
-- hostname: www.app.mydomain.com
+- hostname: cloudbloc.io
+- hostname: www.cloudbloc.io
 ```
 
 ### Error: “record already exists”

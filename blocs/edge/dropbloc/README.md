@@ -34,7 +34,7 @@ Everything is fully automated through Terraform.
 
 | Variable                       | Description                             |
 | ------------------------------ | --------------------------------------- |
-| `nextcloud_hostname`           | Ex: `cloud.mydomain.com`                |
+| `nextcloud_hostname`           | Ex: `dropbloc.cloudbloc.io`                |
 | `cloudflared_credentials_file` | Path to **your** Tunnel credential JSON |
 | `cloudflared_tunnel_id`        | Your Cloudflare Tunnel UUID             |
 
@@ -107,7 +107,7 @@ To reproduce a Dropbloc deployment on a fresh local node or Tiny, do these manua
    Create the tunnel in your Cloudflare account, route your hostname to it, and keep the generated `credentials.json` outside git.
 
    ```hcl
-   nextcloud_hostname           = "cloud.mydomain.com"
+   nextcloud_hostname           = "dropbloc.cloudbloc.io"
    cloudflared_tunnel_id        = "123e4567-e89b-12d3-a456-426614174000"
    cloudflared_credentials_file = abspath("${path.module}/credentials.json")
    ```
@@ -194,8 +194,8 @@ module "dropbloc" {
   data_size      = "800Gi"
 
   # Public hostname used by Cloudflare + canonical URLs
-  nextcloud_hostname           = "cloud.mydomain.com"
-  nextcloud_canonical_host     = "cloud.mydomain.com"
+  nextcloud_hostname           = "dropbloc.cloudbloc.io"
+  nextcloud_canonical_host     = "dropbloc.cloudbloc.io"
   nextcloud_canonical_protocol = "https"
 
   admin_username = "admin"
@@ -220,7 +220,7 @@ After apply:
 `http://192.168.1.50:30080`
 
 👉 **Public HTTPS Access:**
-`https://cloud.mydomain.com`
+`https://dropbloc.cloudbloc.io`
 
 ---
 
@@ -246,7 +246,7 @@ After `apply`, Terraform prints:
 
 ```txt
 nextcloud_lan_url    = http://192.168.1.50:30080
-nextcloud_public_url = cloud.mydomain.com
+nextcloud_public_url = dropbloc.cloudbloc.io
 ```
 
 ---
