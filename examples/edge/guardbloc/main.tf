@@ -1,5 +1,6 @@
 module "guardbloc" {
-  source = "../../../blocs/edge/guardbloc"
+  source = "github.com/cloudbloc/cloudbloc//blocs/edge/guardbloc?ref=edge-guardbloc-v0.1.0"
+  # source = "../../../blocs/edge/guardbloc"
 
   host                 = var.host
   ssh_user             = var.ssh_user

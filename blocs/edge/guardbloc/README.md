@@ -70,6 +70,13 @@ terraform apply \
   -var='service_bind_ip=192.168.1.50'
 ```
 
+Module source for released usage:
+
+```hcl
+source = "github.com/cloudbloc/cloudbloc//blocs/edge/guardbloc?ref=edge-guardbloc-v0.1.0"
+# source = "../../../blocs/edge/guardbloc"
+```
+
 Open AdGuard setup/admin UI:
 
 ```text
