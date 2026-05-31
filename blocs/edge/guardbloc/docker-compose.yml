@@ -1,0 +1,14 @@
+services:
+  adguard:
+    image: adguard/adguardhome:${ADGUARD_VERSION:-latest}
+    container_name: ${COMPOSE_PROJECT_NAME:-guardbloc}-adguard
+    restart: unless-stopped
+
+    ports:
+      - "${SERVICE_BIND_IP:-127.0.0.1}:${DNS_PORT:-53}:53/tcp"
+      - "${SERVICE_BIND_IP:-127.0.0.1}:${DNS_PORT:-53}:53/udp"
+      - "${SERVICE_BIND_IP:-127.0.0.1}:${HTTP_PORT:-3000}:3000/tcp"
+
+    volumes:
+      - ${GUARDBLOC_ROOT:-/srv/guardbloc}/work:/opt/adguardhome/work
+      - ${GUARDBLOC_ROOT:-/srv/guardbloc}/conf:/opt/adguardhome/conf
