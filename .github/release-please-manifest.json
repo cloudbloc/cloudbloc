@@ -8,5 +8,5 @@
     "modules/gke": "0.2.1",
     "blocs/edge/appbloc": "0.2.0",
     "blocs/edge/streambloc": "0.1.0",
-    "blocs/edge/guardbloc": "0.0.0"
+    "blocs/edge/guardbloc": "0.1.0"
 }
