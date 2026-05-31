@@ -30,6 +30,10 @@
       "release-type": "terraform-module",
       "component": "edge-streambloc"
     },
+    "blocs/edge/guardbloc": {
+      "release-type": "terraform-module",
+      "component": "edge-guardbloc"
+    },
     "modules/cloudarmor": {
       "release-type": "terraform-module",
       "component": "cloudarmor"

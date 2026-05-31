@@ -4,6 +4,18 @@ This example deploys GuardBloc to an edge host over SSH, using Terraform to run 
 
 It is private-network only. Use LAN/Tailscale for access.
 
+The example calls GuardBloc by tag:
+
+```hcl
+source = "github.com/cloudbloc/cloudbloc//blocs/edge/guardbloc?ref=edge-guardbloc-v0.1.0"
+```
+
+For local development, switch the source to:
+
+```hcl
+source = "../../../blocs/edge/guardbloc"
+```
+
 ## What Terraform Does
 
 - connects to the edge host with SSH

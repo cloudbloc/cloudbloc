@@ -88,6 +88,7 @@ This is **infra for platform teams** who want control, speed, and massive SaaS c
 * **ObsBloc** — *Datadog-core*: Prometheus + Grafana, Autopilot-friendly, minimal alerting bootstrap
 * **SearchBloc** — *Elasticsearch-core*: Meilisearch + static UI behind Nginx, PVC, and daily GCS backups
 * **StreamBloc (edge)** — *Jellyfin-core*: Docker Compose media server for Tiny/homelab streaming
+* **GuardBloc (edge)** — *AdGuard Home-core*: private DNS filtering and local rewrites for LAN/tailnet clients
 * Infra helpers: **GKE** and **Cloud Armor** modules
 
 Live running examples:
@@ -104,9 +105,10 @@ All can be deployed within minutes on your own cloud using the pre-built blocs.
 * `blocs/gcp/obsbloc`: **v0.4.2**
 * `blocs/gcp/searchbloc`: **v0.4.2**
 * `blocs/edge/streambloc`: **pending v0.1.0**
+* `blocs/edge/guardbloc`: **pending v0.1.0**
 * `modules/gke`: **v0.2.1**, `modules/cloudarmor`: **v0.2.1**
 
-Release automation: **release-please (manifest mode)** with per-bloc tagging (e.g. `gcp-searchbloc-v0.4.2`, `edge-streambloc-v0.1.0`).
+Release automation: **release-please (manifest mode)** with per-bloc tagging (e.g. `gcp-searchbloc-v0.4.2`, `edge-guardbloc-v0.1.0`).
 
 ---
 
