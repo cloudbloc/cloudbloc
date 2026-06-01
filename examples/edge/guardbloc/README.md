@@ -24,6 +24,7 @@ source = "../../../blocs/edge/guardbloc"
 - optionally installs Docker on Ubuntu/Debian if missing
 - creates persistent folders under `guardbloc_root`
 - writes `/opt/guardbloc/.env`
+- enforces the saved AdGuard admin UI address to `0.0.0.0:http_port` when `AdGuardHome.yaml` already exists
 - runs `docker compose pull`
 - runs `docker compose up -d`
 
@@ -83,3 +84,5 @@ Use DNS from trusted clients:
 ```
 
 Do not expose these services directly to the public internet.
+
+If AdGuard's first-run setup was completed with a different web UI port, rerun `terraform apply`; GuardBloc will patch the saved config back to `http_port`.

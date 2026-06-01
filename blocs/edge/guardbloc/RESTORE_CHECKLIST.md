@@ -17,6 +17,7 @@ Use this checklist to rebuild GuardBloc on a fresh edge host.
 - Make sure the SSH user can run passwordless `sudo`.
 - Run `terraform apply` from `examples/edge/guardbloc` or another root module.
 - Complete the AdGuard first-run setup wizard.
+- Rerun `terraform apply` if the setup wizard saved a web UI port different from `http_port`.
 - Configure clients/router DHCP to use the edge host IP as DNS.
 
 ## Missing Local Files

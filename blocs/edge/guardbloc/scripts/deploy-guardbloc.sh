@@ -8,6 +8,7 @@ DNS_PORT="${DNS_PORT:-53}"
 HTTP_PORT="${HTTP_PORT:-3000}"
 ADGUARD_VERSION="${ADGUARD_VERSION:-latest}"
 INSTALL_DOCKER="${INSTALL_DOCKER:-true}"
+ADGUARD_CONFIG_CHANGED=false
 
 require_docker() {
   if command -v docker >/dev/null 2>&1 && docker compose version >/dev/null 2>&1; then
@@ -50,15 +51,73 @@ create_storage() {
   mkdir -p "$GUARDBLOC_ROOT/work" "$GUARDBLOC_ROOT/conf"
 }
 
+enforce_adguard_http_address() {
+  config_file="$GUARDBLOC_ROOT/conf/AdGuardHome.yaml"
+  tmp_file="$config_file.tmp"
+  backup_file="$config_file.bak"
+
+  if [ ! -f "$config_file" ]; then
+    return
+  fi
+
+  awk -v http_port="$HTTP_PORT" '
+    BEGIN {
+      in_http = 0
+      replaced = 0
+      saw_http = 0
+    }
+    $0 == "http:" {
+      in_http = 1
+      saw_http = 1
+      print
+      next
+    }
+    in_http && $0 ~ /^[^[:space:]]/ {
+      if (!replaced) {
+        print "  address: 0.0.0.0:" http_port
+        replaced = 1
+      }
+      in_http = 0
+    }
+    in_http && $0 ~ /^  address:/ {
+      print "  address: 0.0.0.0:" http_port
+      replaced = 1
+      next
+    }
+    { print }
+    END {
+      if (in_http && !replaced) {
+        print "  address: 0.0.0.0:" http_port
+      }
+      if (!saw_http) {
+        print "http:"
+        print "  address: 0.0.0.0:" http_port
+      }
+    }
+  ' "$config_file" >"$tmp_file"
+
+  if ! cmp -s "$config_file" "$tmp_file"; then
+    cp "$config_file" "$backup_file"
+    cat "$tmp_file" >"$config_file"
+    ADGUARD_CONFIG_CHANGED=true
+  fi
+
+  rm -f "$tmp_file"
+}
+
 start_stack() {
   cd "$REMOTE_ROOT"
   docker compose -f docker-compose.yml pull
   docker compose -f docker-compose.yml up -d
+  if [ "$ADGUARD_CONFIG_CHANGED" = "true" ]; then
+    docker compose -f docker-compose.yml restart adguard
+  fi
 }
 
 require_docker
 install_files
 create_storage
+enforce_adguard_http_address
 start_stack
 
 docker compose -f "$REMOTE_ROOT/docker-compose.yml" ps
