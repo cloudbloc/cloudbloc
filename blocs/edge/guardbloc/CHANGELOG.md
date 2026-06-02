@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/cloudbloc/cloudbloc/compare/edge-guardbloc-v0.1.0...edge-guardbloc-v0.2.0) (2026-06-02)
+
+
+### Features
+
+* **guardbloc:** publish edge module source ([#49](https://github.com/cloudbloc/cloudbloc/issues/49)) ([b457984](https://github.com/cloudbloc/cloudbloc/commit/b457984f21e88ad6be008735049f79d275efb70a))
+
 ## 0.1.0 (2026-05-31)
 
 
