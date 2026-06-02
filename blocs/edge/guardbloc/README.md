@@ -24,6 +24,7 @@ It is intended for private LAN/Tailscale use:
 - optionally installs Docker on Ubuntu/Debian if missing
 - creates persistent folders under `guardbloc_root`
 - writes `/opt/guardbloc/.env`
+- enforces the saved AdGuard admin UI address to `0.0.0.0:http_port` when `AdGuardHome.yaml` already exists
 - runs `docker compose pull`
 - runs `docker compose up -d`
 
@@ -89,6 +90,8 @@ During first-run setup:
 2. Keep the DNS server listening on port `53`.
 3. Keep the web UI on port `3000`, unless you also update `http_port`.
 4. Add local DNS rewrites as needed, for example `app.example.internal -> 192.168.1.50`.
+
+If the setup wizard was completed with a different web UI port, rerun `terraform apply`; GuardBloc will patch the saved AdGuard config back to `http_port`.
 
 ## Client Setup
 
