@@ -56,6 +56,7 @@ No cloud provider dependencies. Runs anywhere.
 
 | Variable             | Type        | Description                             |
 | -------------------- | ----------- | --------------------------------------- |
+| `create_namespace`   | bool        | Create the namespace, defaults to true  |
 | `enable_static_html` | bool        | Serve a static index.html via ConfigMap |
 | `html_path`          | string      | Absolute path to HTML file              |
 | `env`                | map(string) | Environment variables                   |
@@ -115,6 +116,23 @@ module "appbloc" {
   cloudflared_tunnel_id        = "109c1cc5-0788-4761-bbe6-06cfd05c769f"
   cloudflared_hostname         = "cloudbloc.io"
   cloudflared_credentials_json = file("${path.module}/credentials.json")
+}
+```
+
+### Shared namespace
+
+Set `create_namespace = false` when another Terraform state already manages the namespace:
+
+```hcl
+module "appbloc" {
+  source = "github.com/cloudbloc/cloudbloc//blocs/edge/appbloc"
+
+  namespace        = "automation"
+  create_namespace = false
+  app_name         = "worker-app"
+  image            = "nginx:stable"
+  container_port   = 80
+  node_port        = 30096
 }
 ```
 
