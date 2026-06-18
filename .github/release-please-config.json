@@ -41,6 +41,10 @@
     "modules/gke": {
       "release-type": "terraform-module",
       "component": "gke"
+    },
+    "blocs/edge/homebloc": {
+      "release-type": "terraform-module",
+      "component": "edge-homebloc"
     }
   }
 }
