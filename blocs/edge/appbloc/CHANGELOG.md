@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/cloudbloc/cloudbloc/compare/edge-appbloc-v0.2.0...edge-appbloc-v0.3.0) (2026-06-18)
+
+
+### Features
+
+* **edge-appbloc:** document shared namespaces ([#54](https://github.com/cloudbloc/cloudbloc/issues/54)) ([cbe05e2](https://github.com/cloudbloc/cloudbloc/commit/cbe05e20eb8ab2c706f26b351019b48e35b53bd8))
+
 ## [0.2.0](https://github.com/cloudbloc/cloudbloc/compare/edge-appbloc-v0.1.0...edge-appbloc-v0.2.0) (2025-12-14)
 
 
