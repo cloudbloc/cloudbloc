@@ -1,0 +1,12 @@
+services:
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:${HOME_ASSISTANT_VERSION:-stable}
+    container_name: ${COMPOSE_PROJECT_NAME:-homebloc}-homeassistant
+    restart: unless-stopped
+    network_mode: host
+    privileged: ${HOME_ASSISTANT_PRIVILEGED:-true}
+    environment:
+      TZ: ${TZ:-UTC}
+    volumes:
+      - ${HOMEBLOC_ROOT:-/var/lib/homebloc}/config:/config
+      - /etc/localtime:/etc/localtime:ro

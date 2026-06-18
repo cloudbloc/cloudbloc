@@ -4,9 +4,21 @@ locals {
 
   # If worker_env is empty, inherit env from web container
   worker_env = length(var.worker_env) > 0 ? var.worker_env : var.env
+
+  namespace_name = var.create_namespace ? kubernetes_namespace_v1.namespace[0].metadata[0].name : data.kubernetes_namespace_v1.namespace[0].metadata[0].name
+}
+
+data "kubernetes_namespace_v1" "namespace" {
+  count = var.create_namespace ? 0 : 1
+
+  metadata {
+    name = var.namespace
+  }
 }
 
 resource "kubernetes_namespace_v1" "namespace" {
+  count = var.create_namespace ? 1 : 0
+
   metadata {
     name = var.namespace
   }
@@ -17,7 +29,7 @@ resource "kubernetes_config_map_v1" "web_html" {
 
   metadata {
     name      = "web-html"
-    namespace = kubernetes_namespace_v1.namespace.metadata[0].name
+    namespace = local.namespace_name
   }
 
   data = {
@@ -28,7 +40,7 @@ resource "kubernetes_config_map_v1" "web_html" {
 resource "kubernetes_deployment_v1" "app" {
   metadata {
     name      = var.app_name
-    namespace = kubernetes_namespace_v1.namespace.metadata[0].name
+    namespace = local.namespace_name
     labels    = merge({ app = var.app_name }, var.labels)
   }
 
@@ -138,7 +150,7 @@ resource "kubernetes_cron_job_v1" "worker" {
 
   metadata {
     name      = "${var.app_name}-worker"
-    namespace = kubernetes_namespace_v1.namespace.metadata[0].name
+    namespace = local.namespace_name
     labels    = merge({ app = "${var.app_name}-worker" }, var.labels)
   }
 
@@ -282,7 +294,7 @@ resource "kubernetes_cron_job_v1" "worker" {
 resource "kubernetes_service_v1" "web" {
   metadata {
     name      = "${var.app_name}-svc"
-    namespace = kubernetes_namespace_v1.namespace.metadata[0].name
+    namespace = local.namespace_name
     labels    = var.labels
   }
 
@@ -314,7 +326,7 @@ resource "kubernetes_secret_v1" "cloudflared_credentials" {
 
   metadata {
     name      = "cloudflared-credentials"
-    namespace = kubernetes_namespace_v1.namespace.metadata[0].name
+    namespace = local.namespace_name
   }
 
   data = {
@@ -331,7 +343,7 @@ resource "kubernetes_config_map_v1" "cloudflared_config" {
 
   metadata {
     name      = "cloudflared-config"
-    namespace = kubernetes_namespace_v1.namespace.metadata[0].name
+    namespace = local.namespace_name
   }
 
   data = {
@@ -357,7 +369,7 @@ resource "kubernetes_deployment_v1" "cloudflared" {
 
   metadata {
     name      = "cloudflared"
-    namespace = kubernetes_namespace_v1.namespace.metadata[0].name
+    namespace = local.namespace_name
     labels = {
       app = "cloudflared"
     }

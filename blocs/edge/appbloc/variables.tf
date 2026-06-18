@@ -7,6 +7,12 @@ variable "namespace" {
   type        = string
 }
 
+variable "create_namespace" {
+  description = "Whether appbloc should create the Kubernetes namespace. Set false when deploying into a shared existing namespace."
+  type        = bool
+  default     = true
+}
+
 variable "app_name" {
   description = "Application name (used for Deployment/Service names)"
   type        = string
