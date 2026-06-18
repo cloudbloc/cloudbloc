@@ -10,7 +10,7 @@ For local development, the example calls HomeBloc by relative source:
 source = "../../../blocs/edge/homebloc"
 ```
 
-After HomeBloc is released, switch to a pinned GitHub source:
+Use a pinned GitHub source for released HomeBloc modules:
 
 ```hcl
 source = "github.com/cloudbloc/cloudbloc//blocs/edge/homebloc?ref=edge-homebloc-v0.1.0"

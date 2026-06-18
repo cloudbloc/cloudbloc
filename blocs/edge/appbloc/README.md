@@ -92,7 +92,7 @@ locals {
 }
 
 module "appbloc" {
-  source = "github.com/cloudbloc/cloudbloc//blocs/edge/appbloc"
+  source = "github.com/cloudbloc/cloudbloc//blocs/edge/appbloc?ref=edge-appbloc-v0.3.0"
 
   namespace      = var.app_namespace
   app_name       = "cloudbloc-webapp-${var.environment}"
@@ -125,7 +125,7 @@ Set `create_namespace = false` when another Terraform state already manages the 
 
 ```hcl
 module "appbloc" {
-  source = "github.com/cloudbloc/cloudbloc//blocs/edge/appbloc"
+  source = "github.com/cloudbloc/cloudbloc//blocs/edge/appbloc?ref=edge-appbloc-v0.3.0"
 
   namespace        = "automation"
   create_namespace = false
