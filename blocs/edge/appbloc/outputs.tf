@@ -5,7 +5,7 @@ output "service_name" {
 
 output "service_namespace" {
   description = "Namespace where the Service is deployed"
-  value       = kubernetes_namespace_v1.namespace.metadata[0].name
+  value       = local.namespace_name
 }
 
 output "service_node_port" {

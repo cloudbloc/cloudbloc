@@ -6,6 +6,7 @@ Use-case
 - Replace `blocs/gcp/<module>` with `blocs/edge/<module>` in example or environment module sources to target edge/homelab.
 - `streambloc` provides a Docker Compose based Jellyfin media server for Tiny/homelab streaming.
 - `guardbloc` provides a Docker Compose based AdGuard Home DNS/filtering service for private LAN or tailnet use.
+- `homebloc` provides a Docker Compose based Home Assistant service for private LAN or tailnet use.
 
 Examples:
 - Relative:
