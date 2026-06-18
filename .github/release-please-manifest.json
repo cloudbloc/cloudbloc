@@ -9,5 +9,5 @@
     "blocs/edge/appbloc": "0.2.0",
     "blocs/edge/streambloc": "0.1.0",
     "blocs/edge/guardbloc": "0.2.0",
-    "blocs/edge/homebloc": "0.0.0"
+    "blocs/edge/homebloc": "0.1.0"
 }
