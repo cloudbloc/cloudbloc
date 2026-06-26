@@ -24,7 +24,8 @@ It is intended for private LAN/Tailscale use:
 - optionally installs Docker on Ubuntu/Debian if missing
 - creates persistent folders under `homebloc_root`
 - writes `/opt/homebloc/.env`
-- bootstraps `configuration.yaml` only if it does not exist
+- bootstraps `configuration.yaml` and `automations.yaml` if they do not exist
+- ensures `configuration.yaml` includes `automations.yaml` for the UI automation editor
 - runs `docker compose pull`
 - runs `docker compose up -d`
 
@@ -38,6 +39,7 @@ Terraform never deletes Home Assistant config data.
 /var/lib/homebloc/
   config/
     configuration.yaml
+    automations.yaml
 ```
 
 ## Networking
@@ -50,7 +52,7 @@ The default UI endpoint is:
 http://<host>:8123
 ```
 
-If you change `http_port`, HomeBloc only sets the bootstrap `configuration.yaml` when the file does not already exist. Existing Home Assistant config remains user-owned.
+If you change `http_port`, HomeBloc only sets the bootstrap HTTP port when `configuration.yaml` does not already exist. Existing Home Assistant config remains user-owned, but HomeBloc will add the standard `automation: !include automations.yaml` line when it is missing so UI-created automations are loaded.
 
 ## Deploy
 

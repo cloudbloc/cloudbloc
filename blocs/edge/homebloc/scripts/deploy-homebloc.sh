@@ -57,6 +57,19 @@ default_config:
 
 http:
   server_port: $HTTP_PORT
+
+automation: !include automations.yaml
+EOF
+  fi
+
+  if [ ! -f "$HOMEBLOC_ROOT/config/automations.yaml" ]; then
+    printf '[]\n' >"$HOMEBLOC_ROOT/config/automations.yaml"
+  fi
+
+  if ! grep -Eq '^[[:space:]]*automation:' "$HOMEBLOC_ROOT/config/configuration.yaml"; then
+    cat >>"$HOMEBLOC_ROOT/config/configuration.yaml" <<EOF
+
+automation: !include automations.yaml
 EOF
   fi
 }

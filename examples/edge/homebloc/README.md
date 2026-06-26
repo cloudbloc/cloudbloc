@@ -24,7 +24,8 @@ source = "github.com/cloudbloc/cloudbloc//blocs/edge/homebloc?ref=edge-homebloc-
 - optionally installs Docker on Ubuntu/Debian if missing
 - creates persistent folders under `homebloc_root`
 - writes `/opt/homebloc/.env`
-- bootstraps `configuration.yaml` only if it does not exist
+- bootstraps `configuration.yaml` and `automations.yaml` if they do not exist
+- ensures `configuration.yaml` includes `automations.yaml` for the UI automation editor
 - runs `docker compose pull`
 - runs `docker compose up -d`
 
