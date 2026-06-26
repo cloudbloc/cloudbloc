@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.4](https://github.com/cloudbloc/cloudbloc/compare/gcp-sitebloc-v0.0.3...gcp-sitebloc-v0.0.4) (2026-06-26)
+
+
+### Bug Fixes
+
+* **homebloc:** trigger patch release ([#58](https://github.com/cloudbloc/cloudbloc/issues/58)) ([370c961](https://github.com/cloudbloc/cloudbloc/commit/370c9613c7e0c481f7380dae2a7444d9b73e26b3))
+
 ## [0.0.3](https://github.com/cloudbloc/cloudbloc/compare/gcp-sitebloc-v0.0.2...gcp-sitebloc-v0.0.3) (2025-12-11)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/cloudbloc/cloudbloc/compare/edge-dropbloc-v0.3.0...edge-dropbloc-v0.3.1) (2026-06-26)
+
+
+### Bug Fixes
+
+* **homebloc:** trigger patch release ([#58](https://github.com/cloudbloc/cloudbloc/issues/58)) ([370c961](https://github.com/cloudbloc/cloudbloc/commit/370c9613c7e0c481f7380dae2a7444d9b73e26b3))
+
 ## [0.3.0](https://github.com/cloudbloc/cloudbloc/compare/edge-dropbloc-v0.2.0...edge-dropbloc-v0.3.0) (2025-12-14)
 
 
