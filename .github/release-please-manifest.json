@@ -1,13 +1,13 @@
 {
-    "blocs/gcp/appbloc": "0.4.3",
-    "blocs/gcp/obsbloc": "0.4.3",
-    "blocs/gcp/searchbloc": "0.4.3",
-    "blocs/gcp/sitebloc": "0.0.3",
-    "blocs/edge/dropbloc": "0.3.0",
-    "modules/cloudarmor": "0.2.1",
-    "modules/gke": "0.2.1",
-    "blocs/edge/appbloc": "0.3.0",
-    "blocs/edge/streambloc": "0.1.0",
-    "blocs/edge/guardbloc": "0.2.0",
-    "blocs/edge/homebloc": "0.1.0"
+    "blocs/gcp/appbloc": "0.4.4",
+    "blocs/gcp/obsbloc": "0.4.4",
+    "blocs/gcp/searchbloc": "0.4.4",
+    "blocs/gcp/sitebloc": "0.0.4",
+    "blocs/edge/dropbloc": "0.3.1",
+    "modules/cloudarmor": "0.2.2",
+    "modules/gke": "0.2.2",
+    "blocs/edge/appbloc": "0.3.1",
+    "blocs/edge/streambloc": "0.1.1",
+    "blocs/edge/guardbloc": "0.2.1",
+    "blocs/edge/homebloc": "0.1.1"
 }
